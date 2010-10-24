@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EE731E91-FCE7-452D-8780-24D137C50352}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DomainDrivenDelivery</RootNamespace>
+    <AssemblyName>DomainDrivenDelivery.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DomainDrivenDelivery.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DomainDrivenDelivery.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dotnet.Commons.Logging">
+      <HintPath>..\References\Dotnet.Commons.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Domain\Model\Frieght\Cargo.cs" />
+    <Compile Include="Domain\Model\Frieght\Delivery.cs" />
+    <Compile Include="Domain\Model\Frieght\CargoRepository.cs" />
+    <Compile Include="Domain\Model\Frieght\Itinerary.cs" />
+    <Compile Include="Domain\Model\Frieght\Leg.cs" />
+    <Compile Include="Domain\Model\Frieght\LegActivityMatch.cs" />
+    <Compile Include="Domain\Model\Frieght\RouteSpecification.cs" />
+    <Compile Include="Domain\Model\Frieght\RoutingStatus.cs" />
+    <Compile Include="Domain\Model\Frieght\TrackingId.cs" />
+    <Compile Include="Domain\Model\Frieght\TrackingIdFactory.cs" />
+    <Compile Include="Domain\Model\Frieght\TransportStatus.cs" />
+    <Compile Include="Domain\Model\Travel\CarrierMovement.cs" />
+    <Compile Include="Domain\Model\Travel\VoyageRepository.cs" />
+    <Compile Include="Domain\Model\Travel\SampleVoyages.cs" />
+    <Compile Include="Domain\Model\Travel\Schedule.cs" />
+    <Compile Include="Domain\Model\Travel\Voyage.cs" />
+    <Compile Include="Domain\Model\Shared\HandlingActivity.cs" />
+    <Compile Include="Domain\Model\Locations\LocationRepository.cs" />
+    <Compile Include="Domain\Model\Locations\Location.cs" />
+    <Compile Include="Domain\Model\Locations\CustomsZone.cs" />
+    <Compile Include="Domain\Model\Locations\SampleLocations.cs" />
+    <Compile Include="Domain\Model\Locations\UnLocode.cs" />
+    <Compile Include="Domain\Model\Shared\HandlingActivityType.cs" />
+    <Compile Include="Domain\Model\Travel\VoyageNumber.cs" />
+    <Compile Include="Domain\Patterns\DomainEvent\DomainEvent.cs" />
+    <Compile Include="Domain\Patterns\Entity\EntitySupport.cs" />
+    <Compile Include="Domain\Patterns\Entity\Entity.cs" />
+    <Compile Include="Domain\Patterns\EqualsBuilder.cs" />
+    <Compile Include="Domain\Patterns\HashCodeBuilder.cs" />
+    <Compile Include="Domain\Patterns\Specification\AbstractSpecification.cs" />
+    <Compile Include="Domain\Patterns\Specification\AndSpecification.cs" />
+    <Compile Include="Domain\Patterns\Specification\Specification.cs" />
+    <Compile Include="Domain\Patterns\Specification\NotSpecification.cs" />
+    <Compile Include="Domain\Patterns\Specification\OrSpecification.cs" />
+    <Compile Include="Domain\Patterns\Validate.cs" />
+    <Compile Include="Domain\Patterns\ValueObject\ValueObject.cs" />
+    <Compile Include="Domain\Patterns\ValueObject\ValueObjectSupport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
