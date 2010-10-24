@@ -8,5 +8,15 @@ namespace DomainDrivenDelivery.Domain.Patterns
         {
             throw new NotImplementedException();
         }
+
+        public HashCodeBuilder append(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int toHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

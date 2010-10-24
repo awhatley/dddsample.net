@@ -33,9 +33,6 @@
     <DocumentationFile>bin\Release\DomainDrivenDelivery.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dotnet.Commons.Logging">
-      <HintPath>..\References\Dotnet.Commons.Logging.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +53,16 @@
     <Compile Include="Domain\Model\Frieght\TrackingId.cs" />
     <Compile Include="Domain\Model\Frieght\TrackingIdFactory.cs" />
     <Compile Include="Domain\Model\Frieght\TransportStatus.cs" />
+    <Compile Include="Domain\Model\Handling\CannotCreateHandlingEventException.cs" />
+    <Compile Include="Domain\Model\Handling\EventSequenceNumber.cs" />
+    <Compile Include="Domain\Model\Handling\HandlingEvent.cs" />
+    <Compile Include="Domain\Model\Handling\HandlingEventFactory.cs" />
+    <Compile Include="Domain\Model\Handling\HandlingEventRepository.cs" />
+    <Compile Include="Domain\Model\Handling\HandlingHistory.cs" />
+    <Compile Include="Domain\Model\Handling\OperatorCode.cs" />
+    <Compile Include="Domain\Model\Handling\UnknownCargoException.cs" />
+    <Compile Include="Domain\Model\Handling\UnknownLocationException.cs" />
+    <Compile Include="Domain\Model\Handling\UnknownVoyageException.cs" />
     <Compile Include="Domain\Model\Travel\CarrierMovement.cs" />
     <Compile Include="Domain\Model\Travel\VoyageRepository.cs" />
     <Compile Include="Domain\Model\Travel\SampleVoyages.cs" />

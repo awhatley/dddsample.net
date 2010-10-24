@@ -1,5 +1,5 @@
-dddsample.net
-=============
+DDD Sample .NET
+===============
 
 A port of the [DDD Sample Application](http://dddsample.sourceforge.net/) to C#.
 

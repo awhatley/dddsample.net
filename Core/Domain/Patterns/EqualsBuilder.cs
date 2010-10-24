@@ -8,5 +8,15 @@ namespace DomainDrivenDelivery.Domain.Patterns
         {
             throw new NotImplementedException();
         }
+
+        public EqualsBuilder append(object lhs, object rhs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool isEquals()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
