@@ -82,6 +82,8 @@
     <Compile Include="Domain\Patterns\EqualsBuilder.cs" />
     <Compile Include="Domain\Patterns\HashCodeBuilder.cs" />
     <Compile Include="Domain\Patterns\Specification\AbstractSpecification.cs" />
+    <Compile Include="Domain\Patterns\Specification\AlwaysFalseSpec.cs" />
+    <Compile Include="Domain\Patterns\Specification\AlwaysTrueSpec.cs" />
     <Compile Include="Domain\Patterns\Specification\AndSpecification.cs" />
     <Compile Include="Domain\Patterns\Specification\Specification.cs" />
     <Compile Include="Domain\Patterns\Specification\NotSpecification.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Domain\Patterns\Validate.cs" />
     <Compile Include="Domain\Patterns\ValueObject\ValueObject.cs" />
     <Compile Include="Domain\Patterns\ValueObject\ValueObjectSupport.cs" />
+    <Compile Include="Domain\Services\RoutingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
