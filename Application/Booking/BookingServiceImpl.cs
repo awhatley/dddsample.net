@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using DomainDrivenDelivery.Domain.Model.Frieght;
 using DomainDrivenDelivery.Domain.Model.Locations;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Services;
 using DomainDrivenDelivery.Utilities;
 
@@ -35,7 +34,7 @@ namespace DomainDrivenDelivery.Application.Booking
         }
 
         [Transaction]
-        public TrackingId BookNewCargo(UnLocode originUnLocode, UnLocode destinationUnLocode, DateTime arrivalDeadline)
+        public TrackingId bookNewCargo(UnLocode originUnLocode, UnLocode destinationUnLocode, DateTime arrivalDeadline)
         {
             var trackingId = _trackingIdFactory.nextTrackingId();
             var origin = _locationRepository.find(originUnLocode);
@@ -51,7 +50,7 @@ namespace DomainDrivenDelivery.Application.Booking
         }
 
         [Transaction(ReadOnly = true)]
-        public IEnumerable<Itinerary> RequestPossibleRoutesForCargo(TrackingId trackingId)
+        public IEnumerable<Itinerary> requestPossibleRoutesForCargo(TrackingId trackingId)
         {
             var cargo = _cargoRepository.find(trackingId);
             if(cargo == null)
@@ -61,7 +60,7 @@ namespace DomainDrivenDelivery.Application.Booking
         }
 
         [Transaction]
-        public void AssignCargoToRoute(Itinerary itinerary, TrackingId trackingId)
+        public void assignCargoToRoute(Itinerary itinerary, TrackingId trackingId)
         {
             var cargo = _cargoRepository.find(trackingId);
             Validate.notNull(cargo, "Can't assign itinerary to non-existing cargo " + trackingId);
@@ -72,7 +71,7 @@ namespace DomainDrivenDelivery.Application.Booking
         }
 
         [Transaction]
-        public void ChangeDestination(TrackingId trackingId, UnLocode unLocode)
+        public void changeDestination(TrackingId trackingId, UnLocode unLocode)
         {
             var cargo = _cargoRepository.find(trackingId);
             Validate.notNull(cargo, "Can't change destination of non-existing cargo " + trackingId);
@@ -86,7 +85,7 @@ namespace DomainDrivenDelivery.Application.Booking
         }
 
         [Transaction(ReadOnly = true)]
-        public Cargo LoadCargoForRouting(TrackingId trackingId)
+        public Cargo loadCargoForRouting(TrackingId trackingId)
         {
             return _cargoRepository.find(trackingId);
         }

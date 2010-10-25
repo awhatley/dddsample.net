@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{15906138-9F55-4667-9AF5-A19750C60D96}</ProjectGuid>
+    <ProjectGuid>{802F539B-0A98-4444-8BB8-AE57FB374FB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DomainDrivenDelivery.Interfaces</RootNamespace>
-    <AssemblyName>DomainDrivenDelivery.Interfaces</AssemblyName>
+    <RootNamespace>DomainDrivenDelivery.Booking.Api</RootNamespace>
+    <AssemblyName>DomainDrivenDelivery.Booking.Api</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\DomainDrivenDelivery.Interfaces.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\DomainDrivenDelivery.Booking.Api.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,12 +30,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\DomainDrivenDelivery.Interfaces.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DomainDrivenDelivery.Booking.Api.xml</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Spring.Core">
-      <HintPath>..\References\Spring.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,23 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Booking\Facade\BookingServiceFacadeImpl.cs" />
-    <Compile Include="Booking\Facade\DTOAssembler.cs" />
+    <Compile Include="BookingServiceFacade.cs" />
+    <Compile Include="CargoRoutingDTO.cs" />
+    <Compile Include="CarrierMovementDTO.cs" />
+    <Compile Include="LegDTO.cs" />
+    <Compile Include="LocationDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj">
-      <Project>{3C1BF24E-0B86-46C5-8296-235A3DC2B9C2}</Project>
-      <Name>Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Booking.Api\Booking.Api.csproj">
-      <Project>{802F539B-0A98-4444-8BB8-AE57FB374FB1}</Project>
-      <Name>Booking.Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{15FDCE50-E58A-4788-979C-62B6B233294A}</Project>
-      <Name>Domain</Name>
-    </ProjectReference>
+    <Compile Include="RouteCandidateDTO.cs" />
+    <Compile Include="VoyageDelayDTO.cs" />
+    <Compile Include="VoyageDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

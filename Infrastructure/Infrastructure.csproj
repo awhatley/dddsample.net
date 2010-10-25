@@ -63,7 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messaging.Nms\NmsSystemEventsImpl.cs" />
+    <Compile Include="Messaging\Nms\NmsSystemEventsImpl.cs" />
     <Compile Include="Persistence\InMemory\CargoRepositoryInMem.cs" />
     <Compile Include="Persistence\InMemory\HandlingEventRepositoryInMem.cs" />
     <Compile Include="Persistence\InMemory\LocationRepositoryInMem.cs" />
