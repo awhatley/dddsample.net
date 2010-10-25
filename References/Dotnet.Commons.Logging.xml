@@ -1,0 +1,1615 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dotnet.Commons.Logging</name>
+    </assembly>
+    <members>
+        <member name="T:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory">
+            <summary>
+            Concrete subclass of <see cref="T:Dotnet.Commons.Logging.LogFactory"/> specific to log4net.
+            </summary>
+            
+            <remarks> 
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                03/02/2005 – Edward Lim – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>  
+        </member>
+        <member name="T:Dotnet.Commons.Logging.LogFactory">
+            ======================================================================================== 
+            <summary>
+            Class: LogFactory
+            
+            Factory for creating ILog instances.
+            </summary>
+            
+            <remarks> 
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                03/02/2005 – Edward Lim – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>  
+            
+            <example>
+            Setting Application Configuration in App.Cofig, Web.config, etc.
+            
+            <appSettings>
+                <!-- key attribute is FIXED -->
+                <!-- modify value attribute to specify the logger Factory -->
+            	<add key="Dotnet.Commons.Logging.LogFactory" 
+            		 value="Dotnet.Commons.Logging.Impl.Log4NetFactory" />	
+            </appSettings>
+            
+            Using in code: 
+            <code>
+            	  // Get an instance of the logger from the LogFactory
+                  ILog log = LogFactory.GetLogger(typeof(MyCurrentClass));
+                     :
+                   
+                   // check if log level is set to debug
+                   if (log.IsDebugEnabled)
+            		{
+            			// log a debug message
+            			log.Debug("This is a debug message");
+            		}
+            		
+            		try
+            		{
+            			:
+            		}
+            		catch (Exception e)
+            		{
+            			log.Error("Unexpected Exception", e);
+            		}
+            </code>
+            
+            </example>
+            ========================================================================================
+            
+        </member>
+        <member name="F:Dotnet.Commons.Logging.LogFactory.APP_KEY_FACTORY_PROPERTY">
+            <summary>The name of the property used to identify the LogFactory implementation class name. </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.LogFactory.FACTORY_DEFAULT">
+            <summary>
+            The fully qualified class name of the fallback <code>LogFactory</code>
+            implementation class to use, if no other can be found.
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.LogFactory.factories">
+            <summary>
+            The previously constructed <code>LogFactory</code> instances, keyed by 
+            the <code>ClassLoader</code> with which it was created.
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.LogFactory.loadedFactoryClass">
+            <summary>
+            The Type of the loaded factory class
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.#ctor">
+            <summary>
+            Protected constructor that is not available for public use.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetAttribute(System.String)">
+            ------------------------------------------------------------------
+            <summary>
+            Return the configuration attribute with the specified name (if any),
+            or <code>null</code> if there is no such attribute.  
+            </summary>
+            <param name="name">Name of the attribute to return</param>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetAttributeNames">
+            ------------------------------------------------------------------
+            <summary>
+            Return an array containing the names of all currently defined 
+            configuration attributes.  If there are no such attributes, a zero
+            length array is returned.
+            </summary>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetInstance(System.Type)">
+            ------------------------------------------------------------------
+            <summary>
+            Convenience method to derive a name from the specified class and
+            call <code>getInstance(String)</code> with it.
+            </summary>		
+            <param name="type">Class type for which a suitable Log name will be derived</param>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetInstance(System.String)">
+             ------------------------------------------------------------------
+             <summary>
+             <p>Construct (if necessary) and return a <code>Log</code> instance,
+             using the factory's current set of configuration attributes.</p>
+            
+             <p><strong>NOTE</strong> - Depending upon the implementation of
+             the <code>LogFactory</code> you are using, the <code>Log</code>
+             instance you are returned may or may not be local to the current
+             application, and may or may not be returned again on a subsequent
+             call with the same name argument.</p>		
+            		
+             </summary>
+             <param name="name">Logical name of the <code>Log</code> instance to be
+              returned (the meaning of this name is only known to the underlying
+              logging implementation that is being wrapped)</param>
+             <returns></returns>
+             ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.Release">
+            ------------------------------------------------------------------
+            <summary>
+            Release any internal references to previously created <code>Log</code>
+            instances returned by this factory.  This is useful in environments
+            like servlet containers, which implement application reloading by
+            throwing away a ClassLoader.  Dangling references to objects in that
+            class loader would prevent garbage collection.
+            </summary>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.RemoveAttribute(System.String)">
+            ------------------------------------------------------------------
+            <summary>
+             Remove any configuration attribute associated with the specified name.
+             If there is no such attribute, no action is taken.
+            </summary>
+            <param name="name">Name of the attribute to remove</param>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.SetAttribute(System.String,System.Object)">
+            ------------------------------------------------------------------
+            <summary>
+            Set the configuration attribute with the specified name.  Calling
+            this with a <code>null</code> value is equivalent to calling
+            <code>removeAttribute(name)</code>.
+            </summary>
+            <param name="name">Name of the attribute to set</param>
+            <param name="value">Value of the attribute to set, or <code>null</code></param>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetFactory">
+            ------------------------------------------------------------------
+            <summary>
+            Construct (if necessary) and return a <code>LogFactory</code>
+            instance, using the following ordered lookup procedure to determine
+            the name of the implementation class to be loaded.
+            </summary>
+            <returns>the LogFactory class</returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetFactory(System.String)">
+            ----------------------------------------------------------
+            <summary>
+            Construct (if necessary) and return a <code>LogFactory</code>
+            instance, using the following ordered lookup procedure to determine
+            the name of the implementation class to be loaded.
+            </summary>
+            <param name="factoryClassFullName"></param>
+            <returns></returns>
+            ----------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetFactory(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="factoryClassFullName"></param>
+            <param name="assemblyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.Release(System.Type)">
+            ------------------------------------------------------------------
+            <summary>
+            Release any internal references to previously created <code>LogFactory</code>
+            instances that have been associated with the specified class loader
+            (if any), after calling the instance method <code>release()</code> on
+            each of them.
+            </summary>
+            <param name="factoryClass">ClassLoader for which to release the LogFactory</param>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.ReleaseAll">
+            ------------------------------------------------------------------
+            <summary>
+            Release any internal references to previously created <code>LogFactory</code>
+            instances, after calling the instance method <code>Release()</code> on
+            each of them. 
+            
+            Dangling references to objects in that class would prevent
+            garbage collection.
+            </summary>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetLogger(System.Type)">
+            ------------------------------------------------------------------
+            <summary>
+            Get the logger based on the Type of the class
+            </summary>
+            <param name="classType"></param>
+            <returns>Returns a Log object</returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetLogger(System.Type,Dotnet.Commons.Logging.LogFactory)">
+            ---------------------------------------------------------------
+            <summary>
+            Get the logger based on the Type of the class
+            </summary>
+            <param name="classType"></param>
+            <param name="loggerFactory"></param>
+            <returns></returns>
+            ---------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetLogger(System.String)">
+            ------------------------------------------------------------------
+            <summary>
+            Get the logger based on the name of the class
+            </summary>
+            <param name="className"></param>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.GetLogger(System.String,Dotnet.Commons.Logging.LogFactory)">
+            ------------------------------------------------------------------
+            <summary>
+            Get the logger based on the name of the class
+            </summary>
+            <param name="className"></param>
+            <param name="loggerFactory"></param>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.NewFactory(System.String,System.Type@)">
+            ------------------------------------------------------------------
+            <summary>
+            Return a new instance of the specified <code>LogFactory</code>
+            implementation class, loaded by the specified class loader.
+            If that fails, try the class loader used to load this
+            (abstract) LogFactory.
+            </summary>
+            <param name="factoryClass">Fully qualified name of the <code>LogFactory</code> 
+            implementation class</param>
+            <param name="classTypeToLoad">Class to load</param>
+            <returns></returns>
+            <exception cref="T:Dotnet.Commons.Logging.LogConfigurationException"></exception>
+            ------------------------------------------------------------------		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.NewFactory(System.String,System.Type@,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="factoryClass"></param>
+            <param name="classTypeToLoad"></param>
+            <param name="assemblyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.getCachedFactory(System.Type)">
+            ------------------------------------------------------------------
+            <summary>
+            Check cached factories (keyed by contextFactoryClass)
+            </summary>
+            <param name="contextFactoryClass"></param>
+            <returns></returns>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.cacheFactory(System.Type,Dotnet.Commons.Logging.LogFactory)">
+            ------------------------------------------------------------------
+            <summary>
+            Cache the factory into the hashtable
+            </summary>
+            <param name="factoryClass"></param>
+            <param name="factory"></param>
+            ------------------------------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogFactory.Dispose">
+            <summary>
+            Dispose all resources
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.attributes">
+            <summary>The configuration attributes for the LogFactory <see cref="T:Dotnet.Commons.Logging.LogFactory"/>.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.instances">
+            <summary>Previously returned instances, to avoid creation of proxies</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.GetAttribute(System.String)">
+            <summary>
+            Return the configuration attribute with the specified name (if any), 
+            or <code>null</code> if there is no such attribute.
+            </summary>
+            <param name="name">Name of the attribute to return</param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.GetAttributeNames">
+            Return an array containing the names of all currently defined
+            configuration attributes.  If there are no such attributes, a zero
+            length array is returned.
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.GetInstance(System.Type)">
+            <summary>
+            Convenience method to derive a name from the specified class and
+            call <code>GetInstance(String)</code> with it.
+            </summary>
+            <param name="clazz">Class for which a suitable Log name will be derived</param>
+            <returns>a log instance</returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.GetInstance(System.String)">
+            <summary>
+            		
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.Release">
+            <summary>
+            Release any internal references to previously created {<see cref="T:Dotnet.Commons.Logging.ILog"></see>}
+            instances returned by this factory.  This is useful in environments
+            like servlet containers, which implement application reloading by
+            throwing away a ClassLoader.  Dangling references to objects in that
+            class loader would prevent garbage collection.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.RemoveAttribute(System.String)">
+            <summary>
+            Remove any configuration attribute associated with the specified name.
+            If there is no such attribute, no action is taken.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLoggerFactory.SetAttribute(System.String,System.Object)">
+            <summary>
+            Set the configuration attribute with the specified name.  Calling
+            this with a <code>null</code> value is equivalent to calling
+            <code>removeAttribute(name)</code>.
+            </summary>
+            <param name="name">Name of the attribute to set</param>
+            <param name="value">Value of the attribute to set, or <code>null</code> to remove any setting for this attribute</param>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.ILog">
+             <summary>
+             A simple logging interface abstracting logging APIs.  In order to be
+             instantiated successfully by <code>LogFactory</code>, classes that implement
+             this interface must have a constructor that takes a single String
+             parameter representing the "name" of this Log.
+            
+             <p> The six logging levels used by <code>Log</code> are (in order):
+             <list type="numbered">
+             <item>trace (the least serious)</item>
+             <item>debug</item>
+             <item>info</item>
+             <item>warn</item>
+             <item>error</item>
+             <item>fatal (the most serious)</item>
+             </list>
+             The mapping of these log levels to the concepts used by the underlying
+             logging system is implementation dependent.
+             The implemention should ensure, though, that this ordering behaves
+             as expected.</p>
+            
+             <p>Performance is often a logging concern.
+             By examining the appropriate property,
+             a component can avoid expensive operations (producing information
+             to be logged).</p>
+            	
+             Configuration of the underlying logging system will generally be done
+             external to the Logging APIs, through whatever mechanism is supported by
+             that system.	
+             </summary>	
+             
+             <example>
+             For example,
+             <code>
+                if (log.IsDebugEnabled()) 
+            {
+                    ... do something expensive ...
+                    log.debug(theResult);
+                }
+             </code>
+             </example>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Trace(System.Object)">
+            <summary>Log a message with trace log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Trace(System.Object,System.Exception)">
+            <summary>Log a message with trace log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Debug(System.Object)">
+            <summary>Log a message with Debug log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Debug(System.Object,System.Exception)">
+            <summary>Log a message with Debug log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Info(System.Object)">
+            <summary>Log a message with Info log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Info(System.Object,System.Exception)">
+            <summary>Log a message with Info log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Warn(System.Object)">
+            <summary>Log a message with Warn log level.</summary>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Warn(System.Object,System.Exception)">
+            <summary>Log a message with Warn log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Error(System.Object)">
+            <summary>Log a message with Error log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Error(System.Object,System.Exception)">
+            <summary>Log a message with Error log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Fatal(System.Object)">
+            <summary>Log a message with Fatal log level.</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.ILog.Fatal(System.Object,System.Exception)">
+            <summary>Log a message with Fatal log level.</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsTraceEnabled">
+            <summary>Is debug logging currently enabled?</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsDebugEnabled">
+            <summary>Is debug logging currently enabled?</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsInfoEnabled">
+            <summary>Property to determine if Info logging level is enabled</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsWarnEnabled">
+            <summary>Property to determine if Warn logging level is enabled</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsErrorEnabled">
+            <summary>Property to determine if Error logging level is enabled</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.IsFatalEnabled">
+            <summary>Property to determine if Fatal logging level is enabled</summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.ILog.CurrentLogLevel">
+            <summary>Property to determine the log level set</summary>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.LogLevel">
+            <summary>
+            Log level Enum
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.OFF">
+            <summary>Log (Threshold) level - Off</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.TRACE">
+            <summary>Trace level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.DEBUG">
+            <summary>Debug Level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.INFO">
+            <summary>Info Level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.WARN">
+            <summary>Warn level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.ERROR">
+            <summary>Error Level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogLevel.FATAL">
+            <summary>Fatal Level</summary>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.LogConstants">
+            <summary>
+            Constants use by the Loggers.
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_DEBUG">
+            <summary>Log level debug tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_INFO">
+            <summary>Log level info tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_TRACE">
+            <summary>Log level trace tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_WARN">
+            <summary>Log level Warn tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_ERROR">
+            <summary>Log level errror tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_FATAL">
+            <summary>Log level fatal tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_LEVEL_OFF">
+            <summary>Log level off tag</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.DEFAULT_LOG_LEVEL">
+            <summary>Default Log Level is set to Warn</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogConstants.LOG_FILE_NAME">
+            <summary>Default Log file name</summary>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener">
+            <summary>
+            Directs tracing or debugging output to OutputDebugString.
+            
+            </summary>
+            <remarks>
+            Why create this Listener instead of using the DefaultTraceListener?
+            The reason is the DeaultTraceListener call to OutputDebugString seems
+            to send it to the VS.Net Output View, whereas the direct calls to 
+            the OutputDebugString API seems to send it out to the OS where a tool
+            like SystemInternal DebugView can intercepts and display the messages.
+            
+            </remarks>
+            <example>
+            Configuration example:
+            <code>
+            	<configuration>
+            		<system.diagnostics>
+            			<trace autoflush="false" indentsize="4">
+            				<listeners>
+            					<add name="OutputDebugListener" 
+            						 type="Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener,Dotnet.Commons.Logging" />
+            				</listeners>
+            			</trace>
+            		</system.diagnostics>
+            	</configuration>
+            </code>
+            </example>
+            
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener.Write(System.String)">
+            <summary>
+            Write the string to OutputDebugString
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener.WriteLine(System.String)">
+            <summary>
+            Write the string to OutputDebugString
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.OutputDebugStringTraceListener.OutputDebugString(System.String)">
+            <summary>
+            Stub for OutputDebugString native mathod
+            </summary>
+            <param name="lpOutputString">the string to output</param>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.LogConfigurationException">
+            <summary>
+            <p>An exception that is thrown only if a suitable <code>LogFactory</code>
+            or <code>Log</code> instance cannot be created by the corresponding
+            factory methods.</p>
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogConfigurationException.#ctor">
+            <summary>
+            Default constuctor
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogConfigurationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the LoggingException class 
+            with a specified error message.
+            </summary>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogConfigurationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the LoggingException class with a 
+            specified error message and a reference to the inner exception that is 
+            the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for 
+            the exception.
+            </param>
+            <param name="exception">The exception that is the cause of the current 
+            exception.  If the innerException parameter is not a null reference, 
+            the current exception is raised in a catch block that handles the inner 
+            exception.
+            </param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.LogConfigurationException.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the LoggingException class with a 
+            specified error message and a reference to the inner exception that is 
+            the cause of this exception.
+            </summary>
+            <param name="exception">The exception that is the cause of the current 
+            exception.  If the innerException parameter is not a null reference, 
+            the current exception is raised in a catch block that handles the inner 
+            exception.</param>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory">
+            <summary>
+            Concrete subclass of <see cref="T:Dotnet.Commons.Logging.LogFactory"/> specific to log4net.
+            </summary>
+            
+            <remarks> 
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                03/02/2005 – Edward Lim – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>  
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory._attributes">
+            <summary>The configuration attributes for this {@link LogFactory}.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory._instances">
+            <summary>Previously returned instances, to avoid creation of proxies</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.GetAttribute(System.String)">
+            <summary>
+            Return the configuration attribute with the specified name (if any), 
+            or <code>null</code> if there is no such attribute.
+            </summary>
+            <param name="name">Name of the attribute to return</param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.GetAttributeNames">
+            Return an array containing the names of all currently defined
+            configuration attributes.  If there are no such attributes, a zero
+            length array is returned.
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.GetInstance(System.Type)">
+            <summary>
+            Convenience method to derive a name from the specified class and
+            call <code>GetInstance(String)</code> with it.
+            </summary>
+            <param name="clazz">Class for which a suitable Log name will be derived</param>
+            <returns>a log instance</returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.GetInstance(System.String)">
+            <summary>
+            		
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.Release">
+            <summary>
+            Release any internal references to previously created {<see cref="T:Dotnet.Commons.Logging.ILog"></see>}
+            instances returned by this factory.  This is useful in environments
+            like servlet containers, which implement application reloading by
+            throwing away a ClassLoader.  Dangling references to objects in that
+            class loader would prevent garbage collection.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.RemoveAttribute(System.String)">
+            <summary>
+            Remove any configuration attribute associated with the specified name.
+            If there is no such attribute, no action is taken.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLoggerFactory.SetAttribute(System.String,System.Object)">
+            <summary>
+            Set the configuration attribute with the specified name.  Calling
+            this with a <code>null</code> value is equivalent to calling
+            <code>removeAttribute(name)</code>.
+            </summary>
+            <param name="name">Name of the attribute to set</param>
+            <param name="value">Value of the attribute to set, or <code>null</code> to remove any setting for this attribute</param>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.SystemTraceLogger">
+            ======================================================================================== 
+            <summary>
+            Class: SystemTraceLogger
+            
+            Implementation of <see cref="T:Dotnet.Commons.Logging.ILog"/>. 
+            
+            Simple implementation of Log that sends all enabled log messages to a log file,
+            Output Debug, and System.Console.Error. 
+            
+            
+            This SystemTraceLogger can be configured by adding the following settings in the application config
+            file (eg. App.config, Web.Config, etc)
+            
+            for example:
+            <code>
+            	<configuration>
+            	<system.diagnostics>
+            		<trace>
+            		   <listeners>
+            		     <add name="textWriterTraceListener" type="System.Diagnostics.TextWriterTraceListener" initializeData="C:\\Temp\\mylog.txt"/>
+            		   </listeners>
+            		</trace>
+            	</system.diagnostics>
+            	<appSetting>
+            		<add key="Dotnet.Commons.Logging.SystemTraceLogger.Level" value="INFO"/>			
+            	</appSetting>
+            	</configuration>
+            </code>
+            
+            </summary>
+            
+            <remarks> 
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                03/02/2005 – Edward Lim – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>  
+            ========================================================================================
+            
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SystemTraceLogger.APP_KEY_LOG_LEVEL">
+            <summary>AppSetting Key to set the logging level</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="className"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Trace(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>TRACE</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Trace(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>TRACE</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Debug(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>DEBUG</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Debug(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>DEBUG</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Info(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>INFO</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Info(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>INFO</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Warn(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>WARN</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Warn(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>WARN</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Error(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>ERROR</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Error(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>ERROR</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Fatal(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>FATAL</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Fatal(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>FATAL</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Performance(System.Object)">
+            <summary>
+            Log a performance message to the Logger.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.SetLogLevel(Dotnet.Commons.Logging.Impl.LogLevel)">
+            <summary>
+            Explicit set the Log (Threshold) level.
+            </summary>
+            <param name="newLogLevel"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.log(Dotnet.Commons.Logging.Impl.LogLevel,System.Object)">
+            ----------------------------------------------
+            <summary>
+            Add to the log output
+            </summary>
+            <param name="logtype"></param>
+            <param name="message"></param>
+            ----------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.log(Dotnet.Commons.Logging.Impl.LogLevel,System.Object,System.Exception,System.Boolean)">
+            ----------------------------------------------
+            <summary>
+            Add to the log output
+            </summary>
+            <param name="logtype">Log level type</param>
+            <param name="message">message to log</param>
+            <param name="e">exception object</param>
+            <param name="isPerformance">flag to indicate logging for performance purposes</param>
+            ----------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.isLevelEnabled(Dotnet.Commons.Logging.Impl.LogLevel)">
+            ----------------------------------------------
+            <summary>
+            Determine if a log level is enabled
+            </summary>
+            <param name="logLevel"></param>
+            <returns></returns>
+            ----------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.configure">
+            ----------------------------------------------
+            <summary>
+            Config the logger
+            </summary>
+            ----------------------------------------------
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SystemTraceLogger.OutputDebugString(System.String)">
+            <summary>
+            Stub for OutputDebugString native mathod
+            </summary>
+            <param name="lpOutputString">the string to output</param>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsLogOff">
+            <summary>
+            Property to determine if the logging is turned off
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsTraceEnabled">
+            <summary>
+            Flag to determine if the TRACE priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsDebugEnabled">
+            <summary>
+            Flag to determine if the DEBUG priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsInfoEnabled">
+            <summary>
+            Flag to determine if the INFO priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsWarnEnabled">
+            <summary>
+            Flag to determine if the WARN priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsErrorEnabled">
+            <summary>
+            Flag to determine if the ERROR priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsFatalEnabled">
+            <summary>
+            Flag to determine if the FATAL priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.IsPerformanceEnabled">
+            <summary>
+            Flag to determine if the PERFORMANCE priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.LogThresholdLevel">
+            <summary>
+            Property to get and set the Logging Threshold level
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.CurrentLogLevel">
+            <summary>
+            Property to get and set the Logging Threshold level
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.LoggerTraceSwitch">
+            <summary>
+            Property to get and set the <see cref="T:System.Diagnostics.TraceSwitch"/> switch used by the logger.
+            
+            The trace switch can be configured in the application config file 
+            (<code>web.config, app.config </code> etc).
+            
+            for example,
+            <code>
+            <system.diagnostics>
+            	<switches>
+            		<!--
+            		0 for off,
+            		1 for Error Messages,
+            		2 for Warning Messages,
+            		3 for Info messages, and
+            		4 for Verbose (Trace) messages,
+            		-->
+            	   <add name="MyTraceSwitch" value="3"/>
+            	</switches>
+            </system.diagnostics>
+            </code>
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SystemTraceLogger.Listeners">
+            <summary>
+            Get the TraceListeners collection
+            </summary>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.LogFactoryImpl">
+            <summary>
+             <p>Concrete subclass of <see cref="T:Dotnet.Commons.Logging.LogFactory"/> that implements the
+             following algorithm to dynamically select a logging implementation
+             class to instantiate a wrapper for.</p>
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.LOG_PROPERTY">
+            <summary></summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.LOG_INTERFACE">
+            <summary></summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.attributes">
+            <summary>Configuration attributes.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.instances">
+            <summary>The <see cref="T:Dotnet.Commons.Logging.ILog"/> instances that have already been created, keyed by logger name.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl._logClassName">
+            <summary>Name of the class implementing the Log interface.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.logConstructor">
+            <summary>
+            The one-argument constructor of the
+            <see cref="T:Dotnet.Commons.Logging.ILog"/>
+            implementation class that will be used to create new instances.
+            This value is initialized by <code>getLogConstructor()</code>,
+            and then returned repeatedly.
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.logConstructorSignature">
+            <summary>The signature of the Constructor to be used.</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.logMethod">
+            <summary>
+            The one-argument <code>setLogFactory</code> method of the selected
+            <see cref="T:Dotnet.Commons.Logging.ILog"/>  method, if it exists.
+            </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.LogFactoryImpl.logMethodSignature">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.GetAttribute(System.String)">
+            <summary>
+            Return the configuration attribute with the specified name (if any),
+            or <code>null</code> if there is no such attribute.		
+            </summary>
+            <param name="name">Name of the attribute to return</param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.GetAttributeNames">
+            <summary>
+            Return an array containing the names of all currently defined
+            configuration attributes.  If there are no such attributes, a zero
+            length array is returned.
+            </summary>
+            <returns>array of attribute names</returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.GetInstance(System.Type)">
+            <summary>
+            Convenience method to derive a name from the specified type and
+            call <code>GetInstance(String)</code> with it.
+            </summary>
+            <param name="type"></param>
+            <returns>a log instance</returns>
+            <exception cref="T:Dotnet.Commons.Logging.LogConfigurationException">if a suitable <code>Log</code>
+             instance cannot be returned</exception>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.GetInstance(System.String)">
+            <summary>
+             <p>Construct (if necessary) and return a <code>ILog</code> instance,
+             using the factory's current set of configuration attributes.</p>
+            
+             <p><strong>NOTE</strong> - Depending upon the implementation of
+             the <code>LogFactory</code> you are using, the <code>ILog</code>
+             instance you are returned may or may not be local to the current
+             application, and may or may not be returned again on a subsequent
+             call with the same name argument.</p>
+            </summary>
+             <param name="name">Logical name of the <code>Log</code> instance to be
+              returned (the meaning of this name is only known to the underlying
+              logging implementation that is being wrapped)</param> 
+            
+             <exception cref="T:Dotnet.Commons.Logging.LogConfigurationException">if a suitable <code>Log</code>
+              instance cannot be returned</exception>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.Release">
+            <summary>
+             Release any internal references to previously created
+             Dotnet.Commons.Logging.Log
+             <see cref="T:Dotnet.Commons.Logging.ILog"/>
+             instances returned by this factory.  This is useful in environments
+             like servlet containers, which implement application reloading by
+             throwing away a ClassLoader.  Dangling references to objects in that
+             class loader would prevent garbage collection.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.RemoveAttribute(System.String)">
+            <summary>
+             Remove any configuration attribute associated with the specified name.
+             If there is no such attribute, no action is taken.
+            
+            </summary>
+             <param name="name">Name of the attribute to remove</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.SetAttribute(System.String,System.Object)">
+            <summary>
+             Set the configuration attribute with the specified name.  Calling
+             this with a <code>null</code> value is equivalent to calling
+             <code>removeAttribute(name)</code>.
+            </summary>
+             <param name="name">Name of the attribute to set</param> 
+             <param name="value">Value of the attribute to set, or <code>null</code>
+              to remove any setting for this attribute</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.GetLogClassName">
+            <summary>
+            Return the fully qualified Java classname of the {@link Log}
+            implementation we will be using.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.LogFactoryImpl.newInstance(System.String)">
+            <summary>
+             Create and return a new <see cref="T:Dotnet.Commons.Logging.ILog"/>
+             instance for the specified name.		
+            </summary>
+             <param name="name">Name of the new logger be created</param>
+             <exception cref="T:Dotnet.Commons.Logging.LogConfigurationException">if a new instance cannot</exception> 
+        </member>
+        <member name="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener">
+             <summary>
+             Directs tracing or debugging output to either the standard output or the standard error stream.
+             </summary>
+             <remarks>
+             Use the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> class
+             to write trace and debugging messages to the console. You can 
+             initialize a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> object 
+             to write trace messages to the <see cref="P:System.Console.Out"/> stream 
+             or to the <see cref="P:System.Console.Error"/> stream.
+             
+             When trace and debugging output is enabled, the 
+             <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+             messages are written to the specified <see cref="T:System.Console"/> stream, 
+             which is similar to the way messages are written with the 
+             <see cref="M:System.Console.Write(System.String)"/> or <see cref="M:System.Console.WriteLine(System.String)"/> methods.
+             In a console application, the System.Console output and error streams 
+             write messages to the existing console window, or you can redirect 
+             the streams to write to a <see cref="T:System.IO.TextWriter"/> instance.
+            
+             <strong>Note</strong> If the console does not exist, 
+             as in a Windows-based application, messages written to the console are not displayed.
+             Add a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/>
+             object to the appropriate <see cref="P:System.Diagnostics.Trace.Listeners"/> 
+             collection if you want all messages written through 
+             <see cref="T:System.Diagnostics.Trace"/> or 
+             <see cref="T:System.Diagnostics.Debug"/> to be written to the console. 
+             In addition, you can output messages directly to the console using the
+             <see cref="M:System.Diagnostics.Trace.Write(System.String)"/> or 
+             <see cref="M:System.Diagnostics.Trace.WriteLine(System.String)"/> methods on a 
+             specific <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/>
+             instance.
+            
+            <b>Note</b> The <see cref="T:System.Diagnostics.Debug"/> and 
+             <see cref="T:System.Diagnostics.Trace"/> classes share the same 
+             Listeners collection. If you add a 
+             <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+             object to the collection in one of these classes, the other class 
+             automatically uses the same listener.
+            
+             Most compilers enable trace and debug output through conditional 
+             compilation flags. If you do not enable tracing or debugging, 
+             the messages written through the <see cref="T:System.Diagnostics.Debug"/> 
+             and <see cref="T:System.Diagnostics.Trace"/> classes are effectively 
+             ignored. The syntax to enable trace and debug output is compiler 
+             specific; if you use compilers other than C# or Visual Basic, 
+             refer to the documentation for your compiler.
+            
+             <ul>
+            		<li>To enable debugging in C#, add the <c>/d:DEBUG</c> flag to the 
+            		    compiler command line when you compile your code, 
+            		    or you can add <code>#define DEBUG</code> to the top of your file. In Visual Basic, add the /d:DEBUG=True flag to the compiler command line.</li>
+            		    
+            		<li>To enable tracing in C#, add the <c>/d:TRACE</c> flag to the 
+            		compiler command line when you compile your code, or add 
+            		<c>#define TRACE</c> to the top of your file. In Visual Basic, 
+            		add the /d:TRACE=True flag to the compiler command line.</li>
+            		
+            	</ul>
+            	
+            	You can add a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> object to the 
+            	<see cref="P:System.Diagnostics.Trace.Listeners"/> collection in your code, or you 
+            	can add a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> object to the 
+            	<see cref="P:System.Diagnostics.Trace.Listeners"/> collection through the application 
+            	configuration file. Add the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+            	object in your code to write messages for a specific code section or 
+            	execution path. Add the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+            	object in your application configuration file to direct all trace and
+            	debug messages to the console while the application executes.
+            	
+            	To write trace and debug messages to the console for a specific 
+            	section of code, initialize a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+            	object and add it to the <see cref="P:System.Diagnostics.Trace.Listeners"/> collection. 
+            	Instrument the section of code that contains messages using the 
+            	<see cref="T:System.Diagnostics.Trace"/> or 
+            	<see cref="T:System.Diagnostics.Debug"/> classes. At the end of the 
+            	code section, remove the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+            	object from the <see cref="P:System.Diagnostics.Trace.Listeners"/> collection,
+            	and call the <see cref="M:System.Diagnostics.TextWriterTraceListener.Close"/> method
+            	on the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/>.
+            	
+             To direct all trace and debug messages to the console while the 
+             application executes, add a <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+             object to the application configuration file. Edit the configuration 
+             file that corresponds to the name of your application, or the 
+             <code>app.config</code> file within a Visual Studio .Net project. W
+             ithin this file, insert an element for a 
+             <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/>.
+            
+             For details about adding trace listeners in the application 
+             configuration file, 
+             see the 
+             <code><![CDATA[    <listeners> 	 ]]></code> Element topic.
+             </remarks>			
+             
+             <example>
+             The following example adds a 
+             <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> 
+             object named configConsoleListener to the <see cref="P:System.Diagnostics.Trace.Listeners"/>
+             collection.	
+             <code>
+             	<configuration>
+            			<system.diagnostics>
+            				<trace autoflush="false" indentsize="4">
+            					<listeners>
+            						<add name="ConsoleDebugListener" type="Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener,Dotnet.Commons.Logging"/>
+            					</listeners>
+            				</trace>
+            			</system.diagnostics>
+            		</configuration>
+             </code>
+             </example>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> class with trace output written to the
+            standard output stream or the standard error stream.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Dotnet.Commons.Logging.TraceListeners.ConsoleTraceListener"/> class with trace output written to the
+            standard output stream or the standard error stream.
+            </summary>
+            <param name="useErrorStream"></param>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Utils.LoggerUtils">
+            <summary>
+            Logger Utility.
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Utils.LoggerUtils.ConvertLevelToString(Dotnet.Commons.Logging.Impl.LogLevel)">
+            <summary>
+            Convert log level to string
+            </summary>
+            <param name="logLevel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Utils.LoggerUtils.ConvertStringToLevel(System.String)">
+            <summary>
+            Convert a string to the corresponding Log Level.
+            </summary>
+            <param name="slogLevel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Utils.LoggerUtils.GetLogLevelNames">
+            <summary>
+            Return an array of the names of the logging level supported in
+            Dotnet.Commons.Logging. <see cref="T:Dotnet.Commons.Logging.Impl.LogLevel"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Utils.LoggerUtils.GetLogLevel(Dotnet.Commons.Logging.ILog)">
+            <summary>
+            Get the current LogLevel set in the logger
+            </summary>
+            <param name="logger"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.Impl.SimpleLogger">
+            ======================================================================================== 
+            <summary>
+            Class: SimpleLogger
+            
+            Implementation of <see cref="T:Dotnet.Commons.Logging.ILog"/>. 
+            
+            Simple implementation of Log that sends all enabled log messages to a log file,
+            Output Debug, and System.Console.Error. 
+            
+            
+            This SimpleLogger can be configured by adding the following settings in the application config
+            file (eg. App.config, Web.Config, etc)
+            
+            for example:
+            <code>
+            
+               <appSetting>
+            		<add key="Dotnet.Commons.Logging.SimpleLogger.Level" value="INFO"/>
+            		<add key="Dotnet.Commons.Logging.SimpleLogger.LogDirectory" value="D:\\MyApplication\\LogDir\\"/>
+            		<add key="Dotnet.Commons.Logging.SimpleLogger.Filename" value="MyApplication.Log.txt"/>
+            		<add key="Dotnet.Commons.Logging.SimpleLogger.OutputDebug" value="true"/>
+            		<add key="Dotnet.Commons.Logging.SimpleLogger.ConsoleOutput" value="true"/>
+               </appSetting>
+            </code>
+            
+            </summary>
+            
+            <remarks> 
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                03/02/2005 – Edward Lim – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>  
+            ========================================================================================
+            
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLogger.APP_KEY_LOG_LEVEL">
+            <summary>AppSetting Key to set the logging level</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLogger.APP_KEY_LOG_DIR">
+            <summary>AppSetting Key to set the logging directory </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLogger.APP_KEY_LOG_FILENAME">
+            <summary>AppSetting Key to set the log filename</summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLogger.APP_KEY_LOG_OUTPUTDEBUG">
+            <summary>AppSetting Key to set if the log messages are to be sent to the OutputDebug </summary>
+        </member>
+        <member name="F:Dotnet.Commons.Logging.Impl.SimpleLogger.APP_KEY_LOG_CONSOLEOUTPUT">
+            <summary>AppSetting Key to set the log messages are to be sent to the console stdout or stderr</summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.#ctor(System.String)">
+            <summary>
+            Default Constructor
+            </summary>
+            <param name="className"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Trace(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>TRACE</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Trace(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>TRACE</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Debug(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>DEBUG</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Debug(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>DEBUG</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Info(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>INFO</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Info(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>INFO</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Warn(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>WARN</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Warn(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>WARN</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Error(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>ERROR</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Error(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>ERROR</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Fatal(System.Object)">
+            <summary>
+            Log a message to the Logger with <code>FATAL</code> priority.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Fatal(System.Object,System.Exception)">
+            <summary>
+            Log a message to the Logger with <code>FATAL</code> priority.
+            </summary>
+            <param name="message">message to log</param>
+            <param name="ex">exception to log</param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.Performance(System.Object)">
+            <summary>
+            Log a performance message to the Logger.
+            </summary>
+            <param name="message">message to log</param>		
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.SetLogLevel(Dotnet.Commons.Logging.Impl.LogLevel)">
+            <summary>
+            Explicit set the Log (Threshold) level.
+            </summary>
+            <param name="newLogLevel"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.LogPerformance(System.Object)">
+            <summary>
+            Log Performance message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.log(Dotnet.Commons.Logging.Impl.LogLevel,System.Object)">
+            <summary>
+            Add to the log output
+            </summary>
+            <param name="logtype"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.log(Dotnet.Commons.Logging.Impl.LogLevel,System.Object,System.Exception,System.Boolean)">
+            <summary>
+            Add to the log output
+            </summary>
+            <param name="logtype">Log level type</param>
+            <param name="message">message to log</param>
+            <param name="e">exception object</param>
+            <param name="isPerformance">flag to indicate if the logging is for performance logging </param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.isLevelEnabled(Dotnet.Commons.Logging.Impl.LogLevel)">
+            <summary>
+            Determine if a level is enabled
+            </summary>
+            <param name="logLevel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.writelog(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.openFile">
+            <summary>
+            Open the log file for writing
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.closeFile">
+            <summary>
+            Close the file
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.configure">
+            <summary>
+            Config the logger
+            </summary>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.Impl.SimpleLogger.OutputDebugString(System.String)">
+            <summary>
+            Stub for OutputDebugString native mathod
+            </summary>
+            <param name="lpOutputString">the string to output</param>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsLogOff">
+            <summary>
+            Property to indicate if the logging is turned off
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsTraceEnabled">
+            <summary>
+            Flag to determine if the TRACE priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsDebugEnabled">
+            <summary>
+            Flag to determine if the DEBUG priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsInfoEnabled">
+            <summary>
+            Flag to determine if the INFO priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsWarnEnabled">
+            <summary>
+            Flag to determine if the WARN priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsErrorEnabled">
+            <summary>
+            Flag to determine if the ERROR priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsFatalEnabled">
+            <summary>
+            Flag to determine if the FATAL priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.IsPerformanceEnabled">
+            <summary>
+            Flag to determine if the PERFORMANCE priorty is set
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.CurrentLogLevel">
+            <summary>
+            Property to get and set the current LogLevel set in the logger
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.LogDirectory">
+            <summary>
+            Property to get and set the directory where the log file will 
+            be written to
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.CopyToOutputDebugString">
+            <summary>
+            Property to get and set the flag to inidicate if the log
+            messages are to be sent to the OutputDebug
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.ConsoleOutput">
+            <summary>
+            Property to get and set the flag to indicate if the log
+            messages are to be sent to the Console stdout/stderr.
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.FileName">
+            <summary>
+            Property to get and set the log filename
+            </summary>
+        </member>
+        <member name="P:Dotnet.Commons.Logging.Impl.SimpleLogger.LogThresholdLevel">
+            <summary>
+            Property to get and set the log threshold leve.
+            </summary>
+        </member>
+        <member name="T:Dotnet.Commons.Logging.TraceListeners.RollOverTextWriterTraceListener">
+            ======================================================================================== 
+            <summary>
+            Class: RollOverTextWriterTraceListener
+            
+            a Text Writer Trace listener class that rolls over the log file based on date. The filename of the log file created will be appended with the date in the format of yyyymmdd.
+            </summary>	
+            <remarks> 
+            This class has been taken from 
+            http://weblogs.asp.net/davebost/archive/2004/04/30/124224.aspx
+            
+             Class History:
+             <list type="bullet">
+              <item>
+               <description>
+                22/08/2005 – Edward – Initial Version
+               </description> 
+              </item>
+             </list>
+            </remarks>
+            ========================================================================================    
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.RollOverTextWriterTraceListener.#ctor(System.String)">
+            <summary>
+            Constuctor.
+            </summary>
+            <param name="fileName"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.RollOverTextWriterTraceListener.Write(System.String)">
+            <summary>
+            Overriden. <see cref="M:System.Diagnostics.TraceListener.Write(System.String)"/>
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.RollOverTextWriterTraceListener.WriteLine(System.String)">
+            <summary>
+            Overriden. <see cref="M:System.Diagnostics.TraceListener.Write(System.String)"/>
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Dotnet.Commons.Logging.TraceListeners.RollOverTextWriterTraceListener.Dispose(System.Boolean)">
+            <summary>
+            Cleanup managed resources.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+    </members>
+</doc>

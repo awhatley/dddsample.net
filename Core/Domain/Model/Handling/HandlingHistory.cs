@@ -101,7 +101,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         public HandlingEvent mostRecentlyCompletedEvent()
         {
             var distinctEvents = distinctEventsByCompletionTime();
-            if(distinctEvents.Any())
+            if(!distinctEvents.Any())
             {
                 return null;
             }
@@ -118,7 +118,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         public HandlingEvent mostRecentPhysicalHandling()
         {
             var loadsAndUnloads = physicalHandlingEvents(distinctEventsByCompletionTime());
-            if(loadsAndUnloads.Any())
+            if(!loadsAndUnloads.Any())
             {
                 return null;
             }

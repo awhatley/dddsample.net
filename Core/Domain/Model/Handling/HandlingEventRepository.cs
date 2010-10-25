@@ -18,7 +18,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         /// Stores a (new) handling event.
         /// </summary>
         /// <param name="event">event handling event to save</param>
-        void Store(HandlingEvent @event);
+        void store(HandlingEvent @event);
 
         /// <summary>
         /// Looks up the handling history of a cargo.
