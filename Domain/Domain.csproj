@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{15FDCE50-E58A-4788-979C-62B6B233294A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DomainDrivenDelivery.Domain</RootNamespace>
+    <AssemblyName>DomainDrivenDelivery.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DomainDrivenDelivery.Domain.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DomainDrivenDelivery.Domain.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\Frieght\Cargo.cs" />
+    <Compile Include="Model\Frieght\CargoRepository.cs" />
+    <Compile Include="Model\Frieght\Delivery.cs" />
+    <Compile Include="Model\Frieght\Itinerary.cs" />
+    <Compile Include="Model\Frieght\Leg.cs" />
+    <Compile Include="Model\Frieght\LegActivityMatch.cs" />
+    <Compile Include="Model\Frieght\RouteSpecification.cs" />
+    <Compile Include="Model\Frieght\RoutingStatus.cs" />
+    <Compile Include="Model\Frieght\TrackingId.cs" />
+    <Compile Include="Model\Frieght\TrackingIdFactory.cs" />
+    <Compile Include="Model\Frieght\TransportStatus.cs" />
+    <Compile Include="Model\Handling\CannotCreateHandlingEventException.cs" />
+    <Compile Include="Model\Handling\EventSequenceNumber.cs" />
+    <Compile Include="Model\Handling\HandlingEvent.cs" />
+    <Compile Include="Model\Handling\HandlingEventFactory.cs" />
+    <Compile Include="Model\Handling\HandlingEventRepository.cs" />
+    <Compile Include="Model\Handling\HandlingHistory.cs" />
+    <Compile Include="Model\Handling\OperatorCode.cs" />
+    <Compile Include="Model\Handling\UnknownCargoException.cs" />
+    <Compile Include="Model\Handling\UnknownLocationException.cs" />
+    <Compile Include="Model\Handling\UnknownVoyageException.cs" />
+    <Compile Include="Model\Locations\CustomsZone.cs" />
+    <Compile Include="Model\Locations\Location.cs" />
+    <Compile Include="Model\Locations\LocationRepository.cs" />
+    <Compile Include="Model\Locations\SampleLocations.cs" />
+    <Compile Include="Model\Locations\UnLocode.cs" />
+    <Compile Include="Model\Shared\HandlingActivity.cs" />
+    <Compile Include="Model\Shared\HandlingActivityType.cs" />
+    <Compile Include="Model\Travel\CarrierMovement.cs" />
+    <Compile Include="Model\Travel\SampleVoyages.cs" />
+    <Compile Include="Model\Travel\Schedule.cs" />
+    <Compile Include="Model\Travel\Voyage.cs" />
+    <Compile Include="Model\Travel\VoyageNumber.cs" />
+    <Compile Include="Model\Travel\VoyageRepository.cs" />
+    <Compile Include="Patterns\DomainEvent\DomainEvent.cs" />
+    <Compile Include="Patterns\Entity\Entity.cs" />
+    <Compile Include="Patterns\Entity\EntitySupport.cs" />
+    <Compile Include="Patterns\Specification\AbstractSpecification.cs" />
+    <Compile Include="Patterns\Specification\AlwaysFalseSpec.cs" />
+    <Compile Include="Patterns\Specification\AlwaysTrueSpec.cs" />
+    <Compile Include="Patterns\Specification\AndSpecification.cs" />
+    <Compile Include="Patterns\Specification\NotSpecification.cs" />
+    <Compile Include="Patterns\Specification\OrSpecification.cs" />
+    <Compile Include="Patterns\Specification\Specification.cs" />
+    <Compile Include="Patterns\ValueObject\ValueObject.cs" />
+    <Compile Include="Patterns\ValueObject\ValueObjectSupport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\RoutingService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{DBF5AF65-DE7A-4BA0-AD0D-C4F163A8A894}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
