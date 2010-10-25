@@ -33,6 +33,27 @@
     <DocumentationFile>bin\Release\DomainDrivenDelivery.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Apache.NMS">
+      <HintPath>..\References\Apache.NMS.dll</HintPath>
+    </Reference>
+    <Reference Include="Dotnet.Commons.Logging">
+      <HintPath>..\References\Dotnet.Commons.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\References\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\References\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data">
+      <HintPath>..\References\Spring.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data.NHibernate21">
+      <HintPath>..\References\Spring.Data.NHibernate21.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Messaging.Nms">
+      <HintPath>..\References\Spring.Messaging.Nms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +63,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\Booking\BookingService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Application\Booking\BookingServiceImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Application\Event\CargoUpdater.cs" />
+    <Compile Include="Application\Event\ItineraryUpdater.cs" />
+    <Compile Include="Application\Event\MisdirectedNotifier.cs" />
+    <Compile Include="Application\Event\ReadyToClaimNotifier.cs" />
+    <Compile Include="Application\Event\SystemEvents.cs" />
+    <Compile Include="Application\Handling\HandlingEventService.cs" />
+    <Compile Include="Application\Handling\HandlingEventServiceImpl.cs" />
+    <Compile Include="Application\Utilities\SampleDataGenerator.cs" />
     <Compile Include="Domain\Model\Frieght\Cargo.cs" />
     <Compile Include="Domain\Model\Frieght\Delivery.cs" />
     <Compile Include="Domain\Model\Frieght\CargoRepository.cs" />
@@ -92,10 +127,21 @@
     <Compile Include="Domain\Patterns\ValueObject\ValueObject.cs" />
     <Compile Include="Domain\Patterns\ValueObject\ValueObjectSupport.cs" />
     <Compile Include="Domain\Services\RoutingService.cs" />
+    <Compile Include="Infrastructure\Messaging.Nms\NmsSystemEventsImpl.cs" />
+    <Compile Include="Infrastructure\Persistence\InMemory\CargoRepositoryInMem.cs" />
+    <Compile Include="Infrastructure\Persistence\InMemory\HandlingEventRepositoryInMem.cs" />
+    <Compile Include="Infrastructure\Persistence\InMemory\LocationRepositoryInMem.cs" />
+    <Compile Include="Infrastructure\Persistence\InMemory\TrackingIdFactoryInMem.cs" />
+    <Compile Include="Infrastructure\Persistence\InMemory\VoyageRepositoryInMem.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\CargoPostLoadEventListener.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\CargoRepositoryNHibernate.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\DatabaseTrackingIdFactory.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\HandlingEventRepositoryNHibernate.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\LocationRepositoryNHibernate.cs" />
+    <Compile Include="Infrastructure\Persistence\NHibernate\VoyageRepositoryNHibernate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Infrastructure\" />
     <Folder Include="Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
