@@ -33,11 +33,19 @@
     <DocumentationFile>bin\Release\DomainDrivenDelivery.Interfaces.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dotnet.Commons.Logging, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Quartz">
+      <HintPath>..\References\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="Spring.Core">
       <HintPath>..\References\Spring.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Spring.Scheduling.Quartz">
+      <HintPath>..\References\Spring.Scheduling.Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,9 +55,16 @@
   <ItemGroup>
     <Compile Include="Booking\Facade\BookingServiceFacadeImpl.cs" />
     <Compile Include="Booking\Facade\DTOAssembler.cs" />
+    <Compile Include="Handling\Files\UploadDirectoryScanner.cs" />
+    <Compile Include="Handling\HandlingReportParser.cs" />
+    <Compile Include="Handling\WebService\HandlingReportWebService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Aggregator\Aggregator.csproj">
+      <Project>{15D8E5E2-8A1F-4165-B90A-DD913D1C69AF}</Project>
+      <Name>Aggregator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Application\Application.csproj">
       <Project>{3C1BF24E-0B86-46C5-8296-235A3DC2B9C2}</Project>
       <Name>Application</Name>
@@ -62,7 +77,12 @@
       <Project>{15FDCE50-E58A-4788-979C-62B6B233294A}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{DBF5AF65-DE7A-4BA0-AD0D-C4F163A8A894}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
