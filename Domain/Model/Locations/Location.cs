@@ -1,6 +1,5 @@
 ﻿using System;
 
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.Entity;
 using DomainDrivenDelivery.Utilities;
 
@@ -24,7 +23,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
         /// Special Location object that marks an unknown location.
         /// </summary>
         public static readonly Location NONE = new Location(
-            new UnLocode("XXXXX"), "-", TimeZoneInfo.FindSystemTimeZoneById("Zulu"), null
+            new UnLocode("XXXXX"), "-", TimeZoneInfo.FindSystemTimeZoneById("UTC"), null
         );
 
         internal Location(UnLocode unLocode, String name, TimeZoneInfo timeZone, CustomsZone customsZone)

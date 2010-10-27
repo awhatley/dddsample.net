@@ -9,13 +9,13 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
     /// </summary>
     public static class SampleLocations
     {
-        private static readonly TimeZoneInfo CHINA = TimeZoneInfo.FindSystemTimeZoneById("Asia/Shanghai");
-        private static readonly TimeZoneInfo CENTRAL_EUROPE = TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm");
-        private static readonly TimeZoneInfo JAPAN = TimeZoneInfo.FindSystemTimeZoneById("Asia/Tokyo");
-        private static readonly TimeZoneInfo EASTERN = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        private static readonly TimeZoneInfo CENTRAL = TimeZoneInfo.FindSystemTimeZoneById("America/Chicago");
-        private static readonly TimeZoneInfo PACIFIC = TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
-        private static readonly TimeZoneInfo EASTERN_AUSTRALIA = TimeZoneInfo.FindSystemTimeZoneById("Australia/Melbourne");
+        private static readonly TimeZoneInfo CHINA = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time");
+        private static readonly TimeZoneInfo CENTRAL_EUROPE = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+        private static readonly TimeZoneInfo JAPAN = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+        private static readonly TimeZoneInfo EASTERN = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        private static readonly TimeZoneInfo CENTRAL = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+        private static readonly TimeZoneInfo PACIFIC = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        private static readonly TimeZoneInfo EASTERN_AUSTRALIA = TimeZoneInfo.FindSystemTimeZoneById("AUS Eastern Standard Time");
 
         public static readonly CustomsZone US = new CustomsZone("US", "United States");
         public static readonly CustomsZone EU = new CustomsZone("EU", "European Union");
