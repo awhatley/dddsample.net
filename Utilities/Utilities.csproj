@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder.cs" />
     <Compile Include="EqualsBuilder.cs" />
     <Compile Include="HashCodeBuilder.cs" />
+    <Compile Include="IDKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToStringBuilder.cs" />
     <Compile Include="ToStringStyle.cs" />
