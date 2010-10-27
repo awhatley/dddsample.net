@@ -1,43 +1,67 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainDrivenDelivery.Utilities
 {
     public static class Validate
     {
-        public static void notNull(object obj, string message)
+        public static void notNull<T>(T obj, string message)
+            where T : class 
         {
-            throw new NotImplementedException();
+            if(obj == null)
+                throw new ArgumentNullException(null, message);            
         }
 
         public static void isTrue(bool condition, string message)
         {
-            throw new NotImplementedException();
+            if(!condition)
+                throw new ArgumentException(message);
         }
 
-        public static void notNull(object obj)
+        public static void notNull<T>(T obj)
+            where T : class
         {
-            throw new NotImplementedException();
+            if(obj == null)
+                throw new ArgumentNullException();
         }
 
-        public static void notEmpty(IEnumerable collection)
+        public static void notEmpty<T>(IEnumerable<T> collection)
         {
-            throw new NotImplementedException();
+            if(collection == null)
+                throw new ArgumentNullException();
+
+            if(!collection.Any())
+                throw new ArgumentException();
         }
 
-        public static void notEmpty(IEnumerable collection, string message)
+        public static void notEmpty<T>(IEnumerable<T> collection, string message)
         {
-            throw new NotImplementedException();
+            if(collection == null)
+                throw new ArgumentNullException(null, message);
+
+            if(!collection.Any())
+                throw new ArgumentException(message);
         }
 
-        public static void noNullElements(IEnumerable collection)
+        public static void noNullElements<T>(IEnumerable<T> collection)
+            where T : class
         {
-            throw new NotImplementedException();
+            if(collection == null)
+                throw new ArgumentNullException();
+
+            if(collection.Any(x => x == null))
+                throw new ArgumentNullException();
         }
 
-        public static void noNullElements(IEnumerable collection, string message)
+        public static void noNullElements<T>(IEnumerable<T> collection, string message)
+            where T : class
         {
-            throw new NotImplementedException();
+            if(collection == null)
+                throw new ArgumentNullException(null, message);
+
+            if(collection.Any(x => x == null))
+                throw new ArgumentNullException(null, message);
         }
     }
 }

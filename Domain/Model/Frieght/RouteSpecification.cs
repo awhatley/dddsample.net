@@ -34,7 +34,6 @@ namespace DomainDrivenDelivery.Domain.Model.Frieght
         {
             Validate.notNull(origin, "Origin is required");
             Validate.notNull(destination, "Destination is required");
-            Validate.notNull(arrivalDeadline, "Arrival deadline is required");
             Validate.isTrue(!origin.sameAs(destination), "Origin and destination can't be the same: " + origin);
 
             this._origin = origin;

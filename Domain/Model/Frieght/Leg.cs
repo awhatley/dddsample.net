@@ -27,8 +27,6 @@ namespace DomainDrivenDelivery.Domain.Model.Frieght
             Validate.notNull(voyage, "Voyage is required");
             Validate.notNull(loadLocation, "Load location is required");
             Validate.notNull(unloadLocation, "Unload location is required");
-            Validate.notNull(loadTime, "Load time is required");
-            Validate.notNull(unloadTime, "Unload time is required");
             Validate.isTrue(!loadLocation.sameAs(unloadLocation), "Load location can't be the same as unload location");
             // TODO enable this
             //Validate.isTrue(unloadTime.after(loadTime));

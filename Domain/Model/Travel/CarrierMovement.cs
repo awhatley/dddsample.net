@@ -31,8 +31,6 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         {
             Validate.notNull(departureLocation, "Departure location is required");
             Validate.notNull(arrivalLocation, "Arrival location is required");
-            Validate.notNull(departureTime, "Departure time is required");
-            Validate.notNull(arrivalTime, "Arrival time is required");
             Validate.isTrue(arrivalTime > departureTime, "Arrival time must be after departure time");
             Validate.isTrue(!departureLocation.sameAs(arrivalLocation), "Departure location can't be the same as the arrival location");
 

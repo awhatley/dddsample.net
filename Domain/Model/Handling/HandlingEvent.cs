@@ -55,9 +55,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
                       OperatorCode operatorCode)
         {
             Validate.notNull(cargo, "Cargo is required");
-            Validate.notNull(completionTime, "Completion time is required");
-            Validate.notNull(registrationTime, "Registration time is required");
-            Validate.notNull(type, "Handling event type is required");
             Validate.notNull(location, "Location is required");
             Validate.notNull(voyage, "Voyage is required");
             Validate.notNull(operatorCode, "Operator code is required");
@@ -91,9 +88,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         {
             // TODO: make internal
             Validate.notNull(cargo, "Cargo is required");
-            Validate.notNull(completionTime, "Completion time is required");
-            Validate.notNull(registrationTime, "Registration time is required");
-            Validate.notNull(type, "Handling event type is required");
             Validate.notNull(location, "Location is required");
 
             if(type.isVoyageRelated())

@@ -20,7 +20,6 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
 
         public HandlingActivity(HandlingActivityType type, Location location)
         {
-            Validate.notNull(type, "Handling event type is required");
             Validate.notNull(location, "Location is required");
 
             this._type = type;
@@ -30,7 +29,6 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
 
         public HandlingActivity(HandlingActivityType type, Location location, Voyage voyage)
         {
-            Validate.notNull(type, "Handling event type is required");
             Validate.notNull(location, "Location is required");
             Validate.notNull(voyage, "Voyage is required");
 
