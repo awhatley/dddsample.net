@@ -104,9 +104,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
 
         static SampleVoyages()
         {
-            foreach(FieldInfo field in typeof(SampleVoyages).GetFields())
+            foreach(FieldInfo field in typeof(SampleVoyages).GetFields(BindingFlags.Static | BindingFlags.Public))
             {
-                if(field.GetType().Equals(typeof(Voyage)))
+                if(field.FieldType.Equals(typeof(Voyage)))
                 {
                     Voyage voyage = (Voyage)field.GetValue(null);
                     ALL.Add(voyage.voyageNumber(), voyage);

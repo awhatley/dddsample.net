@@ -49,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Booking\BookingServiceTest.cs" />
+    <Compile Include="Event\CargoUpdaterTest.cs" />
+    <Compile Include="Event\ItineraryUpdaterTest.cs" />
+    <Compile Include="Handling\HandlingEventServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +62,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{15FDCE50-E58A-4788-979C-62B6B233294A}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{956A6997-2FEC-4D68-A9EA-E2A846F21767}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

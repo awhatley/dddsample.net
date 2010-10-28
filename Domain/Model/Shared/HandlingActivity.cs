@@ -1,5 +1,4 @@
-﻿using DomainDrivenDelivery.Domain.Model.Frieght;
-using DomainDrivenDelivery.Domain.Model.Locations;
+﻿using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Travel;
 using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
