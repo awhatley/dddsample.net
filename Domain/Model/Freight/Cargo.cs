@@ -364,7 +364,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             return _trackingId + " (" + _routeSpecification + ")";
         }
 
-        Cargo()
+        internal Cargo()
         {
             // Needed by Hibernate
             _trackingId = null;

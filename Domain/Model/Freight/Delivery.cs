@@ -168,7 +168,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// When this delivery was calculated.
         /// </summary>
         /// <returns>When this delivery was calculated.</returns>
-        DateTime lastUpdatedOn()
+        internal DateTime lastUpdatedOn()
         {
             return _lastUpdatedOn;
         }
@@ -191,7 +191,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
               mostRecentHandlingActivity().type() == HandlingActivityType.UNLOAD;
         }
 
-        Delivery()
+        internal Delivery()
         {
             // Needed by Hibernate
             _mostRecentHandlingActivity = _mostRecentPhysicalHandlingActivity = null;
