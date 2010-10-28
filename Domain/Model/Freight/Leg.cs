@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Shared;
 using DomainDrivenDelivery.Domain.Model.Travel;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// An itinerary consists of one or more legs.

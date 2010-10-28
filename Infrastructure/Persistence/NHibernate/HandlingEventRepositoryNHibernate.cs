@@ -1,6 +1,6 @@
 using System.Linq;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Handling;
 
 using NHibernate;

@@ -4,7 +4,7 @@ using System.Linq;
 using DomainDrivenDelivery.Domain.Model.Shared;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     public class LegActivityMatch : ValueObjectSupport<LegActivityMatch>, IComparable<LegActivityMatch>
     {

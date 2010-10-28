@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Travel;
 using DomainDrivenDelivery.Domain.Services;

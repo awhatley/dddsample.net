@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Travel;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
@@ -38,7 +38,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 
         public void store(Cargo cargo)
         {
-            cargoDb.Add(cargo.trackingId(), cargo);
+            cargoDb[cargo.trackingId()] = cargo;
         }
 
         public IEnumerable<Cargo> findAll()

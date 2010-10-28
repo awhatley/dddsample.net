@@ -1,4 +1,4 @@
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 
 using Dotnet.Commons.Logging;
 

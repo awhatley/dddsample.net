@@ -1,6 +1,6 @@
 using System.Threading;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 {

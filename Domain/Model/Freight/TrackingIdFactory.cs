@@ -1,4 +1,4 @@
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// Generates tracking ids for cargo. This is a domain service.

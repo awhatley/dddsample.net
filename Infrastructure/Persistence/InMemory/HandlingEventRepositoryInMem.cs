@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Handling;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
@@ -31,12 +31,9 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
         public void store(HandlingEvent @event)
         {
             var trackingId = @event.cargo().trackingId();
-            var list = eventMap[trackingId];
-            if(eventMap.ContainsKey(trackingId) == false)
-            {
-                list = new List<HandlingEvent>();
-                eventMap[trackingId] = list;
-            }
+            List<HandlingEvent> list;
+            if(eventMap.TryGetValue(trackingId, out list) == false)
+                eventMap[trackingId] = list = new List<HandlingEvent>();
 
             list.Add(@event);
         }

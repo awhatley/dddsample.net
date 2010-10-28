@@ -1,7 +1,7 @@
 using Apache.NMS;
 
 using DomainDrivenDelivery.Application.Event;
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Handling;
 
 using Spring.Messaging.Nms.Core;

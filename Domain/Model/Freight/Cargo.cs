@@ -6,7 +6,7 @@ using DomainDrivenDelivery.Domain.Model.Travel;
 using DomainDrivenDelivery.Domain.Patterns.Entity;
 using DomainDrivenDelivery.Utilities;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// A Cargo. This is the central class in the domain model,

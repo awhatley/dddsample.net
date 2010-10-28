@@ -6,7 +6,7 @@ using DomainDrivenDelivery.Domain.Model.Travel;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// Everything about the delivery of the cargo, i.e. where the cargo is

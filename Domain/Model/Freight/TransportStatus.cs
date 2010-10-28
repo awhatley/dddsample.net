@@ -1,6 +1,6 @@
 ﻿using DomainDrivenDelivery.Domain.Model.Shared;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     public enum TransportStatus
     {

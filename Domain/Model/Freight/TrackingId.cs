@@ -1,10 +1,9 @@
 ﻿using System;
 
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     [Serializable]
     public sealed class TrackingId : ValueObjectSupport<TrackingId>

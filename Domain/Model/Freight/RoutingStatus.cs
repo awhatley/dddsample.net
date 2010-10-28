@@ -1,8 +1,6 @@
-﻿using System;
+﻿using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 
-using DomainDrivenDelivery.Domain.Patterns.ValueObject;
-
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// The different routing statuses of a cargo.

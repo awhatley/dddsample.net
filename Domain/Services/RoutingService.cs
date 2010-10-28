@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 
 namespace DomainDrivenDelivery.Domain.Services
 {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 
 using DomainDrivenDelivery.Application.Booking;
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Services;
 using L = DomainDrivenDelivery.Domain.Model.Locations.SampleLocations;

@@ -1,4 +1,4 @@
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 
 using NHibernate;
 

@@ -42,17 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Frieght\Cargo.cs" />
-    <Compile Include="Model\Frieght\CargoRepository.cs" />
-    <Compile Include="Model\Frieght\Delivery.cs" />
-    <Compile Include="Model\Frieght\Itinerary.cs" />
-    <Compile Include="Model\Frieght\Leg.cs" />
-    <Compile Include="Model\Frieght\LegActivityMatch.cs" />
-    <Compile Include="Model\Frieght\RouteSpecification.cs" />
-    <Compile Include="Model\Frieght\RoutingStatus.cs" />
-    <Compile Include="Model\Frieght\TrackingId.cs" />
-    <Compile Include="Model\Frieght\TrackingIdFactory.cs" />
-    <Compile Include="Model\Frieght\TransportStatus.cs" />
+    <Compile Include="Model\Freight\Cargo.cs" />
+    <Compile Include="Model\Freight\CargoRepository.cs" />
+    <Compile Include="Model\Freight\Delivery.cs" />
+    <Compile Include="Model\Freight\Itinerary.cs" />
+    <Compile Include="Model\Freight\Leg.cs" />
+    <Compile Include="Model\Freight\LegActivityMatch.cs" />
+    <Compile Include="Model\Freight\RouteSpecification.cs" />
+    <Compile Include="Model\Freight\RoutingStatus.cs" />
+    <Compile Include="Model\Freight\TrackingId.cs" />
+    <Compile Include="Model\Freight\TrackingIdFactory.cs" />
+    <Compile Include="Model\Freight\TransportStatus.cs" />
     <Compile Include="Model\Handling\CannotCreateHandlingEventException.cs" />
     <Compile Include="Model\Handling\EventSequenceNumber.cs" />
     <Compile Include="Model\Handling\HandlingEvent.cs" />

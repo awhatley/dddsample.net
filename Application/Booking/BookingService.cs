@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Locations;
 
 namespace DomainDrivenDelivery.Application.Booking

@@ -1,6 +1,6 @@
 using System;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Handling;
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Shared;

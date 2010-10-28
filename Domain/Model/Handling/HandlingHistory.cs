@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using DomainDrivenDelivery.Domain.Model.Frieght;
+using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Shared;
 using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;

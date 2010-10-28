@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using DomainDrivenDelivery.Domain.Model.Travel;
 
-namespace DomainDrivenDelivery.Domain.Model.Frieght
+namespace DomainDrivenDelivery.Domain.Model.Freight
 {
     /// <summary>
     /// Cargo repository.
