@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Shared;
@@ -26,9 +27,10 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             Validate.notNull(voyage, "Voyage is required");
             Validate.notNull(loadLocation, "Load location is required");
             Validate.notNull(unloadLocation, "Unload location is required");
+            Validate.isTrue(loadTime != DateTime.MinValue, "Unload time is required");
+            Validate.isTrue(unloadTime != DateTime.MinValue, "Unload time is required");
             Validate.isTrue(!loadLocation.sameAs(unloadLocation), "Load location can't be the same as unload location");
-            // TODO enable this
-            //Validate.isTrue(unloadTime.after(loadTime));
+            Validate.isTrue(unloadTime > loadTime, "Load time cannot be before unload time");
 
             this._voyage = voyage;
             this._loadLocation = loadLocation;
@@ -55,10 +57,11 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <returns>A leg on this voyage between the given locations.</returns>
         public static Leg deriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation)
         {
-            // TODO enable this (or perhaps the requirement for load/unlaod time covers this?)
-            //voyage.locations().contains(loadLocation);
-            //voyage.locations().contains(unloadLocation);
             Validate.notNull(voyage, "Voyage is required");
+            Validate.notNull(loadLocation, "Load location is required");
+            Validate.notNull(unloadLocation, "Unload location is required");
+            Validate.isTrue(voyage.locations().Contains(loadLocation), "Load location must be part of the voyage");
+            Validate.isTrue(voyage.locations().Contains(unloadLocation), "Unload location must be part of the voyage");
             return new Leg(voyage, loadLocation, unloadLocation, voyage.schedule().departureTimeAt(loadLocation),
                            voyage.schedule().arrivalTimeAt(unloadLocation));
         }
@@ -132,25 +135,12 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         public IEnumerable<Location> intermediateLocations()
         {
-            var locations = new List<Location>();
-            var it = _voyage.locations().GetEnumerator();
-
-            it.MoveNext();
-            var location = it.Current;
-            for(; it.MoveNext() && !_loadLocation.sameAs(location); )
-            {
-            }
-
-            it.MoveNext();
-            location = it.Current;
-            for(; it.MoveNext() && !_unloadLocation.sameAs(location); )
-            {
-                locations.Add(location);
-                it.MoveNext();
-                location = it.Current;
-            }
-
-            return locations.AsReadOnly();
+            return _voyage.locations()
+                .SkipWhile(l => !_loadLocation.sameAs(l))                
+                .Skip(1)
+                .TakeWhile(l => !_unloadLocation.sameAs(l))
+                .ToList()
+                .AsReadOnly();
         }
 
         public override string ToString()

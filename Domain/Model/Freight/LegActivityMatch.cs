@@ -80,8 +80,8 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         public int CompareTo(LegActivityMatch other)
         {
-            var thisLegIndex = _itinerary.legs().Where(l => l == this._leg).Select((l, i) => i).FirstOrDefault();
-            var otherLegIndex = _itinerary.legs().Where(l => l == other._leg).Select((l, i) => i).FirstOrDefault();
+            var thisLegIndex = _itinerary.legs().ToList().IndexOf(_leg);
+            var otherLegIndex = _itinerary.legs().ToList().IndexOf(other._leg);
 
             if(thisLegIndex.Equals(otherLegIndex))
             {

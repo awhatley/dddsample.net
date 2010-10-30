@@ -50,6 +50,11 @@
   <ItemGroup>
     <Compile Include="Model\Freight\CargoTest.cs" />
     <Compile Include="Model\Freight\DeliveryTest.cs" />
+    <Compile Include="Model\Freight\ItineraryTest.cs" />
+    <Compile Include="Model\Freight\LegActivityMatchTest.cs" />
+    <Compile Include="Model\Freight\LegTest.cs" />
+    <Compile Include="Model\Freight\RouteSpecificationTest.cs" />
+    <Compile Include="Model\Freight\TrackingIdTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

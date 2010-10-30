@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Patterns;
@@ -88,17 +89,12 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
 
         public IEnumerable<Location> locations()
         {
-            var locations = new List<Location>();
-            var it = _schedule.carrierMovements().GetEnumerator();
+            var locations = _schedule.carrierMovements()
+                .Select(cm => cm.departureLocation())
+                .ToList();
 
-            for(; it.MoveNext(); )
-            {
-                var carrierMovement = it.Current;
-                locations.Add(carrierMovement.departureLocation());
-            }
-
-            locations.Add(it.Current.arrivalLocation());
-
+            locations.Add(_schedule.carrierMovements().Last().arrivalLocation());
+               
             return locations.AsReadOnly();
         }
 
