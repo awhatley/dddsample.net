@@ -104,7 +104,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
             return _name;
         }
 
-        bool includes(Location location)
+        internal bool includes(Location location)
         {
             return this.sameValueAs(location.customsZone());
         }

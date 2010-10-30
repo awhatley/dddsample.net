@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
@@ -19,7 +18,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
 
         // Country code is exactly two letters.
         // Location code is usually three letters, but may contain the numbers 2-9 as well
-        private static readonly Regex VALID_PATTERN = new Regex("[a-zA-Z]{2}[a-zA-Z2-9]{3}", RegexOptions.Compiled);
+        private static readonly Regex VALID_PATTERN = new Regex("^[a-zA-Z]{2}[a-zA-Z2-9]{3}$", RegexOptions.Compiled);
 
         /// <summary>
         /// Constructor.

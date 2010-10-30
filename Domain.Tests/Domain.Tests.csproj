@@ -58,6 +58,14 @@
     <Compile Include="Model\Handling\HandlingEventFactoryTest.cs" />
     <Compile Include="Model\Handling\HandlingEventTest.cs" />
     <Compile Include="Model\Handling\HandlingHistoryTest.cs" />
+    <Compile Include="Model\Locations\CustomsZoneTest.cs" />
+    <Compile Include="Model\Locations\LocationTest.cs" />
+    <Compile Include="Model\Locations\UnLocodeTest.cs" />
+    <Compile Include="Model\Shared\HandlingActivityTest.cs" />
+    <Compile Include="Model\Travel\CarrierMovementTest.cs" />
+    <Compile Include="Model\Travel\ScheduleTest.cs" />
+    <Compile Include="Model\Travel\VoyageNumberTest.cs" />
+    <Compile Include="Model\Travel\VoyageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
