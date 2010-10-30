@@ -66,6 +66,13 @@
     <Compile Include="Model\Travel\ScheduleTest.cs" />
     <Compile Include="Model\Travel\VoyageNumberTest.cs" />
     <Compile Include="Model\Travel\VoyageTest.cs" />
+    <Compile Include="Patterns\Entity\EntitySupportTest.cs" />
+    <Compile Include="Patterns\Scenario\CargoLifecycle.cs" />
+    <Compile Include="Patterns\Scenario\VoyageRescheduledScenarioTest.cs" />
+    <Compile Include="Patterns\Specification\AndSpecificationTest.cs" />
+    <Compile Include="Patterns\Specification\NotSpecificationTest.cs" />
+    <Compile Include="Patterns\Specification\OrSpecificationTest.cs" />
+    <Compile Include="Patterns\ValueObject\ValueObjectSupportTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
