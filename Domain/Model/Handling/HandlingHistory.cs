@@ -70,9 +70,8 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         /// <returns>A distinct list (no duplicate registrations) of handling events, ordered by completion time.</returns>
         public IEnumerable<HandlingEvent> distinctEventsByCompletionTime()
         {
-            var ordered = new List<HandlingEvent>(
-              new HashSet<HandlingEvent>(_handlingEvents)
-            );
+            var set = new HashSet<HandlingEvent>(_handlingEvents);
+            var ordered = new List<HandlingEvent>(set);
             ordered.Sort(BY_COMPLETION_TIME_COMPARATOR);
             return ordered.AsReadOnly();
         }

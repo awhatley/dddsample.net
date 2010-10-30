@@ -21,11 +21,14 @@ namespace DomainDrivenDelivery.Utilities
             try
             {
                 REGISTRY.Value.Add(new IDKey(obj));
-                builder.append(type
+                var values = type
                     .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(field => excludedFields == null || !excludedFields.Contains(field.Name))
                     .Where(field => useTransients || !field.IsNotSerialized)
-                    .Select(field => field.GetValue(obj)));
+                    .Select(field => field.GetValue(obj));
+
+                foreach(var value in values)
+                    builder.append(value);
             }
 
             finally
@@ -34,33 +37,29 @@ namespace DomainDrivenDelivery.Utilities
             }
         }
 
-        public static int reflectionHashCode<T>(T obj)
-            where T : class 
+        public static int reflectionHashCode(object obj)
         {
             return reflectionHashCode(obj, true, null);
         }
 
-        public static int reflectionHashCode<T>(T obj, bool useTransients)
-            where T : class 
+        public static int reflectionHashCode(object obj, bool useTransients)
         {
             return reflectionHashCode(obj, useTransients, null);
         }
 
-        public static int reflectionHashCode<T>(T obj, IEnumerable<string> excludedFields)
-            where T : class 
+        public static int reflectionHashCode(object obj, IEnumerable<string> excludedFields)
         {
             return reflectionHashCode(obj, true, excludedFields);
         }
 
-        public static int reflectionHashCode<T>(T obj, bool useTransients, IEnumerable<string> excludedFields)
-            where T : class
+        public static int reflectionHashCode(object obj, bool useTransients, IEnumerable<string> excludedFields)
         {
             if(obj == null)
                 throw new ArgumentNullException("obj", "The object to build a hash code for must not be null");
 
             var builder = new HashCodeBuilder(17, 37);
 
-            for(var type = typeof(T); type != null && type != typeof(object); type = type.BaseType)
+            for(var type = obj.GetType(); type != null && type != typeof(object); type = type.BaseType)
                 reflectionAppend(obj, type, builder, useTransients, excludedFields);
 
             return builder.toHashCode();

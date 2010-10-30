@@ -159,6 +159,13 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
 
         public bool sameEventAs(HandlingEvent other)
         {
+            var equal = other != null &&
+                this.cargo().Equals(other.cargo()) &&
+                this.completionTime().Equals(other.completionTime()) &&
+                this.activity().Equals(other.activity());
+
+            return equal;
+
             return other != null && new EqualsBuilder().
               append(this._cargo, other._cargo).
               append(this._completionTime, other._completionTime).
@@ -168,11 +175,13 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
 
         public override int GetHashCode()
         {
-            return new HashCodeBuilder().
+            var hash = new HashCodeBuilder().
               append(_cargo).
               append(_completionTime).
               append(_activity).
               toHashCode();
+
+            return hash;
         }
 
         public override string ToString()

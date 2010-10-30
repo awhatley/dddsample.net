@@ -121,7 +121,7 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
 
         public static Voyage lookup(VoyageNumber voyageNumber)
         {
-            return ALL[voyageNumber];
+            return ALL.ContainsKey(voyageNumber) ? ALL[voyageNumber] : null;
         }
     }
 }
