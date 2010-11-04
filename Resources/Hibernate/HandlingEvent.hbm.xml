@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+  <class name="DomainDrivenDelivery.Domain.Model.Handling.HandlingEvent" table="HandlingEvent">
+    <id name="_id" column="id">
+      <generator class="NHibernate.Id.IdentityGenerator"/>
+    </id>
+    <component name="_sequenceNumber" update="false">
+      <property name="_value" column="sequence_number" not-null="true"/>
+    </component>
+    <many-to-one name="_cargo" column="cargo_id" not-null="true" cascade="none" foreign-key="cargo_fk"/>
+    <property name="_completionTime" column="completionTime" not-null="true"/>
+    <property name="_registrationTime" column="registrationTime" not-null="true"/>
+    <component name="_operatorCode" update="false">
+      <property name="_code" column="operator_code" not-null="false" length="5"/>
+    </component>
+    <many-to-one name="_activity" column="activity_id" foreign-key="activity_fk" not-null="true" update="false" cascade="all"/>
+  </class>
+</hibernate-mapping>

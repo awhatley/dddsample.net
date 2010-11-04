@@ -106,7 +106,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
 
         internal bool includes(Location location)
         {
-            return this.sameValueAs(location.customsZone());
+            return this.sameValueAs(location.CustomsZone);
         }
 
         public override string ToString()

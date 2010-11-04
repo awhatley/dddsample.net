@@ -14,7 +14,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Travel
         public void locations()
         {
             Voyage voyage = V.HONGKONG_TO_NEW_YORK;
-            Assert.AreEqual(new[] {L.HONGKONG, L.HANGZOU, L.TOKYO, L.MELBOURNE, L.NEWYORK}, voyage.locations());
+            Assert.AreEqual(new[] {L.HONGKONG, L.HANGZOU, L.TOKYO, L.MELBOURNE, L.NEWYORK}, voyage.Locations);
         }
     }
 }

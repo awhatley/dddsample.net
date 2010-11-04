@@ -25,9 +25,9 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             TrackingIdFactoryInMem trackingIdFactory = new TrackingIdFactoryInMem();
 
             // Creating new voyages to avoid rescheduling shared ones, breaking other tests
-            voyage1 = new Voyage(new VoyageNumber("V1"), V.HONGKONG_TO_NEW_YORK.schedule());
-            voyage2 = new Voyage(new VoyageNumber("V2"), V.NEW_YORK_TO_DALLAS.schedule());
-            voyage3 = new Voyage(new VoyageNumber("V3"), V.DALLAS_TO_HELSINKI.schedule());
+            voyage1 = new Voyage(new VoyageNumber("V1"), V.HONGKONG_TO_NEW_YORK.Schedule);
+            voyage2 = new Voyage(new VoyageNumber("V2"), V.NEW_YORK_TO_DALLAS.Schedule);
+            voyage3 = new Voyage(new VoyageNumber("V3"), V.DALLAS_TO_HELSINKI.Schedule);
 
             TrackingId trackingId = trackingIdFactory.nextTrackingId();
             RouteSpecification routeSpecification = new RouteSpecification(L.HANGZOU,
@@ -44,35 +44,35 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
         [Test]
         public void voyageIsRescheduledWithMaintainableRoute()
         {
-            Assert.That(cargo.routingStatus(), Is.EqualTo(RoutingStatus.ROUTED));
+            Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
 
             DateTime oldDepartureTime = DateTime.Parse("2008-10-24 07:00");
 
-            Assert.That(voyage2.schedule().departureTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
-            Assert.That(cargo.itinerary().loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(voyage2.Schedule.departureTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
 
             // Now voyage2 is rescheduled, the departure from NYC is delayed a few hours.
             DateTime newDepartureTime = DateTime.Parse("2008-10-24 17:00");
             voyage2.departureRescheduled(L.NEWYORK, newDepartureTime);
 
             // The schedule of voyage2 is updated
-            Assert.That(voyage2.schedule().departureTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
+            Assert.That(voyage2.Schedule.departureTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
             // ...but the cargo itinerary still has the old departure time
-            Assert.That(cargo.itinerary().loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
 
             // Generate a new itinerary from the old one and assign the cargo to this route
-            Itinerary newItinerary = cargo.itinerary().withRescheduledVoyage(voyage2);
+            Itinerary newItinerary = cargo.Itinerary.withRescheduledVoyage(voyage2);
             cargo.assignToRoute(newItinerary);
 
             // Now the cargo aggregate is updated to reflect the scheduling change!
-            Assert.That(cargo.itinerary().loadTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
-            Assert.That(cargo.routingStatus(), Is.EqualTo(RoutingStatus.ROUTED));
+            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
+            Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
         }
 
         [Test]
         public void voyageIsRescheduledWithUnmaintainableRoute()
         {
-            Assert.That(cargo.routingStatus(), Is.EqualTo(RoutingStatus.ROUTED));
+            Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
 
             // Voyage1 arrives in NYC at 2008-10-23 23:10
             // Now rescheduling the departure of voyage2 to BEFORE
@@ -84,8 +84,8 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             voyage2.departureRescheduled(L.NEWYORK, newDepartureTime);
 
             // Only the part of the itinerary up to and including NYC is maintainable, the rest is truncated
-            Itinerary truncatedItinerary = cargo.itinerary().withRescheduledVoyage(voyage2);
-            Assert.That(truncatedItinerary.lastLeg().unloadLocation(), Is.EqualTo(L.NEWYORK));
+            Itinerary truncatedItinerary = cargo.Itinerary.withRescheduledVoyage(voyage2);
+            Assert.That(truncatedItinerary.lastLeg().UnloadLocation, Is.EqualTo(L.NEWYORK));
 
             //Or... The Itinerary is created with an 'Illegal Connection' based on a coomparison of
             //each transfer with a Location.minimumAllowedConnectionTime(). Since Loation is an entity
@@ -93,7 +93,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
 
             // The cargo enters MISROUTED state
             cargo.assignToRoute(truncatedItinerary);
-            Assert.That(cargo.routingStatus(), Is.EqualTo(RoutingStatus.MISROUTED));
+            Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.MISROUTED));
         }
     }
 }

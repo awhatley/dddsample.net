@@ -26,7 +26,7 @@ namespace DomainDrivenDelivery.Infrastructure.Reporting
         {
             HandlingEvent handlingEvent = handlingEventRepository.find(sequenceNumber);
             Handling handling = assembleFrom(handlingEvent);
-            string trackingIdString = handlingEvent.cargo().trackingId().stringValue();
+            string trackingIdString = handlingEvent.Cargo.TrackingId.stringValue();
 
             reportSubmission.submitHandling(trackingIdString, handling);
         }
@@ -43,19 +43,19 @@ namespace DomainDrivenDelivery.Infrastructure.Reporting
         private Handling assembleFrom(HandlingEvent handlingEvent)
         {
             Handling handling = new Handling();
-            handling.setLocation(handlingEvent.location().name());
-            handling.setType(handlingEvent.activity().type().ToString());
-            handling.setVoyage(handlingEvent.voyage().voyageNumber().stringValue());
+            handling.setLocation(handlingEvent.Location.Name);
+            handling.setType(handlingEvent.Activity.Type.ToString());
+            handling.setVoyage(handlingEvent.Voyage.VoyageNumber.stringValue());
             return handling;
         }
 
         private CargoDetails assembleFrom(Cargo cargo)
         {
             CargoDetails cargoDetails = new CargoDetails();
-            cargoDetails.setTrackingId(cargo.trackingId().stringValue());
-            cargoDetails.setFinalDestination(cargo.routeSpecification().destination().name());
-            cargoDetails.setCurrentLocation(cargo.lastKnownLocation().name());
-            cargoDetails.setCurrentStatus(cargo.transportStatus().ToString());
+            cargoDetails.setTrackingId(cargo.TrackingId.stringValue());
+            cargoDetails.setFinalDestination(cargo.RouteSpecification.destination().Name);
+            cargoDetails.setCurrentLocation(cargo.LastKnownLocation.Name);
+            cargoDetails.setCurrentStatus(cargo.TransportStatus.ToString());
             return cargoDetails;
         }
 

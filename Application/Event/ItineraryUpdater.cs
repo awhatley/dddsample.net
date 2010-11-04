@@ -27,7 +27,7 @@ namespace DomainDrivenDelivery.Application.Event
 
             foreach(Cargo cargo in affectedCargos)
             {
-                var newItinerary = cargo.itinerary().withRescheduledVoyage(voyage);
+                var newItinerary = cargo.Itinerary.withRescheduledVoyage(voyage);
                 cargo.assignToRoute(newItinerary);
                 LOG.Info("Updated itinerary of cargo " + cargo);
             }

@@ -46,10 +46,10 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
 
             Cargo cargo = new Cargo(trackingId, routeSpecification);
 
-            Assert.AreEqual(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
-            Assert.AreEqual(TransportStatus.NOT_RECEIVED, cargo.transportStatus());
-            Assert.AreEqual(Location.NONE, cargo.lastKnownLocation());
-            Assert.AreEqual(Voyage.NONE, cargo.currentVoyage());
+            Assert.AreEqual(RoutingStatus.NOT_ROUTED, cargo.RoutingStatus);
+            Assert.AreEqual(TransportStatus.NOT_RECEIVED, cargo.TransportStatus);
+            Assert.AreEqual(Location.NONE, cargo.LastKnownLocation);
+            Assert.AreEqual(Voyage.NONE, cargo.CurrentVoyage);
         }
 
         [Test]
@@ -68,13 +68,13 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             RouteSpecification acceptOnlyGood = new RouteSpecification(L.SEATTLE, L.NEWYORK, DateTime.Now);
 
             cargo.specifyNewRoute(acceptOnlyGood);
-            Assert.AreEqual(RoutingStatus.NOT_ROUTED, cargo.routingStatus());
+            Assert.AreEqual(RoutingStatus.NOT_ROUTED, cargo.RoutingStatus);
 
             cargo.assignToRoute(bad);
-            Assert.AreEqual(RoutingStatus.MISROUTED, cargo.routingStatus());
+            Assert.AreEqual(RoutingStatus.MISROUTED, cargo.RoutingStatus);
 
             cargo.assignToRoute(good);
-            Assert.AreEqual(RoutingStatus.ROUTED, cargo.routingStatus());
+            Assert.AreEqual(RoutingStatus.ROUTED, cargo.RoutingStatus);
         }
 
         [Test]
@@ -83,21 +83,21 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = setUpCargoWithItinerary(L.STOCKHOLM, L.HAMBURG, L.MELBOURNE);
 
             cargo.handled(HandlingActivity.loadOnto(crazyVoyage).@in(L.STOCKHOLM));
-            Assert.That(cargo.transportStatus(), Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
-            Assert.That(cargo.lastKnownLocation(), Is.EqualTo(L.STOCKHOLM));
+            Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
+            Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.STOCKHOLM));
 
             cargo.handled(HandlingActivity.unloadOff(crazyVoyage).@in(L.HAMBURG));
-            Assert.That(cargo.transportStatus(), Is.EqualTo(TransportStatus.IN_PORT));
-            Assert.That(cargo.lastKnownLocation(), Is.EqualTo(L.HAMBURG));
+            Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
+            Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HAMBURG));
 
             cargo.handled(HandlingActivity.unloadOff(crazyVoyage).@in(L.MELBOURNE));
-            Assert.That(cargo.transportStatus(), Is.EqualTo(TransportStatus.IN_PORT));
-            Assert.That(cargo.lastKnownLocation(), Is.EqualTo(L.MELBOURNE));
+            Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
+            Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.MELBOURNE));
 
             // Out of order handling, does not affect state of cargo
             cargo.handled(HandlingActivity.loadOnto(crazyVoyage).@in(L.HAMBURG));
-            Assert.That(cargo.transportStatus(), Is.EqualTo(TransportStatus.IN_PORT));
-            Assert.That(cargo.lastKnownLocation(), Is.EqualTo(L.MELBOURNE));
+            Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
+            Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.MELBOURNE));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = new Cargo(new TrackingId("XYZ"),
                 new RouteSpecification(L.STOCKHOLM, L.MELBOURNE, DateTime.Now));
 
-            Assert.AreEqual(Location.NONE, cargo.lastKnownLocation());
+            Assert.AreEqual(Location.NONE, cargo.LastKnownLocation);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Cargo cargo = populateCargoReceivedStockholm();
 
-            Assert.AreEqual(L.STOCKHOLM, cargo.lastKnownLocation());
+            Assert.AreEqual(L.STOCKHOLM, cargo.LastKnownLocation);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Cargo cargo = populateCargoClaimedMelbourne();
 
-            Assert.AreEqual(L.MELBOURNE, cargo.lastKnownLocation());
+            Assert.AreEqual(L.MELBOURNE, cargo.LastKnownLocation);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Cargo cargo = populateCargoOffHongKong();
 
-            Assert.AreEqual(L.MELBOURNE, cargo.lastKnownLocation());
+            Assert.AreEqual(L.MELBOURNE, cargo.LastKnownLocation);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Cargo cargo = populateCargoOnHamburg();
 
-            Assert.AreEqual(L.HAMBURG, cargo.lastKnownLocation());
+            Assert.AreEqual(L.HAMBURG, cargo.LastKnownLocation);
         }
 
         [Test]
@@ -165,7 +165,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Itinerary itinerary = new Itinerary(Leg.deriveLeg(V.pacific1, L.HONGKONG, L.LONGBEACH),
                 Leg.deriveLeg(V.continental2, L.LONGBEACH, L.NEWYORK));
             cargo.assignToRoute(itinerary);
-            Assert.IsFalse(cargo.routeSpecification().destination().sameAs(cargo.customsClearancePoint()));
+            Assert.IsFalse(cargo.RouteSpecification.destination().sameAs(cargo.customsClearancePoint()));
             Assert.IsFalse(cargo.isReadyToClaim());
 
             cargo.handled(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH));
@@ -185,7 +185,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 new RouteSpecification(L.SHANGHAI, L.SEATTLE, DateTime.Parse("2009-12-24")));
             Itinerary itinerary = new Itinerary(Leg.deriveLeg(V.pacific2, L.SHANGHAI, L.SEATTLE));
             cargo.assignToRoute(itinerary);
-            Assert.IsTrue(cargo.routeSpecification().destination().sameAs(cargo.customsClearancePoint()));
+            Assert.IsTrue(cargo.RouteSpecification.destination().sameAs(cargo.customsClearancePoint()));
             Assert.IsFalse(cargo.isReadyToClaim());
 
             cargo.handled(HandlingActivity.unloadOff(V.pacific2).@in(L.SEATTLE));
@@ -204,28 +204,28 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             //A cargo with no handling events is not misdirected
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.receiveIn(L.SHANGHAI));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.loadOnto(V.pacific2).@in(L.SHANGHAI));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.unloadOff(V.pacific2).@in(L.SEATTLE));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.customsIn(L.SEATTLE));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.loadOnto(V.continental3).@in(L.SEATTLE));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.unloadOff(V.continental3).@in(L.CHICAGO));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.claimIn(L.CHICAGO));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.receiveIn(L.TOKYO));
-            Assert.IsTrue(cargo.isMisdirected());
+            Assert.IsTrue(cargo.IsMisdirected);
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.loadOnto(V.pacific1).@in(L.HONGKONG));
-            Assert.IsTrue(cargo.isMisdirected());
+            Assert.IsTrue(cargo.IsMisdirected);
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.unloadOff(V.pacific2).@in(L.TOKYO));
-            Assert.IsTrue(cargo.isMisdirected());
+            Assert.IsTrue(cargo.IsMisdirected);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.customsIn(L.CHICAGO));
-            Assert.IsTrue(cargo.isMisdirected());
+            Assert.IsTrue(cargo.IsMisdirected);
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.claimIn(L.SEATTLE));
-            Assert.IsTrue(cargo.isMisdirected());
+            Assert.IsTrue(cargo.IsMisdirected);
         }
 
         [Test]
@@ -279,36 +279,36 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Cargo cargo = shanghaiSeattleChicagoOnPacific2AndContinental3();
 
             cargo.handled(HandlingActivity.loadOnto(V.pacific2).@in(L.SHANGHAI));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             // Cargo destination is changed by customer mid-route
             RouteSpecification newRouteSpec =
-                cargo.routeSpecification().withOrigin(cargo.lastKnownLocation()).withDestination(L.NEWYORK);
+                cargo.RouteSpecification.withOrigin(cargo.LastKnownLocation).withDestination(L.NEWYORK);
 
             cargo.specifyNewRoute(newRouteSpec);
             // Misrouted, but not misdirected. Delivery is still accoring to plan (itinerary),
             // but not according to desire (route specification).
-            Assert.IsFalse(cargo.isMisdirected());
-            Assert.IsTrue(cargo.routingStatus() == RoutingStatus.MISROUTED);
+            Assert.IsFalse(cargo.IsMisdirected);
+            Assert.IsTrue(cargo.RoutingStatus == RoutingStatus.MISROUTED);
 
             /**
      * This is a perfect example of how LegActivityMatch is a modelling breakthrough.
      * It allows us to easily construct an itinerary that completes the remainder of the
      * old itinerary and appends the new and different path.
      */
-            Leg currentLeg = cargo.itinerary().matchLeg(cargo.mostRecentHandlingActivity()).leg();
+            Leg currentLeg = cargo.Itinerary.matchLeg(cargo.mostRecentHandlingActivity()).leg();
             Itinerary newItinerary = new Itinerary(currentLeg, Leg.deriveLeg(V.continental3, L.SEATTLE, L.NEWYORK));
             cargo.assignToRoute(newItinerary);
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.unloadOff(V.pacific2).@in(L.SEATTLE));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.loadOnto(V.continental3).@in(L.SEATTLE));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             cargo.handled(HandlingActivity.unloadOff(V.continental3).@in(L.NEWYORK));
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
         }
 
         [Test]
@@ -358,7 +358,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 new RouteSpecification(L.SHANGHAI, L.CHICAGO, DateTime.Parse("2009-12-24")));
 
             // A cargo with no itinerary is not misdirected
-            Assert.IsFalse(cargo.isMisdirected());
+            Assert.IsFalse(cargo.IsMisdirected);
 
             Itinerary itinerary = new Itinerary(Leg.deriveLeg(V.pacific2, L.SHANGHAI, L.SEATTLE),
                 Leg.deriveLeg(V.continental3, L.SEATTLE, L.CHICAGO));

@@ -52,8 +52,8 @@ namespace DomainDrivenDelivery.Infrastructure.Routing
             try
             {
                 transitPaths = graphTraversalService.findShortestPath(
-                  origin.unLocode().stringValue(),
-                  destination.unLocode().stringValue(),
+                  origin.UnLocode.stringValue(),
+                  destination.UnLocode.stringValue(),
                   limitations
                 );
             }

@@ -39,35 +39,31 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
         /// <summary>
         /// Type of handling
         /// </summary>
-        /// <returns>Type of handling</returns>
-        public HandlingActivityType type()
+        public virtual HandlingActivityType Type
         {
-            return _type;
+            get { return _type; }
         }
 
         /// <summary>
         /// Location
         /// </summary>
-        /// <returns>Location</returns>
-        public Location location()
+        public virtual Location Location
         {
-            return _location;
+            get { return _location; }
         }
 
         /// <summary>
         /// Voyage
         /// </summary>
-        /// <returns>Voyage</returns>
-        public Voyage voyage()
+        public virtual Voyage Voyage
         {
-            return _voyage;
+            get { return _voyage; }
         }
 
         /// <summary>
         /// Copies this activity.
         /// </summary>
-        /// <returns>A copy of this activity</returns>
-        public HandlingActivity copy()
+        public virtual HandlingActivity copy()
         {
             return new HandlingActivity(_type, _location, _voyage);
         }
@@ -77,7 +73,7 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
             return _type + " in " + _location + (_voyage != null ? ", " + _voyage : "");
         }
 
-        HandlingActivity()
+        internal HandlingActivity()
         {
             // Needed by Hibernate
             _location = null;

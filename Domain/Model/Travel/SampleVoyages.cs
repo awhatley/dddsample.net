@@ -109,7 +109,7 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
                 if(field.FieldType.Equals(typeof(Voyage)))
                 {
                     Voyage voyage = (Voyage)field.GetValue(null);
-                    ALL.Add(voyage.voyageNumber(), voyage);
+                    ALL.Add(voyage.VoyageNumber, voyage);
                 }
             }
         }

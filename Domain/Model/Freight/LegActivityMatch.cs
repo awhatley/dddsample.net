@@ -23,7 +23,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         internal static LegActivityMatch match(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
         {
-            switch(handlingActivity.type())
+            switch(handlingActivity.Type)
             {
                 case HandlingActivityType.RECEIVE:
                 case HandlingActivityType.LOAD:
@@ -41,7 +41,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         internal static LegActivityMatch ifLoadLocationSame(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
         {
-            if(leg.loadLocation().sameAs(handlingActivity.location()))
+            if(leg.LoadLocation.sameAs(handlingActivity.Location))
             {
                 return new LegActivityMatch(leg, LegEnd.LOAD_END, handlingActivity, itinerary);
             }
@@ -53,7 +53,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         internal static LegActivityMatch ifUnloadLocationSame(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
         {
-            if(leg.unloadLocation().sameAs(handlingActivity.location()))
+            if(leg.UnloadLocation.sameAs(handlingActivity.Location))
             {
                 return new LegActivityMatch(leg, LegEnd.UNLOAD_END, handlingActivity, itinerary);
             }

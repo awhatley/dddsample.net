@@ -9,26 +9,19 @@ using Spring.Stereotype;
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
     [Repository]
-    public class DatabaseTrackingIdFactory : TrackingIdFactory, IInitializingObject
+    public class DatabaseTrackingIdFactory : TrackingIdFactory
     {
         private readonly ISessionFactory sessionFactory;
-        private static readonly string SEQUENCE_NAME = "TRACKING_ID_SEQ";
 
         public DatabaseTrackingIdFactory(ISessionFactory sessionFactory)
         {
             this.sessionFactory = sessionFactory;
         }
 
-        public void AfterPropertiesSet()
-        {
-            var template = new HibernateTemplate(sessionFactory);
-            template.Execute(s => s.CreateSQLQuery("create sequence " + SEQUENCE_NAME + " as bigint start with 1").ExecuteUpdate());
-        }
-
         public TrackingId nextTrackingId()
         {
             var seq = sessionFactory.GetCurrentSession().
-              CreateSQLQuery("call next value for " + SEQUENCE_NAME).
+              CreateSQLQuery("select ROW_NUMBER() OVER (ORDER BY tracking_id) FROM Cargo").
               UniqueResult<long>();
 
             return new TrackingId(seq);

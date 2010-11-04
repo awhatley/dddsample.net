@@ -39,9 +39,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             this._destination = destination;
             this._arrivalDeadline = arrivalDeadline;
             this.notNull = new NotNullSpecification();
-            this.sameOrigin = new SameOriginSpecification(origin);
-            this.sameDestination = new SameDestinationSpecification(destination);
-            this.meetsDeadline = new MeetsDeadlineSpecification(arrivalDeadline);
+            this.sameOrigin = new SameOriginSpecification(this);
+            this.sameDestination = new SameDestinationSpecification(this);
+            this.meetsDeadline = new MeetsDeadlineSpecification(this);
         }
 
         /// <summary>
@@ -121,6 +121,10 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             // Needed by Hibernate
             _origin = _destination = null;
+            this.notNull = new NotNullSpecification();
+            this.sameOrigin = new SameOriginSpecification(this);
+            this.sameDestination = new SameDestinationSpecification(this);
+            this.meetsDeadline = new MeetsDeadlineSpecification(this);
         }
 
         // --- Private classes ---
@@ -134,46 +138,46 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         private sealed class SameOriginSpecification : FieldlessSpecification
         {
-            private readonly Location _origin;
+            private readonly RouteSpecification _parent;
 
-            public SameOriginSpecification(Location origin)
+            public SameOriginSpecification(RouteSpecification parent)
             {
-                _origin = origin;
+                _parent = parent;
             }
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _origin.sameAs(itinerary.initialLoadLocation());
+                return _parent._origin.sameAs(itinerary.initialLoadLocation());
             }
         }
 
         private sealed class SameDestinationSpecification : FieldlessSpecification
         {
-            private readonly Location _destination;
+            private readonly RouteSpecification _parent;
 
-            public SameDestinationSpecification(Location destination)
+            public SameDestinationSpecification(RouteSpecification parent)
             {
-                _destination = destination;
+                _parent = parent;
             }
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _destination.sameAs(itinerary.finalUnloadLocation());
+                return _parent._destination.sameAs(itinerary.finalUnloadLocation());
             }
         }
 
         private sealed class MeetsDeadlineSpecification : FieldlessSpecification
         {
-            private readonly DateTime _arrivalDeadline;
+            private readonly RouteSpecification _parent;
 
-            public MeetsDeadlineSpecification(DateTime arrivalDeadline)
+            public MeetsDeadlineSpecification(RouteSpecification parent)
             {
-                _arrivalDeadline = arrivalDeadline;
+                _parent = parent;
             }
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _arrivalDeadline > itinerary.finalUnloadTime();
+                return _parent._arrivalDeadline > itinerary.finalUnloadTime();
             }
         }
 

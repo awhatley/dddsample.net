@@ -13,23 +13,23 @@ namespace DomainDrivenDelivery.Domain.Patterns.Entity
     {
         private readonly long _primaryKey;
 
-        public abstract TIdentity identity();
+        public abstract TIdentity Identity { get; }
 
-        public bool sameAs(TEntity other)
+        public virtual bool sameAs(TEntity other)
         {
-            return other != null && this.identity().Equals(other.identity());
+            return other != null && this.Identity.Equals(other.Identity);
         }
 
         public override int GetHashCode()
         {
-            return identity().GetHashCode();
+            return Identity.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             if(obj == null) return false;
             if(this == obj) return true;
-            if(GetType() != obj.GetType()) return false;
+            if(!typeof(TEntity).IsAssignableFrom(obj.GetType())) return false;
 
             return sameAs((TEntity)obj);
         }

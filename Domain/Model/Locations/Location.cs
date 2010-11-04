@@ -39,45 +39,41 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
             this._customsZone = customsZone;
         }
 
-        public override UnLocode identity()
+        public override UnLocode Identity
         {
-            return _unLocode;
+            get { return _unLocode; }
         }
 
         /// <summary>
         /// UN Locode for this location.
         /// </summary>
-        /// <returns>UN Locode for this location.</returns>
-        public UnLocode unLocode()
+        public virtual UnLocode UnLocode
         {
-            return _unLocode;
+            get { return _unLocode; }
         }
 
         /// <summary>
         /// Actual name of this location, e.g. "Stockholm".
         /// </summary>
-        /// <returns>Actual name of this location, e.g. "Stockholm".</returns>
-        public String name()
+        public virtual string Name
         {
-            return _name;
+            get { return _name; }
         }
 
         /// <summary>
         /// Customs zone of this location.
         /// </summary>
-        /// <returns>Customs zone of this location.</returns>
-        public CustomsZone customsZone()
+        public virtual CustomsZone CustomsZone
         {
-            return _customsZone;
+            get { return _customsZone; }
         }
 
         /// <summary>
         /// Time zone of this location.
         /// </summary>
-        /// <returns>Time zone of this location.</returns>
-        public TimeZoneInfo timeZone()
+        public virtual TimeZoneInfo TimeZone
         {
-            return _timeZone;
+            get { return _timeZone; }
         }
 
         public override string ToString()
@@ -85,7 +81,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
             return _name + " [" + _unLocode + "]";
         }
 
-        Location()
+        internal Location()
         {
             // Needed by Hibernate
             _unLocode = null;

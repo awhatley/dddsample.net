@@ -45,7 +45,7 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="newDepartureTime">new departure time</param>
         /// <returns>A new CarrierMovement which is a copy of the old one but with a new departure time</returns>
-        internal CarrierMovement withDepartureTime(DateTime newDepartureTime)
+        protected internal virtual CarrierMovement withDepartureTime(DateTime newDepartureTime)
         {
             return new CarrierMovement(
               _departureLocation,
@@ -58,40 +58,36 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// <summary>
         /// Departure location.
         /// </summary>
-        /// <returns>Departure location.</returns>
-        public Location departureLocation()
+        public virtual Location DepartureLocation
         {
-            return _departureLocation;
+            get { return _departureLocation; }
         }
 
         /// <summary>
         /// Arrival location.
         /// </summary>
-        /// <returns>Arrival location.</returns>
-        public Location arrivalLocation()
+        public virtual Location ArrivalLocation
         {
-            return _arrivalLocation;
+            get { return _arrivalLocation; }
         }
 
         /// <summary>
         /// Time of departure.
         /// </summary>
-        /// <returns>Time of departure.</returns>
-        public DateTime departureTime()
+        public virtual DateTime DepartureTime
         {
-            return _departureTime;
+            get { return _departureTime; }
         }
 
         /// <summary>
         /// Time of arrival.
         /// </summary>
-        /// <returns>Time of arrival.</returns>
-        public DateTime arrivalTime()
+        public virtual DateTime ArrivalTime
         {
-            return _arrivalTime;
+            get { return _arrivalTime; }
         }
 
-        CarrierMovement()
+        internal CarrierMovement()
         {
             // Needed by Hibernate
             _arrivalLocation = _departureLocation = null;

@@ -34,7 +34,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 L.HONGKONG,
                 SampleVoyages.continental1,
                 new OperatorCode("ABCDE"));
-            Assert.AreEqual(L.HONGKONG, e1.location());
+            Assert.AreEqual(L.HONGKONG, e1.Location);
 
             HandlingEvent e2 = new HandlingEvent(cargo,
                 DateTime.Now,
@@ -43,7 +43,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 L.NEWYORK,
                 SampleVoyages.continental1,
                 new OperatorCode("ABCDE"));
-            Assert.AreEqual(L.NEWYORK, e2.location());
+            Assert.AreEqual(L.NEWYORK, e2.Location);
 
             // These event types prohibit a carrier movement association
             foreach(
@@ -94,7 +94,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 DateTime.Now,
                 HandlingActivityType.CLAIM,
                 L.HELSINKI);
-            Assert.AreEqual(L.HELSINKI, e1.location());
+            Assert.AreEqual(L.HELSINKI, e1.Location);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 SampleVoyages.continental2,
                 new OperatorCode("ABCDE"));
 
-            Assert.AreEqual(L.CHICAGO, ev.location());
+            Assert.AreEqual(L.CHICAGO, ev.Location);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 SampleVoyages.continental2,
                 new OperatorCode("ABCDE"));
 
-            Assert.AreEqual(L.HAMBURG, ev.location());
+            Assert.AreEqual(L.HAMBURG, ev.Location);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 HandlingActivityType.RECEIVE,
                 L.CHICAGO);
 
-            Assert.AreEqual(L.CHICAGO, ev.location());
+            Assert.AreEqual(L.CHICAGO, ev.Location);
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 HandlingActivityType.CLAIM,
                 L.CHICAGO);
 
-            Assert.AreEqual(L.CHICAGO, ev.location());
+            Assert.AreEqual(L.CHICAGO, ev.Location);
         }
 
         [Test]

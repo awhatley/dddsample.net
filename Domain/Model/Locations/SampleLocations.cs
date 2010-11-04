@@ -49,7 +49,7 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
                 if(field.FieldType.Equals(typeof(Location)))
                 {
                     Location location = (Location)field.GetValue(null);
-                    ALL.Add(location.unLocode(), location);
+                    ALL.Add(location.UnLocode, location);
                 }
             }
         }

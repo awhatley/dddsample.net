@@ -53,20 +53,20 @@ namespace DomainDrivenDelivery.Application.Event
             cargoRepository.store(cargo);
 
             HandlingEvent handlingEvent = handlingEventFactory.createHandlingEvent(DateTime.Parse("2009-10-01 14:30"),
-                cargo.trackingId(),
-                V.HONGKONG_TO_NEW_YORK.voyageNumber(),
-                L.HONGKONG.unLocode(),
+                cargo.TrackingId,
+                V.HONGKONG_TO_NEW_YORK.VoyageNumber,
+                L.HONGKONG.UnLocode,
                 HandlingActivityType.LOAD,
                 new OperatorCode("ABCDE"));
 
             handlingEventRepository.store(handlingEvent);
 
-            Assert.That(handlingEvent.activity(), Is.Not.EqualTo(cargo.mostRecentHandlingActivity()));
+            Assert.That(handlingEvent.Activity, Is.Not.EqualTo(cargo.mostRecentHandlingActivity()));
 
-            cargoUpdater.updateCargo(handlingEvent.sequenceNumber());
+            cargoUpdater.updateCargo(handlingEvent.SequenceNumber);
 
-            Assert.That(handlingEvent.activity(), Is.EqualTo(cargo.mostRecentHandlingActivity()));
-            Assert.True(handlingEvent.activity() != cargo.mostRecentHandlingActivity());
+            Assert.That(handlingEvent.Activity, Is.EqualTo(cargo.mostRecentHandlingActivity()));
+            Assert.True(handlingEvent.Activity != cargo.mostRecentHandlingActivity());
 
             systemEvents.AssertWasCalled(se => se.notifyOfCargoUpdate(cargo));
         }

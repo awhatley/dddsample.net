@@ -27,7 +27,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
             var onVoyage = new List<Cargo>();
             foreach(Cargo cargo in cargoDb.Values)
             {
-                if(voyage.sameAs(cargo.currentVoyage()))
+                if(voyage.sameAs(cargo.CurrentVoyage))
                 {
                     onVoyage.Add(cargo);
                 }
@@ -38,7 +38,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 
         public void store(Cargo cargo)
         {
-            cargoDb[cargo.trackingId()] = cargo;
+            cargoDb[cargo.TrackingId] = cargo;
         }
 
         public IEnumerable<Cargo> findAll()

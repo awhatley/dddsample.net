@@ -10,8 +10,8 @@ namespace DomainDrivenDelivery.Domain.Patterns.Entity
         /// <summary>
         /// Entities have an identity.
         /// </summary>
-        /// <returns>The identity of this entity.</returns>
-        TIdentity identity();
+        /// <value>The identity of this entity.</value>
+        TIdentity Identity { get; }
 
         /// <summary>
         /// Entities compare by identity, not by attributes.

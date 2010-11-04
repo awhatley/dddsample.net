@@ -68,9 +68,9 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
         [Test]
         public void testDistinctEventsByCompletionTime()
         {
-            var hashCodeActivity1 = event2.activity().GetHashCode();
-            var hashCodeActivity2 = event1.activity().GetHashCode();
-            var hashCodeActivity3 = event1duplicate.activity().GetHashCode();
+            var hashCodeActivity1 = event2.Activity.GetHashCode();
+            var hashCodeActivity2 = event1.Activity.GetHashCode();
+            var hashCodeActivity3 = event1duplicate.Activity.GetHashCode();
 
             handlingHistory = HandlingHistory.fromEvents(new[] {event2, event1, event1duplicate});
 

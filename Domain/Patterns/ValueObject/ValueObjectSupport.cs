@@ -24,7 +24,7 @@ namespace DomainDrivenDelivery.Domain.Patterns.ValueObject
         private int _cachedHashCode;
         private static readonly string[] EXCLUDED_FIELDS = { "_primaryKey", "_cachedHashCode" };
 
-        public bool sameValueAs(T other)
+        public virtual bool sameValueAs(T other)
         {
             return other != null && EqualsBuilder.reflectionEquals(this, other, EXCLUDED_FIELDS);
         }
@@ -54,7 +54,7 @@ namespace DomainDrivenDelivery.Domain.Patterns.ValueObject
         {
             if(obj == null) return false;
             if(this == obj) return true;
-            if(GetType() != obj.GetType()) return false;
+            if(!typeof(T).IsAssignableFrom(obj.GetType())) return false;
 
             return sameValueAs((T)obj);
         }

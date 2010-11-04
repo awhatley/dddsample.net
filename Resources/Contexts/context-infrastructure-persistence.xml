@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net"
+         xmlns:db="http://www.springframework.net/database"
+         xmlns:tx="http://www.springframework.net/tx">
+
+  <object type="Spring.Objects.Factory.Config.VariablePlaceholderConfigurer, Spring.Core">
+    <property name="VariableSources">
+      <list>
+        <object type="Spring.Objects.Factory.Config.ConnectionStringsVariableSource, Spring.Core" />
+      </list>
+    </property>
+  </object>
+
+  <db:provider id="dbProvider" provider="${DomainDrivenDelivery.providerName}" connectionString="${DomainDrivenDelivery.connectionString}" />
+
+  <object id="sessionFactory" type="Spring.Data.NHibernate.LocalSessionFactoryObject, Spring.Data.NHibernate21">
+    <property name="DbProvider" ref="dbProvider" />
+    <property name="ConfigFilenames" value="hibernate.cfg.xml" />
+    <property name="EventListeners">
+      <dictionary>
+        <entry key="PostLoad" value-ref="cargoPostLoadEventListener"/>
+      </dictionary>
+    </property>
+    <property name="ExposeTransactionAwareSessionFactory" value="true" />
+  </object>
+
+  <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.CargoRepositoryNHibernate, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
+  <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.VoyageRepositoryNHibernate, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
+  <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.LocationRepositoryNHibernate, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
+  <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.HandlingEventRepositoryNHibernate, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
+  <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.DatabaseTrackingIdFactory, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
+  <object id="cargoPostLoadEventListener" type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.CargoPostLoadEventListener, DomainDrivenDelivery.Infrastructure"/>
+
+  <object id="transactionManager" type="Spring.Data.NHibernate.HibernateTransactionManager">
+    <property name="DbProvider" ref="dbProvider" />
+    <property name="SessionFactory" ref="sessionFactory"/>
+  </object>
+
+  <tx:attribute-driven transaction-manager="transactionManager" />
+  
+</objects>

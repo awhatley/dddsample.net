@@ -35,8 +35,8 @@ namespace DomainDrivenDelivery.Application.Event
                 return;
             }
 
-            var activity = handlingEvent.activity().copy();
-            var cargo = handlingEvent.cargo();
+            var activity = handlingEvent.Activity.copy();
+            var cargo = handlingEvent.Cargo;
 
             cargo.handled(activity);
             cargoRepository.store(cargo);

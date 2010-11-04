@@ -13,7 +13,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         private static readonly FieldInfo ITINERARY_FIELD;
         static CargoPostLoadEventListener()
         {
-            ITINERARY_FIELD = typeof(Cargo).GetField("itinerary", BindingFlags.NonPublic | BindingFlags.Instance);
+            ITINERARY_FIELD = typeof(Cargo).GetField("_itinerary", BindingFlags.NonPublic | BindingFlags.Instance);
             if(ITINERARY_FIELD == null)
                 throw new TargetException("itinerary field not found");
         }
@@ -31,7 +31,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
                  * on Cargo.
                  */
                 Cargo cargo = (Cargo)@event.Entity;
-                if(cargo.itinerary() != null && !cargo.itinerary().legs().Any())
+                if(cargo.Itinerary != null && !cargo.Itinerary.legs().Any())
                 {
                     ITINERARY_FIELD.SetValue(cargo, null);
                 }

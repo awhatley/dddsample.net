@@ -17,17 +17,17 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     /// <remarks>
     /// The HandlingEvent's are sent from different Incident Logging Applications
     /// some time after the event occured and contain information about the
-    /// <see cref="TrackingId"/>, <see cref="Location"/>, timestamp of the completion of the event,
-    /// and possibly, if applicable a <see cref="Voyage"/>.
+    /// <see cref="TrackingId"/>, <see cref="Locations.Location"/>, timestamp of the completion of the event,
+    /// and possibly, if applicable a <see cref="Travel.Voyage"/>.
     /// <p/>
     /// This class is the only member, and consequently the root, of the HandlingEvent aggregate.
     /// <p/>
-    /// HandlingEvent's could contain information about a <see cref="Voyage"/> and if so,
+    /// HandlingEvent's could contain information about a <see cref="Travel.Voyage"/> and if so,
     /// the event type must be either <see cref="HandlingActivityType.LOAD"/> or <see cref="HandlingActivityType.UNLOAD"/>.
     /// <p/>
     /// All other events must be of <see cref="HandlingActivityType.RECEIVE"/>, <see cref="HandlingActivityType.CLAIM"/> or <see cref="HandlingActivityType.CUSTOMS"/>.
     /// </remarks>
-    public sealed class HandlingEvent : DomainEvent<HandlingEvent>
+    public class HandlingEvent : DomainEvent<HandlingEvent>
     {
         private EventSequenceNumber _sequenceNumber;
         private HandlingActivity _activity;
@@ -102,49 +102,49 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
             this._activity = new HandlingActivity(type, location);
         }
 
-        public EventSequenceNumber sequenceNumber()
+        public virtual EventSequenceNumber SequenceNumber
         {
-            return _sequenceNumber;
+            get { return _sequenceNumber; }
         }
 
-        public HandlingActivity activity()
+        public virtual HandlingActivity Activity
         {
-            return _activity;
+            get { return _activity; }
         }
 
-        public HandlingActivityType type()
+        public virtual HandlingActivityType Type
         {
-            return _activity.type();
+            get { return _activity.Type; }
         }
 
-        public Voyage voyage()
+        public virtual Voyage Voyage
         {
-            return _activity.voyage() != null ? _activity.voyage() : Voyage.NONE;
+            get { return _activity.Voyage != null ? _activity.Voyage : Voyage.NONE; }
         }
 
-        public OperatorCode operatorCode()
+        public virtual OperatorCode OperatorCode
         {
-            return _operatorCode;
+            get { return _operatorCode; }
         }
 
-        public DateTime completionTime()
+        public virtual DateTime CompletionTime
         {
-            return _completionTime;
+            get { return _completionTime; }
         }
 
-        public DateTime registrationTime()
+        public virtual DateTime RegistrationTime
         {
-            return _registrationTime;
+            get { return _registrationTime; }
         }
 
-        public Location location()
+        public virtual Location Location
         {
-            return _activity.location();
+            get { return _activity.Location; }
         }
 
-        public Cargo cargo()
+        public virtual Cargo Cargo
         {
-            return this._cargo;
+            get { return this._cargo; }
         }
 
         public override bool Equals(Object o)
@@ -157,20 +157,14 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
             return sameEventAs(@event);
         }
 
-        public bool sameEventAs(HandlingEvent other)
+        public virtual bool sameEventAs(HandlingEvent other)
         {
             var equal = other != null &&
-                this.cargo().Equals(other.cargo()) &&
-                this.completionTime().Equals(other.completionTime()) &&
-                this.activity().Equals(other.activity());
+                this.Cargo.Equals(other.Cargo) &&
+                this.CompletionTime.Equals(other.CompletionTime) &&
+                this.Activity.Equals(other.Activity);
 
             return equal;
-
-            return other != null && new EqualsBuilder().
-              append(this._cargo, other._cargo).
-              append(this._completionTime, other._completionTime).
-              append(this._activity, other._activity).
-              isEquals();
         }
 
         public override int GetHashCode()
@@ -192,12 +186,12 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
               "\nRegistered on: " + _registrationTime;
         }
 
-        HandlingEvent()
+        internal HandlingEvent()
         {
             // Needed by Hibernate
         }
 
         // Auto-generated surrogate key
-        private long id;
+        private long _id;
     }
 }

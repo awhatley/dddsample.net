@@ -9,7 +9,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     /// </summary>
     public class OperatorCode : ValueObjectSupport<OperatorCode>
     {
-        private readonly string code;
+        private readonly string _code;
 
         /// <summary>
         /// Constructor.
@@ -19,7 +19,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         {
             Validate.notEmpty(code, "Code is required");
             Validate.isTrue(code.Length == 5, "Operator codes must be exactly five letters: " + code);
-            this.code = code;
+            this._code = code;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         /// <returns>The operator code as a String</returns>
         public string stringValue()
         {
-            return code;
+            return _code;
         }
 
         public override string ToString()
@@ -39,7 +39,7 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         OperatorCode()
         {
             // Needed by Hibernate
-            code = null;
+            _code = null;
         }
     }
 }

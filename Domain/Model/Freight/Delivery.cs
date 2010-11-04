@@ -36,7 +36,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             Validate.notNull(newHandlingActivity, "Handling activity is required");
 
-            if(newHandlingActivity.type().isPhysical())
+            if(newHandlingActivity.Type.isPhysical())
             {
                 return new Delivery(newHandlingActivity, newHandlingActivity);
             }
@@ -90,7 +90,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             if(hasBeenHandled())
             {
-                return _mostRecentHandlingActivity.location();
+                return _mostRecentHandlingActivity.Location;
             }
             else
             {
@@ -106,7 +106,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             if(hasBeenHandled() && transportStatus() == TransportStatus.ONBOARD_CARRIER)
             {
-                return _mostRecentHandlingActivity.voyage();
+                return _mostRecentHandlingActivity.Voyage;
             }
             else
             {
@@ -187,8 +187,8 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         internal bool isUnloadedIn(Location location)
         {
             return hasBeenHandled() &&
-              _mostRecentHandlingActivity.location().sameAs(location) &&
-              mostRecentHandlingActivity().type() == HandlingActivityType.UNLOAD;
+              _mostRecentHandlingActivity.Location.sameAs(location) &&
+              mostRecentHandlingActivity().Type == HandlingActivityType.UNLOAD;
         }
 
         internal Delivery()

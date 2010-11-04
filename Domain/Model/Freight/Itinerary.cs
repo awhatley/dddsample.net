@@ -66,12 +66,12 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             Leg lastAdded = null;
             foreach(var leg in _legs)
             {
-                if(leg.voyage().sameAs(rescheduledVoyage))
+                if(leg.Voyage.sameAs(rescheduledVoyage))
                 {
                     Leg modifiedLeg = leg.withRescheduledVoyage(rescheduledVoyage);
                     // This truncates the itinerary if the voyage rescheduling makes
                     // it impossible to maintain the old unload-load chain.
-                    if(lastAdded != null && modifiedLeg.loadTime() < lastAdded.unloadTime())
+                    if(lastAdded != null && modifiedLeg.LoadTime < lastAdded.UnloadTime)
                     {
                         break;
                     }
@@ -103,7 +103,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <returns>The initial departure location.</returns>
         internal Location initialLoadLocation()
         {
-            return firstLeg().loadLocation();
+            return firstLeg().LoadLocation;
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <returns>The final arrival location.</returns>
         internal Location finalUnloadLocation()
         {
-            return lastLeg().unloadLocation();
+            return lastLeg().UnloadLocation;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <returns>Date when cargo arrives at final destination.</returns>
         internal DateTime finalUnloadTime()
         {
-            return lastLeg().unloadTime();
+            return lastLeg().UnloadTime;
         }
 
         /// <summary>
@@ -131,10 +131,10 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         internal List<Location> locations()
         {
             var result = new List<Location>(_legs.Count() + 1);
-            result.Add(firstLeg().loadLocation());
+            result.Add(firstLeg().LoadLocation);
             foreach(var leg in _legs)
             {
-                result.Add(leg.unloadLocation());
+                result.Add(leg.UnloadLocation);
             }
             return result;
         }
@@ -148,9 +148,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             foreach(var leg in _legs)
             {
-                if(leg.loadLocation().sameAs(location))
+                if(leg.LoadLocation.sameAs(location))
                 {
-                    return leg.loadTime();
+                    return leg.LoadTime;
                 }
             }
 
@@ -175,9 +175,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             foreach(var leg in _legs)
             {
-                if(leg.unloadLocation().sameAs(location))
+                if(leg.UnloadLocation.sameAs(location))
                 {
-                    return leg.unloadTime();
+                    return leg.UnloadTime;
                 }
             }
 
@@ -193,7 +193,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             if(previousActivity == null)
             {
-                return HandlingActivity.receiveIn(firstLeg().loadLocation());
+                return HandlingActivity.receiveIn(firstLeg().LoadLocation);
             }
             else
             {
@@ -256,11 +256,11 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             {
                 return LegActivityMatch.noMatch(handlingActivity, this);
             }
-            else if(handlingActivity.type() == HandlingActivityType.RECEIVE)
+            else if(handlingActivity.Type == HandlingActivityType.RECEIVE)
             {
                 return LegActivityMatch.ifLoadLocationSame(firstLeg(), handlingActivity, this);
             }
-            else if(handlingActivity.type() == HandlingActivityType.CLAIM)
+            else if(handlingActivity.Type == HandlingActivityType.CLAIM)
             {
                 return LegActivityMatch.ifUnloadLocationSame(lastLeg(), handlingActivity, this);
             }
@@ -294,15 +294,15 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
             foreach(var leg in _legs)
             {
-                if(leg.voyage().locations().Contains(location))
+                if(leg.Voyage.Locations.Contains(location))
                 {
-                    newLegs.Add(Leg.deriveLeg(leg.voyage(), leg.loadLocation(), location));
+                    newLegs.Add(Leg.deriveLeg(leg.Voyage, leg.LoadLocation, location));
                     break;
                 }
                 else
                 {
                     newLegs.Add(leg);
-                    if(leg.unloadLocation().sameAs(location))
+                    if(leg.UnloadLocation.sameAs(location))
                     {
                         break;
                     }
@@ -351,11 +351,11 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             }
             else
             {
-                if(handlingActivity.type() == HandlingActivityType.LOAD)
+                if(handlingActivity.Type == HandlingActivityType.LOAD)
                 {
                     return matchingLeg.deriveUnloadActivity();
                 }
-                else if(handlingActivity.type() == HandlingActivityType.UNLOAD)
+                else if(handlingActivity.Type == HandlingActivityType.UNLOAD)
                 {
                     return deriveFromNextLeg(nextLeg(matchingLeg));
                 }
@@ -371,7 +371,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             if(nextLeg == null)
             {
-                return HandlingActivity.claimIn(lastLeg().unloadLocation());
+                return HandlingActivity.claimIn(lastLeg().UnloadLocation);
             }
             else
             {

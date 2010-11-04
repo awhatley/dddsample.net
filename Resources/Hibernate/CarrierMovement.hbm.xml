@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+  <class name="DomainDrivenDelivery.Domain.Model.Travel.CarrierMovement" table="CarrierMovement" mutable="false">
+
+    <id name="_primaryKey" column="id">
+      <generator class="NHibernate.Id.IdentityGenerator"/>
+    </id>
+
+    <many-to-one name="_arrivalLocation" column="arrival_location_id" not-null="true" foreign-key="arrival_location_fk"/>
+    <property name="_arrivalTime" column="arrival_time" not-null="true"/>
+
+    <many-to-one name="_departureLocation" column="departure_location_id" not-null="true" foreign-key="departure_location_fk"/>
+    <property name="_departureTime" column="departure_time" not-null="true"/>
+    
+  </class>
+</hibernate-mapping>

@@ -26,27 +26,25 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
             this._schedule = schedule;
         }
 
-        public override VoyageNumber identity()
+        public override VoyageNumber Identity
         {
-            return _voyageNumber;
+            get { return _voyageNumber; }
         }
 
         /// <summary>
         /// Voyage number.
         /// </summary>
-        /// <returns>Voyage number.</returns>
-        public VoyageNumber voyageNumber()
+        public virtual VoyageNumber VoyageNumber
         {
-            return _voyageNumber;
+            get { return _voyageNumber; }
         }
 
         /// <summary>
         /// Schedule.
         /// </summary>
-        /// <returns>Schedule.</returns>
-        public Schedule schedule()
+        public virtual Schedule Schedule
         {
-            return _schedule;
+            get { return _schedule; }
         }
 
         /// <summary>
@@ -54,13 +52,13 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="location">location from where the rescheduled departure happens.</param>
         /// <param name="newDepartureTime">new departure time</param>
-        public void departureRescheduled(Location location, DateTime newDepartureTime)
+        public virtual void departureRescheduled(Location location, DateTime newDepartureTime)
         {
             var carrierMovements = new List<CarrierMovement>();
 
             foreach(CarrierMovement carrierMovement in _schedule.carrierMovements())
             {
-                if(carrierMovement.departureLocation().sameAs(location))
+                if(carrierMovement.DepartureLocation.sameAs(location))
                 {
                     carrierMovements.Add(carrierMovement.withDepartureTime(newDepartureTime));
                 }
@@ -74,28 +72,29 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         }
 
 
-        public Location arrivalLocationWhenDepartedFrom(Location departureLocation)
+        public virtual Location arrivalLocationWhenDepartedFrom(Location departureLocation)
         {
             foreach(CarrierMovement carrierMovement in _schedule.carrierMovements())
             {
-                if(carrierMovement.departureLocation().sameAs(departureLocation))
+                if(carrierMovement.DepartureLocation.sameAs(departureLocation))
                 {
-                    return carrierMovement.arrivalLocation();
+                    return carrierMovement.ArrivalLocation;
                 }
             }
 
             return Location.NONE;
         }
 
-        public IEnumerable<Location> locations()
+        public virtual IEnumerable<Location> Locations
         {
-            var locations = _schedule.carrierMovements()
-                .Select(cm => cm.departureLocation())
-                .ToList();
+            get
+            {
+                var locations = _schedule.carrierMovements().Select(cm => cm.DepartureLocation).ToList();
 
-            locations.Add(_schedule.carrierMovements().Last().arrivalLocation());
-               
-            return locations.AsReadOnly();
+                locations.Add(_schedule.carrierMovements().Last().ArrivalLocation);
+
+                return locations.AsReadOnly();
+            }
         }
 
         public override string ToString()
@@ -103,7 +102,7 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
             return _voyageNumber.stringValue();
         }
 
-        Voyage()
+        internal Voyage()
         {
             // Needed by Hibernate
             _voyageNumber = null;

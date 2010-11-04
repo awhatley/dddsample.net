@@ -12,7 +12,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
     {
         internal static CargoRoutingDTO toDTO(Cargo cargo)
         {
-            var itinerary = cargo.itinerary();
+            var itinerary = cargo.Itinerary;
 
             var legDTOList = new List<LegDTO>();
             if(itinerary != null)
@@ -23,21 +23,21 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
                 foreach(Leg leg in legs)
                 {
                     var legDTO = new LegDTO(
-                      leg.voyage().voyageNumber().stringValue(),
-                      leg.loadLocation().unLocode().stringValue(),
-                      leg.unloadLocation().unLocode().stringValue(),
-                      leg.loadTime(),
-                      leg.unloadTime());
+                      leg.Voyage.VoyageNumber.stringValue(),
+                      leg.LoadLocation.UnLocode.stringValue(),
+                      leg.UnloadLocation.UnLocode.stringValue(),
+                      leg.LoadTime,
+                      leg.UnloadTime);
                     legDTOList.Add(legDTO);
                 }
             }
 
             return new CargoRoutingDTO(
-              cargo.trackingId().stringValue(),
-              cargo.routeSpecification().origin().unLocode().stringValue(),
-              cargo.routeSpecification().destination().unLocode().stringValue(),
-              cargo.routeSpecification().arrivalDeadline(),
-              cargo.routingStatus() == RoutingStatus.MISROUTED,
+              cargo.TrackingId.stringValue(),
+              cargo.RouteSpecification.origin().UnLocode.stringValue(),
+              cargo.RouteSpecification.destination().UnLocode.stringValue(),
+              cargo.RouteSpecification.arrivalDeadline(),
+              cargo.RoutingStatus == RoutingStatus.MISROUTED,
               legDTOList
             );
         }
@@ -54,10 +54,10 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
 
         internal static LegDTO toLegDTO(Leg leg)
         {
-            var voyageNumber = leg.voyage().voyageNumber();
-            var from = leg.loadLocation().unLocode();
-            var to = leg.unloadLocation().unLocode();
-            return new LegDTO(voyageNumber.stringValue(), from.stringValue(), to.stringValue(), leg.loadTime(), leg.unloadTime());
+            var voyageNumber = leg.Voyage.VoyageNumber;
+            var from = leg.LoadLocation.UnLocode;
+            var to = leg.UnloadLocation.UnLocode;
+            return new LegDTO(voyageNumber.stringValue(), from.stringValue(), to.stringValue(), leg.LoadTime, leg.UnloadTime);
         }
 
         internal static Itinerary fromDTO(RouteCandidateDTO routeCandidateDTO,
@@ -78,7 +78,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
 
         internal static LocationDTO toDTO(Location location)
         {
-            return new LocationDTO(location.unLocode().stringValue(), location.name());
+            return new LocationDTO(location.UnLocode.stringValue(), location.Name);
         }
 
         internal static IEnumerable<LocationDTO> toDTOList(IEnumerable<Location> allLocations)

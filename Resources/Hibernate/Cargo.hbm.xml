@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+  <class name="DomainDrivenDelivery.Domain.Model.Freight.Cargo" table="Cargo">
+
+    <id name="_primaryKey" column="id">
+      <generator class="NHibernate.Id.IdentityGenerator"/>
+    </id>
+
+    <component name="_trackingId" unique="true" update="false">
+      <property name="_id" column="tracking_id"/>
+    </component>
+
+    <component name="_delivery">
+      <property name="_lastUpdatedOn" column="last_update" not-null="true"/>
+      <many-to-one name="_mostRecentPhysicalHandlingActivity" column="most_recent_physical_act" not-null="false" update="false" cascade="all"/>
+      <many-to-one name="_mostRecentHandlingActivity" column="most_recent_act" not-null="false" update="false" cascade="all"/>
+    </component>
+
+    <component name="_routeSpecification">
+      <many-to-one name="_origin" column="spec_origin_id" cascade="none" update="false" foreign-key="spec_origin_fk"/>
+      <many-to-one name="_destination" column="spec_destination_id" cascade="none" foreign-key="spec_destination_fk"/>
+      <property name="_arrivalDeadline" column="spec_arrival_deadline" not-null="true"/>
+    </component>
+
+    <component name="_itinerary">
+      <list name="_legs" lazy="true" cascade="all">
+        <key column="cargo_id" foreign-key="itinerary_fk"/>
+        <index column="leg_index"/>
+        <one-to-many class="DomainDrivenDelivery.Domain.Model.Freight.Leg"/>
+      </list>
+    </component>
+  </class>
+
+</hibernate-mapping>

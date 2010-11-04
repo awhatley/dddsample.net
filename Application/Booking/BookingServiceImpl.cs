@@ -44,9 +44,9 @@ namespace DomainDrivenDelivery.Application.Booking
             var cargo = new Cargo(trackingId, routeSpecification);
             _cargoRepository.store(cargo);
 
-            _logger.Info("Booked new cargo with tracking id " + cargo.trackingId().stringValue());
+            _logger.Info("Booked new cargo with tracking id " + cargo.TrackingId.stringValue());
 
-            return cargo.trackingId();
+            return cargo.TrackingId;
         }
 
         [Transaction(ReadOnly = true)]
@@ -56,7 +56,7 @@ namespace DomainDrivenDelivery.Application.Booking
             if(cargo == null)
                 return new List<Itinerary>();
 
-            return _routingService.fetchRoutesForSpecification(cargo.routeSpecification());
+            return _routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
         }
 
         [Transaction]
@@ -77,7 +77,7 @@ namespace DomainDrivenDelivery.Application.Booking
             Validate.notNull(cargo, "Can't change destination of non-existing cargo " + trackingId);
             var newDestination = _locationRepository.find(unLocode);
 
-            var routeSpecification = cargo.routeSpecification().withDestination(newDestination);
+            var routeSpecification = cargo.RouteSpecification.withDestination(newDestination);
             cargo.specifyNewRoute(routeSpecification);
 
             _cargoRepository.store(cargo);

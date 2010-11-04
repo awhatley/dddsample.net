@@ -61,7 +61,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             Assert.IsFalse(delivery.isUnloadedIn(routeSpecification.destination()));
             Assert.AreEqual(Location.NONE, delivery.lastKnownLocation());
             Assert.AreEqual(TransportStatus.NOT_RECEIVED, delivery.transportStatus());
-            Assert.IsTrue(delivery.lastUpdatedOn() < DateTime.Now);
+            Assert.That(delivery.lastUpdatedOn(), Is.InRange(DateTime.Now.AddSeconds(-1), DateTime.Now.AddSeconds(1)));
         }
 
         [Test]

@@ -10,7 +10,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
         {
             foreach(Location location in SampleLocations.getAll())
             {
-                if(location.unLocode().Equals(unLocode))
+                if(location.UnLocode.Equals(unLocode))
                 {
                     return location;
                 }

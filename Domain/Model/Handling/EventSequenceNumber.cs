@@ -8,11 +8,11 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     public class EventSequenceNumber : ValueObjectSupport<EventSequenceNumber>
     {
         private static long SEQUENCE = DateTime.Now.Millisecond;
-        private readonly long value;
+        private readonly long _value;
 
         private EventSequenceNumber(long value)
         {
-            this.value = value;
+            this._value = value;
         }
 
         public static EventSequenceNumber next()
@@ -27,18 +27,18 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
 
         public long longValue()
         {
-            return value;
+            return _value;
         }
 
         public override string ToString()
         {
-            return value.ToString();
+            return _value.ToString();
         }
 
         EventSequenceNumber()
         {
             // Needed by Hibernate
-            value = -1L;
+            _value = -1L;
         }
     }
 }

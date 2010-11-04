@@ -43,8 +43,8 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
         {
             cargoRepository.Expect(c => c.find(trackingId)).Return(cargo);
 
-            VoyageNumber voyageNumber = SampleVoyages.pacific1.voyageNumber();
-            UnLocode unLocode = L.STOCKHOLM.unLocode();
+            VoyageNumber voyageNumber = SampleVoyages.pacific1.VoyageNumber;
+            UnLocode unLocode = L.STOCKHOLM.UnLocode;
             HandlingEvent handlingEvent = factory.createHandlingEvent(new DateTime(100),
                 trackingId,
                 voyageNumber,
@@ -53,11 +53,11 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 new OperatorCode("ABCDE"));
 
             Assert.IsNotNull(handlingEvent);
-            Assert.AreEqual(L.STOCKHOLM, handlingEvent.location());
-            Assert.AreEqual(SampleVoyages.pacific1, handlingEvent.voyage());
-            Assert.AreEqual(cargo, handlingEvent.cargo());
-            Assert.AreEqual(new DateTime(100), handlingEvent.completionTime());
-            Assert.True(handlingEvent.registrationTime() < DateTime.Now.AddMilliseconds(1));
+            Assert.AreEqual(L.STOCKHOLM, handlingEvent.Location);
+            Assert.AreEqual(SampleVoyages.pacific1, handlingEvent.Voyage);
+            Assert.AreEqual(cargo, handlingEvent.Cargo);
+            Assert.AreEqual(new DateTime(100), handlingEvent.CompletionTime);
+            Assert.True(handlingEvent.RegistrationTime < DateTime.Now.AddMilliseconds(1));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
         {
             cargoRepository.Expect(c => c.find(trackingId)).Return(cargo);
 
-            UnLocode unLocode = L.STOCKHOLM.unLocode();
+            UnLocode unLocode = L.STOCKHOLM.UnLocode;
             HandlingEvent handlingEvent = factory.createHandlingEvent(new DateTime(100),
                 trackingId,
                 null,
@@ -74,11 +74,11 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 new OperatorCode("ABCDE"));
 
             Assert.IsNotNull(handlingEvent);
-            Assert.AreEqual(L.STOCKHOLM, handlingEvent.location());
-            Assert.AreEqual(Voyage.NONE, handlingEvent.voyage());
-            Assert.AreEqual(cargo, handlingEvent.cargo());
-            Assert.AreEqual(new DateTime(100), handlingEvent.completionTime());
-            Assert.True(handlingEvent.registrationTime() < DateTime.Now.AddMilliseconds(1));
+            Assert.AreEqual(L.STOCKHOLM, handlingEvent.Location);
+            Assert.AreEqual(Voyage.NONE, handlingEvent.Voyage);
+            Assert.AreEqual(cargo, handlingEvent.Cargo);
+            Assert.AreEqual(new DateTime(100), handlingEvent.CompletionTime);
+            Assert.True(handlingEvent.RegistrationTime < DateTime.Now.AddMilliseconds(1));
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
             {
                 factory.createHandlingEvent(new DateTime(100),
                     trackingId,
-                    SampleVoyages.pacific1.voyageNumber(),
+                    SampleVoyages.pacific1.VoyageNumber,
                     invalid,
                     HandlingActivityType.LOAD,
                     new OperatorCode("ABCDE"));
@@ -113,7 +113,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
                 factory.createHandlingEvent(new DateTime(100),
                     trackingId,
                     invalid,
-                    L.STOCKHOLM.unLocode(),
+                    L.STOCKHOLM.UnLocode,
                     HandlingActivityType.LOAD,
                     new OperatorCode("ABCDE"));
                 Assert.Fail("Expected UnknownVoyageException");
@@ -132,8 +132,8 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
             {
                 factory.createHandlingEvent(new DateTime(100),
                     trackingId,
-                    SampleVoyages.pacific1.voyageNumber(),
-                    L.STOCKHOLM.unLocode(),
+                    SampleVoyages.pacific1.VoyageNumber,
+                    L.STOCKHOLM.UnLocode,
                     HandlingActivityType.LOAD,
                     new OperatorCode("ABCDE"));
                 Assert.Fail("Expected UnknownCargoException");

@@ -49,12 +49,12 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
             var it = handlingEvents.GetEnumerator();
             it.MoveNext();
 
-            var firstCargo = it.Current.cargo();
+            var firstCargo = it.Current.Cargo;
             Validate.notNull(firstCargo, "Cargo is required");
 
             while(it.MoveNext())
             {
-                var nextCargo = it.Current.cargo();
+                var nextCargo = it.Current.Cargo;
                 Validate.isTrue(firstCargo.sameAs(nextCargo),
                   "A handling history can only contain handling events for a unique cargo. " +
                     "First event is for cargo " + firstCargo + ", also discovered cargo " + nextCargo
@@ -86,10 +86,10 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
             var filtered = new List<HandlingEvent>();
             foreach(HandlingEvent @event in unfilteredEvents)
             {
-                if(@event.type().Equals(HandlingActivityType.RECEIVE)) filtered.Add(@event);
-                if(@event.type().Equals(HandlingActivityType.LOAD)) filtered.Add(@event);
-                if(@event.type().Equals(HandlingActivityType.UNLOAD)) filtered.Add(@event);
-                if(@event.type().Equals(HandlingActivityType.CLAIM)) filtered.Add(@event);
+                if(@event.Type.Equals(HandlingActivityType.RECEIVE)) filtered.Add(@event);
+                if(@event.Type.Equals(HandlingActivityType.LOAD)) filtered.Add(@event);
+                if(@event.Type.Equals(HandlingActivityType.UNLOAD)) filtered.Add(@event);
+                if(@event.Type.Equals(HandlingActivityType.CLAIM)) filtered.Add(@event);
             }
             return filtered.AsReadOnly();
         }
@@ -157,6 +157,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         }
 
         private static readonly Comparison<HandlingEvent> BY_COMPLETION_TIME_COMPARATOR =
-            (he1, he2) => he1.completionTime().CompareTo(he2.completionTime());
+            (he1, he2) => he1.CompletionTime.CompareTo(he2.CompletionTime);
     }
 }

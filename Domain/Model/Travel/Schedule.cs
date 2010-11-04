@@ -45,9 +45,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         {
             foreach(CarrierMovement movement in _carrierMovements)
             {
-                if(movement.departureLocation().sameAs(location))
+                if(movement.DepartureLocation.sameAs(location))
                 {
-                    return movement.departureTime();
+                    return movement.DepartureTime;
                 }
             }
             return DateTime.MinValue;
@@ -62,9 +62,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         {
             foreach(CarrierMovement movement in _carrierMovements)
             {
-                if(movement.arrivalLocation().sameAs(location))
+                if(movement.ArrivalLocation.sameAs(location))
                 {
-                    return movement.arrivalTime();
+                    return movement.ArrivalTime;
                 }
             }
             return DateTime.MinValue;

@@ -55,17 +55,17 @@ namespace DomainDrivenDelivery.Application.Handling
         [Test]
         public void testRegisterEvent()
         {
-            cargoRepository.Expect(cr => cr.find(cargo.trackingId())).Return(cargo);
-            voyageRepository.Expect(vr => vr.find(SampleVoyages.pacific1.voyageNumber())).Return(SampleVoyages.pacific1);
-            locationRepository.Expect(lr => lr.find(L.STOCKHOLM.unLocode())).Return(L.STOCKHOLM);
+            cargoRepository.Expect(cr => cr.find(cargo.TrackingId)).Return(cargo);
+            voyageRepository.Expect(vr => vr.find(SampleVoyages.pacific1.VoyageNumber)).Return(SampleVoyages.pacific1);
+            locationRepository.Expect(lr => lr.find(L.STOCKHOLM.UnLocode)).Return(L.STOCKHOLM);
 
             handlingEventRepository.Expect(her => her.store(Arg<HandlingEvent>.Is.TypeOf));
             systemEvents.Expect(se => se.notifyOfHandlingEvent(Arg<HandlingEvent>.Is.TypeOf));
 
             service.registerHandlingEvent(DateTime.Now,
-                cargo.trackingId(),
-                SampleVoyages.pacific1.voyageNumber(),
-                L.STOCKHOLM.unLocode(),
+                cargo.TrackingId,
+                SampleVoyages.pacific1.VoyageNumber,
+                L.STOCKHOLM.UnLocode,
                 HandlingActivityType.LOAD,
                 new OperatorCode("ABCDE"));
         }

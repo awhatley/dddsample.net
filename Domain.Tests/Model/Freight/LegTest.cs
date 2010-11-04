@@ -28,10 +28,10 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Leg chicagoToDallas = Leg.deriveLeg(voyage, L.CHICAGO, L.DALLAS);
 
-            Assert.AreEqual(chicagoToDallas.loadTime(), DateTime.Parse("2008-10-24 21:25"));
-            Assert.AreEqual(chicagoToDallas.loadLocation(), L.CHICAGO);
-            Assert.AreEqual(chicagoToDallas.unloadTime(), DateTime.Parse("2008-10-25 19:30"));
-            Assert.AreEqual(chicagoToDallas.unloadLocation(), L.DALLAS);
+            Assert.AreEqual(chicagoToDallas.LoadTime, DateTime.Parse("2008-10-24 21:25"));
+            Assert.AreEqual(chicagoToDallas.LoadLocation, L.CHICAGO);
+            Assert.AreEqual(chicagoToDallas.UnloadTime, DateTime.Parse("2008-10-25 19:30"));
+            Assert.AreEqual(chicagoToDallas.UnloadLocation, L.DALLAS);
         }
 
         [Test]
@@ -39,10 +39,10 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             Leg newYorkToDallas = Leg.deriveLeg(voyage, L.NEWYORK, L.DALLAS);
 
-            Assert.AreEqual(newYorkToDallas.loadTime(), DateTime.Parse("2008-10-24 07:00"));
-            Assert.AreEqual(newYorkToDallas.loadLocation(), L.NEWYORK);
-            Assert.AreEqual(newYorkToDallas.unloadTime(), DateTime.Parse("2008-10-25 19:30"));
-            Assert.AreEqual(newYorkToDallas.unloadLocation(), L.DALLAS);
+            Assert.AreEqual(newYorkToDallas.LoadTime, DateTime.Parse("2008-10-24 07:00"));
+            Assert.AreEqual(newYorkToDallas.LoadLocation, L.NEWYORK);
+            Assert.AreEqual(newYorkToDallas.UnloadTime, DateTime.Parse("2008-10-25 19:30"));
+            Assert.AreEqual(newYorkToDallas.UnloadLocation, L.DALLAS);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         public void intermediateLocations()
         {
             Leg leg = Leg.deriveLeg(SampleVoyages.HONGKONG_TO_NEW_YORK, L.HONGKONG, L.NEWYORK);
-            Assert.AreEqual(new[] {L.HANGZOU, L.TOKYO, L.MELBOURNE}.ToList(), leg.intermediateLocations());
+            Assert.AreEqual(new[] {L.HANGZOU, L.TOKYO, L.MELBOURNE}.ToList(), leg.IntermediateLocations);
         }
     }
 }

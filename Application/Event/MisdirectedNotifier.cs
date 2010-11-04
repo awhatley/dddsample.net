@@ -24,7 +24,7 @@ namespace DomainDrivenDelivery.Application.Event
         {
             var cargo = cargoRepository.find(trackingId);
 
-            if(cargo.isMisdirected())
+            if(cargo.IsMisdirected)
             {
                 /**
                  * In a real system, some significant action would be taken

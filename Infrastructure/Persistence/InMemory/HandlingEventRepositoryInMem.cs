@@ -10,7 +10,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
     {
         private Dictionary<TrackingId, List<HandlingEvent>> eventMap = new Dictionary<TrackingId, List<HandlingEvent>>();
         private static readonly Comparison<HandlingEvent> BY_COMPLETION_TIME_DESC = (o1, o2) =>
-            o2.completionTime().CompareTo(o1.completionTime());
+            o2.CompletionTime.CompareTo(o1.CompletionTime);
 
         public HandlingEvent find(EventSequenceNumber eventSequenceNumber)
         {
@@ -18,7 +18,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
             {
                 foreach(HandlingEvent handlingEvent in handlingEvents)
                 {
-                    if(handlingEvent.sequenceNumber().sameValueAs(eventSequenceNumber))
+                    if(handlingEvent.SequenceNumber.sameValueAs(eventSequenceNumber))
                     {
                         return handlingEvent;
                     }
@@ -30,7 +30,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 
         public void store(HandlingEvent @event)
         {
-            var trackingId = @event.cargo().trackingId();
+            var trackingId = @event.Cargo.TrackingId;
             List<HandlingEvent> list;
             if(eventMap.TryGetValue(trackingId, out list) == false)
                 eventMap[trackingId] = list = new List<HandlingEvent>();
@@ -40,7 +40,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 
         public HandlingHistory lookupHandlingHistoryOfCargo(Cargo cargo)
         {
-            var events = eventMap[cargo.trackingId()];
+            var events = eventMap[cargo.TrackingId];
 
             if(events == null)
             {
@@ -54,7 +54,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.InMemory
 
         public HandlingEvent mostRecentHandling(Cargo cargo)
         {
-            var handlingEvents = eventMap[cargo.trackingId()];
+            var handlingEvents = eventMap[cargo.TrackingId];
             if(handlingEvents == null)
             {
                 return null;

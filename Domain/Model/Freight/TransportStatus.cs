@@ -21,7 +21,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
                 return TransportStatus.NOT_RECEIVED;
             }
 
-            switch(handlingActivity.type())
+            switch(handlingActivity.Type)
             {
                 case HandlingActivityType.LOAD:
                     return TransportStatus.ONBOARD_CARRIER;

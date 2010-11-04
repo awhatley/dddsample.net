@@ -11,7 +11,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Entity
         public void testOneAnnotationSuccess()
         {
             OneAnnotationEntity entity = new OneAnnotationEntity("id");
-            Assert.AreEqual("id", entity.identity());
+            Assert.AreEqual("id", entity.Identity);
         }
 
         [Test]
@@ -40,9 +40,9 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Entity
                 this.id = id;
             }
 
-            public override string identity()
+            public override string Identity
             {
-                return id;
+                get { return id; }
             }
         }
     }

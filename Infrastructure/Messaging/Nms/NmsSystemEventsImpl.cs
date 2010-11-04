@@ -28,13 +28,13 @@ namespace DomainDrivenDelivery.Infrastructure.Messaging.Nms
 
         public void notifyOfHandlingEvent(HandlingEvent @event)
         {
-            var cargo = @event.cargo();
-            nmsOperations.SendWithDelegate(cargoHandledDestination, s => s.CreateObjectMessage(cargo.trackingId()));
+            var cargo = @event.Cargo;
+            nmsOperations.SendWithDelegate(cargoHandledDestination, s => s.CreateObjectMessage(cargo.TrackingId));
         }
 
         public void notifyOfCargoUpdate(Cargo cargo)
         {
-            nmsOperations.SendWithDelegate(cargoUpdateDestination, s => s.CreateObjectMessage(cargo.trackingId()));
+            nmsOperations.SendWithDelegate(cargoUpdateDestination, s => s.CreateObjectMessage(cargo.TrackingId));
         }
     }
 }
