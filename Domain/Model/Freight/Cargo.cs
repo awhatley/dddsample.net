@@ -47,11 +47,6 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
     /// </remarks>
     public class Cargo : EntitySupport<Cargo, TrackingId>
     {
-        private readonly TrackingId _trackingId;
-        private RouteSpecification _routeSpecification;
-        private Itinerary _itinerary;
-        private Delivery _delivery;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Cargo"/> class.
         /// </summary>
@@ -62,9 +57,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             Validate.notNull(trackingId, "Tracking ID is required");
             Validate.notNull(routeSpecification, "Route specification is required");
 
-            _trackingId = trackingId;
-            _routeSpecification = routeSpecification;
-            _delivery = Delivery.beforeHandling();
+            TrackingId = trackingId;
+            RouteSpecification = routeSpecification;
+            Delivery = Delivery.BeforeHandling();
         }
 
         /// <summary>
@@ -73,32 +68,28 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <value>Tracking id.</value>
         public override TrackingId Identity
         {
-            get { return _trackingId; }
+            get { return TrackingId; }
         }
 
         /// <summary>
         /// The tracking id is the identity of this entity, and is unique.
         /// </summary>
-        public virtual TrackingId TrackingId
-        {
-            get { return _trackingId; }
-        }
+        public virtual TrackingId TrackingId { get; private set; }
 
         /// <summary>
         /// The itinerary.
         /// </summary>
-        public virtual Itinerary Itinerary
-        {
-            get { return _itinerary; }
-        }
+        public virtual Itinerary Itinerary { get; private set; }
 
         /// <summary>
         /// The route specification.
         /// </summary>
-        public virtual RouteSpecification RouteSpecification
-        {
-            get { return _routeSpecification; }
-        }
+        public virtual RouteSpecification RouteSpecification { get; private set; }
+
+        /// <summary>
+        /// The delivery.
+        /// </summary>
+        private Delivery Delivery { get; set; }
 
         /// <summary>
         /// Estimated time of arrival.
@@ -107,14 +98,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             get
             {
-                if(_delivery.isOnRoute(_itinerary, _routeSpecification))
-                {
-                    return _itinerary.estimatedTimeOfArrival();
-                }
-                else
-                {
-                    return DateTime.MinValue;
-                }
+                return Delivery.IsOnRoute(Itinerary, RouteSpecification)
+                    ? Itinerary.EstimatedTimeOfArrival
+                    : DateTime.MinValue;
             }
         }
 
@@ -126,19 +112,12 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             get
             {
-                if(!_delivery.isOnRoute(_itinerary, _routeSpecification))
-                {
+                if(!Delivery.IsOnRoute(Itinerary, RouteSpecification))
                     return null;
-                }
 
-                if(_delivery.isUnloadedIn(customsClearancePoint()))
-                {
-                    return HandlingActivity.customsIn(customsClearancePoint());
-                }
-                else
-                {
-                    return _itinerary.activitySucceeding(_delivery.mostRecentPhysicalHandlingActivity());
-                }
+                return Delivery.IsUnloadedIn(CustomsClearancePoint)
+                    ? HandlingActivity.CustomsIn(CustomsClearancePoint)
+                    : Itinerary.ActivitySucceeding(Delivery.MostRecentPhysicalHandlingActivity);
             }
         }
 
@@ -147,7 +126,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         public virtual bool IsMisdirected
         {
-            get { return _delivery.isMisdirected(_itinerary); }
+            get { return Delivery.IsMisdirected(Itinerary); }
         }
 
         /// <summary>
@@ -155,7 +134,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         public virtual TransportStatus TransportStatus
         {
-            get { return _delivery.transportStatus(); }
+            get { return Delivery.TransportStatus; }
         }
 
         /// <summary>
@@ -163,7 +142,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         public virtual RoutingStatus RoutingStatus
         {
-            get { return _delivery.routingStatus(_itinerary, _routeSpecification); }
+            get { return RouteSpecification.StatusOf(Itinerary); }
         }
 
         /// <summary>
@@ -171,7 +150,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         public virtual Voyage CurrentVoyage
         {
-            get { return _delivery.currentVoyage(); }
+            get { return Delivery.CurrentVoyage; }
         }
 
         /// <summary>
@@ -179,7 +158,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         public virtual Location LastKnownLocation
         {
-            get { return _delivery.lastKnownLocation(); }
+            get { return Delivery.LastKnownLocation; }
         }
 
         /// <summary>
@@ -197,90 +176,82 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// since <see cref="HandlingEvent"/> is in a different aggregate.
         /// </remarks>
         /// <param name="handlingActivity">handling activity</param>
-        public virtual void handled(HandlingActivity handlingActivity)
+        public virtual void Handled(HandlingActivity handlingActivity)
         {
             Validate.notNull(handlingActivity, "Handling activity is required");
 
-            if(succedsMostRecentActivity(handlingActivity))
-            {
-                this._delivery = _delivery.onHandling(handlingActivity);
-            }
+            if(SuccedsMostRecentActivity(handlingActivity))
+                Delivery = Delivery.OnHandling(handlingActivity);
         }
 
         /// <summary>
         /// Specifies a new route for this cargo.
         /// </summary>
         /// <param name="routeSpecification">route specification.</param>
-        public virtual void specifyNewRoute(RouteSpecification routeSpecification)
+        public virtual void SpecifyNewRoute(RouteSpecification routeSpecification)
         {
             Validate.notNull(routeSpecification, "Route specification is required");
-
-            this._routeSpecification = routeSpecification;
+            RouteSpecification = routeSpecification;
         }
 
         /// <summary>
         /// Attach a new itinerary to this cargo.
         /// </summary>
         /// <param name="itinerary">an itinerary. May not be null.</param>
-        public virtual void assignToRoute(Itinerary itinerary)
+        public virtual void AssignToRoute(Itinerary itinerary)
         {
             Validate.notNull(itinerary, "Itinerary is required");
 
             if(RoutingStatus != RoutingStatus.NOT_ROUTED)
-            {
-                this._delivery = _delivery.onRouting();
-            }
-            this._itinerary = itinerary;
+                Delivery = Delivery.OnRouting();
+
+            Itinerary = itinerary;
         }
 
         /// <summary>
         /// Customs zone.
         /// </summary>
-        /// <returns>Customs zone.</returns>
-        public virtual CustomsZone customsZone()
+        /// <value>Customs zone.</value>
+        public virtual CustomsZone CustomsZone
         {
-            return _routeSpecification.destination().CustomsZone;
+            get { return RouteSpecification.Destination.CustomsZone; }
         }
 
         /// <summary>
         /// Customs clearance point.
         /// </summary>
-        /// <returns>Customs clearance point.</returns>
-        public virtual Location customsClearancePoint()
+        /// <value>Customs clearance point.</value>
+        public virtual Location CustomsClearancePoint
         {
-            if(RoutingStatus == RoutingStatus.NOT_ROUTED)
+            get
             {
-                return Location.NONE;
-            }
-            else
-            {
-                return customsZone().entryPoint(_itinerary.locations());
+                return RoutingStatus == RoutingStatus.NOT_ROUTED
+                    ? Location.None
+                    : CustomsZone.EntryPoint(Itinerary.Locations);
             }
         }
 
         /// <summary>
         /// True if the cargo is ready to be claimed.
         /// </summary>
-        /// <returns>True if the cargo is ready to be claimed.</returns>
-        public virtual bool isReadyToClaim()
+        /// <value>True if the cargo is ready to be claimed.</value>
+        public virtual bool IsReadyToClaim
         {
-            if(customsClearancePoint().sameAs(_routeSpecification.destination()))
+            get
             {
-                return HandlingActivity.customsIn(customsClearancePoint()).sameValueAs(mostRecentHandlingActivity());
-            }
-            else
-            {
-                return _delivery.isUnloadedIn(_routeSpecification.destination());
+                return CustomsClearancePoint.sameAs(RouteSpecification.Destination)
+                    ? HandlingActivity.CustomsIn(CustomsClearancePoint).sameValueAs(MostRecentHandlingActivity)
+                    : Delivery.IsUnloadedIn(RouteSpecification.Destination);
             }
         }
 
         /// <summary>
         /// Most recent handling activity, or null if never handled.
         /// </summary>
-        /// <returns>Most recent handling activity, or null if never handled.</returns>
-        public virtual HandlingActivity mostRecentHandlingActivity()
+        /// <value>Most recent handling activity, or null if never handled.</value>
+        public virtual HandlingActivity MostRecentHandlingActivity
         {
-            return _delivery.mostRecentHandlingActivity();
+            get { return Delivery.MostRecentHandlingActivity; }
         }
 
         /// <summary>
@@ -290,23 +261,17 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// If the cargo is in port, it's the current location.
         /// If it's onboard a carrier it's the next arrival location.
         /// </remarks>
-        /// <returns>The earliest rerouting location.</returns>
-        public virtual Location earliestReroutingLocation()
+        /// <value>The earliest rerouting location.</value>
+        public virtual Location EarliestReroutingLocation
         {
-            if(IsMisdirected)
+            get
             {
-                if(TransportStatus == TransportStatus.ONBOARD_CARRIER)
-                {
-                    return CurrentVoyage.arrivalLocationWhenDepartedFrom(LastKnownLocation);
-                }
-                else
-                {
-                    return LastKnownLocation;
-                }
-            }
-            else
-            {
-                return _itinerary.matchLeg(_delivery.mostRecentPhysicalHandlingActivity()).leg().UnloadLocation;
+                if(IsMisdirected)
+                    return TransportStatus == TransportStatus.ONBOARD_CARRIER
+                        ? CurrentVoyage.ArrivalLocationWhenDepartedFrom(LastKnownLocation)
+                        : LastKnownLocation;
+
+                return Itinerary.MatchLeg(Delivery.MostRecentPhysicalHandlingActivity).Leg.UnloadLocation;
             }
         }
 
@@ -316,55 +281,39 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="other">itinerary</param>
         /// <returns>A merge between the current itinerary and the provided itinerary
         /// that describes a continuous route even if the cargo is currently misdirected.</returns>
-        public virtual Itinerary itineraryMergedWith(Itinerary other)
+        public virtual Itinerary ItineraryMergedWith(Itinerary other)
         {
             if(RoutingStatus == RoutingStatus.NOT_ROUTED)
-            {
                 return other;
-            }
-            else if(IsMisdirected && TransportStatus == TransportStatus.ONBOARD_CARRIER)
-            {
-                Leg currentLeg = Leg.deriveLeg(
-                  CurrentVoyage, LastKnownLocation, CurrentVoyage.arrivalLocationWhenDepartedFrom(LastKnownLocation)
-                );
 
-                return this.Itinerary.
-                  truncatedAfter(LastKnownLocation).
-                  withLeg(currentLeg).
-                  appendBy(other);
-            }
-            else
+            if(IsMisdirected && TransportStatus == TransportStatus.ONBOARD_CARRIER)
             {
-                return this.Itinerary.
-                  truncatedAfter(earliestReroutingLocation()).
-                  appendBy(other);
+                var currentLeg = Leg.DeriveLeg(CurrentVoyage, LastKnownLocation,
+                    CurrentVoyage.ArrivalLocationWhenDepartedFrom(LastKnownLocation));
+
+                return Itinerary.TruncatedAfter(LastKnownLocation).WithLeg(currentLeg).AppendBy(other);
             }
+            
+            return Itinerary.TruncatedAfter(EarliestReroutingLocation).AppendBy(other);
         }
 
-        private bool succedsMostRecentActivity(HandlingActivity newHandlingActivity)
+        private bool SuccedsMostRecentActivity(HandlingActivity newHandlingActivity)
         {
-            if(_delivery.hasBeenHandled())
-            {
-                HandlingActivity priorActivity = _itinerary.strictlyPriorOf(
-                  _delivery.mostRecentPhysicalHandlingActivity(), newHandlingActivity
-                );
-                return !newHandlingActivity.sameValueAs(priorActivity);
-            }
-            else
-            {
+            if(!Delivery.HasBeenHandled)
                 return true;
-            }
+
+            var mostRecentPhysicalHandlingActivity = Delivery.MostRecentPhysicalHandlingActivity;
+            var priorActivity = Itinerary.StrictlyPriorOf(mostRecentPhysicalHandlingActivity, newHandlingActivity);
+            return !newHandlingActivity.sameValueAs(priorActivity);
         }
 
         public override string ToString()
         {
-            return _trackingId + " (" + _routeSpecification + ")";
+            return TrackingId + " (" + RouteSpecification + ")";
         }
 
-        internal Cargo()
+        protected internal Cargo()
         {
-            // Needed by Hibernate
-            _trackingId = null;
         }
     }
 }

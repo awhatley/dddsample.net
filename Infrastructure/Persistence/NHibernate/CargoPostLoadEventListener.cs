@@ -10,12 +10,12 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
     public class CargoPostLoadEventListener : DefaultPostLoadEventListener
     {
-        private static readonly FieldInfo ITINERARY_FIELD;
+        private static readonly PropertyInfo ItineraryProperty;
         static CargoPostLoadEventListener()
         {
-            ITINERARY_FIELD = typeof(Cargo).GetField("_itinerary", BindingFlags.NonPublic | BindingFlags.Instance);
-            if(ITINERARY_FIELD == null)
-                throw new TargetException("itinerary field not found");
+            ItineraryProperty = typeof(Cargo).GetProperty("Itinerary", BindingFlags.Public | BindingFlags.Instance);
+            if(ItineraryProperty == null)
+                throw new TargetException("Itinerary property not found");
         }
 
         public override void OnPostLoad(PostLoadEvent @event)
@@ -31,9 +31,9 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
                  * on Cargo.
                  */
                 Cargo cargo = (Cargo)@event.Entity;
-                if(cargo.Itinerary != null && !cargo.Itinerary.legs().Any())
+                if(cargo.Itinerary != null && !cargo.Itinerary.Legs.Any())
                 {
-                    ITINERARY_FIELD.SetValue(cargo, null);
+                    ItineraryProperty.SetValue(cargo, null, null);
                 }
             }
 

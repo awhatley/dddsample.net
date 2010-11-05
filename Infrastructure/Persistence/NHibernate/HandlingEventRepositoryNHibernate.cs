@@ -25,7 +25,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public HandlingEvent find(EventSequenceNumber eventSequenceNumber)
         {
             return sessionFactory.GetCurrentSession().
-              CreateQuery("from HandlingEvent where _sequenceNumber = :sn").
+              CreateQuery("from HandlingEvent where SequenceNumber = :sn").
               SetParameter("sn", eventSequenceNumber).
               UniqueResult<HandlingEvent>();
         }
@@ -38,7 +38,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public HandlingHistory lookupHandlingHistoryOfCargo(Cargo cargo)
         {
             var handlingEvents = sessionFactory.GetCurrentSession().
-              CreateQuery("from HandlingEvent where _cargo._trackingId = :tid").
+              CreateQuery("from HandlingEvent where Cargo.TrackingId = :tid").
               SetParameter("tid", cargo.TrackingId).
               List<HandlingEvent>();
 
@@ -56,7 +56,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public HandlingEvent mostRecentHandling(Cargo cargo)
         {
             return sessionFactory.GetCurrentSession().
-                CreateQuery("from HandlingEvent where _cargo = :cargo order by _completionTime desc").
+                CreateQuery("from HandlingEvent where Cargo = :cargo order by completionTime desc").
                 SetParameter("cargo", cargo).
                 SetMaxResults(1).
                 UniqueResult<HandlingEvent>();

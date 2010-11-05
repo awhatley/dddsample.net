@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
-
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2">
   <class name="DomainDrivenDelivery.Domain.Model.Shared.HandlingActivity">
-      <id name="_primaryKey" column="id">
-        <generator class="NHibernate.Id.IdentityGenerator"/>
-      </id>
-      <many-to-one name="_location" column="location_id" foreign-key="location_fk" cascade="none" update="false" fetch="join"/>
-      <property name="_type" column="handling_event_type" type="NHibernate.Type.EnumStringType`1[[DomainDrivenDelivery.Domain.Model.Shared.HandlingActivityType, DomainDrivenDelivery.Domain]], NHibernate" update="false" />
-      <many-to-one name="_voyage" column="voyage_id" foreign-key="voyage_fk" not-null="false" cascade="none" update="false" fetch="join"/>
-  </class>
 
+    <id name="_primaryKey" access="field" column="id">
+      <generator class="NHibernate.Id.IdentityGenerator"/>
+    </id>
+
+    <many-to-one name="Location" column="location_id" foreign-key="location_fk" cascade="none" update="false" fetch="join"/>
+    <property name="Type" column="handling_event_type" type="NHibernate.Type.EnumStringType`1[[DomainDrivenDelivery.Domain.Model.Shared.HandlingActivityType, DomainDrivenDelivery.Domain]], NHibernate" update="false" />
+    <many-to-one name="Voyage" column="voyage_id" foreign-key="voyage_fk" not-null="false" cascade="none" update="false" fetch="join"/>
+
+  </class>
 </hibernate-mapping>

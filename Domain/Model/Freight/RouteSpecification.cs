@@ -13,15 +13,26 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
     /// </summary>
     public class RouteSpecification : ValueObjectSupport<RouteSpecification>
     {
-        private readonly Location _origin;
-        private readonly Location _destination;
-        private readonly DateTime _arrivalDeadline;
-
         // Delegate specifications
-        private readonly Specification<Itinerary> notNull;
-        private readonly Specification<Itinerary> sameOrigin;
-        private readonly Specification<Itinerary> sameDestination;
-        private readonly Specification<Itinerary> meetsDeadline;
+        private readonly Specification<Itinerary> _notNull;
+        private readonly Specification<Itinerary> _sameOrigin;
+        private readonly Specification<Itinerary> _sameDestination;
+        private readonly Specification<Itinerary> _meetsDeadline;
+
+        /// <summary>
+        /// Specified origin location.
+        /// </summary>
+        public virtual Location Origin { get; private set; }
+
+        /// <summary>
+        /// Specified destination location.
+        /// </summary>
+        public virtual Location Destination { get; private set; }
+
+        /// <summary>
+        /// Arrival deadline.
+        /// </summary>
+        public virtual DateTime ArrivalDeadline { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RouteSpecification"/> class.
@@ -29,19 +40,15 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="origin">origin location - can't be the same as the destination</param>
         /// <param name="destination">destination location - can't be the same as the origin</param>
         /// <param name="arrivalDeadline">arrival deadline</param>
-        public RouteSpecification(Location origin, Location destination, DateTime arrivalDeadline)
+        public RouteSpecification(Location origin, Location destination, DateTime arrivalDeadline) : this()
         {
             Validate.notNull(origin, "Origin is required");
             Validate.notNull(destination, "Destination is required");
             Validate.isTrue(!origin.sameAs(destination), "Origin and destination can't be the same: " + origin);
 
-            this._origin = origin;
-            this._destination = destination;
-            this._arrivalDeadline = arrivalDeadline;
-            this.notNull = new NotNullSpecification();
-            this.sameOrigin = new SameOriginSpecification(this);
-            this.sameDestination = new SameDestinationSpecification(this);
-            this.meetsDeadline = new MeetsDeadlineSpecification(this);
+            Origin = origin;
+            Destination = destination;
+            ArrivalDeadline = arrivalDeadline;
         }
 
         /// <summary>
@@ -50,36 +57,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="itinerary">itinerary</param>
         /// <returns>True if this route specification is satisfied by the itinerary,
         /// i.e. the cargo will be delivered according to requirements.</returns>
-        public bool isSatisfiedBy(Itinerary itinerary)
+        public virtual bool IsSatisfiedBy(Itinerary itinerary)
         {
-            return notNull.and(sameOrigin).and(sameDestination).and(meetsDeadline).isSatisfiedBy(itinerary);
-        }
-
-        /// <summary>
-        /// Specified origin location.
-        /// </summary>
-        /// <returns>Specified origin location.</returns>
-        public Location origin()
-        {
-            return _origin;
-        }
-
-        /// <summary>
-        /// Specified destination location.
-        /// </summary>
-        /// <returns>Specified destination location.</returns>
-        public Location destination()
-        {
-            return _destination;
-        }
-
-        /// <summary>
-        /// Arrival deadline.
-        /// </summary>
-        /// <returns>Arrival deadline.</returns>
-        public DateTime arrivalDeadline()
-        {
-            return _arrivalDeadline;
+            return _notNull.and(_sameOrigin).and(_sameDestination).and(_meetsDeadline).isSatisfiedBy(itinerary);
         }
 
         /// <summary>
@@ -87,9 +67,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="newDestination">destination of new route specification</param>
         /// <returns>A copy of this route specification but with new destination</returns>
-        public RouteSpecification withDestination(Location newDestination)
+        public virtual RouteSpecification WithDestination(Location newDestination)
         {
-            return new RouteSpecification(_origin, newDestination, _arrivalDeadline);
+            return new RouteSpecification(Origin, newDestination, ArrivalDeadline);
         }
 
         /// <summary>
@@ -97,9 +77,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="newOrigin">origin of new route specification</param>
         /// <returns>A copy of this route specification but with the new origin</returns>
-        public RouteSpecification withOrigin(Location newOrigin)
+        public virtual RouteSpecification WithOrigin(Location newOrigin)
         {
-            return new RouteSpecification(newOrigin, _destination, _arrivalDeadline);
+            return new RouteSpecification(newOrigin, Destination, ArrivalDeadline);
         }
 
         /// <summary>
@@ -107,24 +87,35 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="newArrivalDeadline">arrival deadline of new route specification</param>
         /// <returns>A copy of this route specification but with the new arrival deadline</returns>
-        public RouteSpecification withArrivalDeadline(DateTime newArrivalDeadline)
+        public virtual RouteSpecification WithArrivalDeadline(DateTime newArrivalDeadline)
         {
-            return new RouteSpecification(_origin, _destination, newArrivalDeadline);
+            return new RouteSpecification(Origin, Destination, newArrivalDeadline);
+        }
+
+        /// <summary>
+        /// Routing status.
+        /// </summary>
+        /// <param name="itinerary">itinerary</param>
+        /// <returns>Routing status.</returns>
+        public virtual RoutingStatus StatusOf(Itinerary itinerary)
+        {
+            if(itinerary == null)
+                return RoutingStatus.NOT_ROUTED;
+
+            return IsSatisfiedBy(itinerary) ? RoutingStatus.ROUTED : RoutingStatus.MISROUTED;
         }
 
         public override string ToString()
         {
-            return _origin + " - " + _destination + " by " + _arrivalDeadline;
+            return Origin + " - " + Destination + " by " + ArrivalDeadline;
         }
 
-        RouteSpecification()
+        protected internal RouteSpecification()
         {
-            // Needed by Hibernate
-            _origin = _destination = null;
-            this.notNull = new NotNullSpecification();
-            this.sameOrigin = new SameOriginSpecification(this);
-            this.sameDestination = new SameDestinationSpecification(this);
-            this.meetsDeadline = new MeetsDeadlineSpecification(this);
+            _notNull = new NotNullSpecification();
+            _sameOrigin = new SameOriginSpecification(this);
+            _sameDestination = new SameDestinationSpecification(this);
+            _meetsDeadline = new MeetsDeadlineSpecification(this);
         }
 
         // --- Private classes ---
@@ -147,7 +138,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _parent._origin.sameAs(itinerary.initialLoadLocation());
+                return _parent.Origin.sameAs(itinerary.InitialLoadLocation);
             }
         }
 
@@ -162,7 +153,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _parent._destination.sameAs(itinerary.finalUnloadLocation());
+                return _parent.Destination.sameAs(itinerary.FinalUnloadLocation);
             }
         }
 
@@ -177,7 +168,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
             public override bool isSatisfiedBy(Itinerary itinerary)
             {
-                return _parent._arrivalDeadline > itinerary.finalUnloadTime();
+                return _parent.ArrivalDeadline > itinerary.FinalUnloadTime;
             }
         }
 
@@ -185,12 +176,12 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         {
             public override bool Equals(Object that)
             {
-                return that != null && this.GetType().Equals(that.GetType());
+                return that != null && GetType().Equals(that.GetType());
             }
 
             public override int GetHashCode()
             {
-                return this.GetType().GetHashCode();
+                return GetType().GetHashCode();
             }
         }
     }

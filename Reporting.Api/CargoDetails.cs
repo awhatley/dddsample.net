@@ -160,7 +160,7 @@ namespace DomainDrivenDelivery.Reporting.Api
 
         public override bool Equals(object that)
         {
-            return EqualsBuilder.reflectionEquals(this, that);
+            return EqualsBuilder.reflectionEquals(typeof(CargoDetails), this, that);
         }
 
         public override int GetHashCode()

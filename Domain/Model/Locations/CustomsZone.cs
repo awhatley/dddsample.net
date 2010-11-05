@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
@@ -13,24 +13,35 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
     /// </summary>
     public class CustomsZone : ValueObjectSupport<CustomsZone>
     {
-        private readonly string _code;
-        private readonly string _name;
-
         // TODO: Find out what the standards are for this, if any. For now:
         // For CustomsZone code, we are using the "country code" portion of the UnLocode,
         // except within economic areas that are not countries, such as the EU. Then we make one up.
         // Country code is exactly two letters, so we'll use 2 letters.
-        private static readonly Regex VALID_PATTERN = new Regex("[a-zA-Z]{2}", RegexOptions.Compiled);
+        private static readonly Regex ValidPattern = new Regex("[a-zA-Z]{2}", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Null object pattern.
+        /// </summary>
+        public static readonly CustomsZone None = new CustomsZone("AA", "1");
+
+        /// <summary>
+        /// Code, always upper case.
+        /// </summary>
+        public virtual string Code { get; private set; }
+
+        /// <summary>
+        /// The name.
+        /// </summary>
+        public virtual string Name { get; private set; }
 
         internal CustomsZone(string code, string name)
         {
             Validate.notNull(code, "Code is required");
-            Validate.isTrue(VALID_PATTERN.IsMatch(code),
-                            code + " is not a valid customs zone code (does not match pattern)");
+            Validate.isTrue(ValidPattern.IsMatch(code), code + " is not a valid customs zone code (does not match pattern)");
             Validate.notNull(name, "Name is required");
 
-            this._code = code.ToUpperInvariant();
-            this._name = name;
+            Code = code.ToUpperInvariant();
+            Name = name;
         }
 
         /// <summary>
@@ -40,27 +51,19 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
         /// </summary>
         /// <param name="route">a list of locations</param>
         /// <returns>The first location on the route that is in this customs zone.</returns>
-        public Location entryPoint(IEnumerable<Location> route)
+        public virtual Location EntryPoint(IEnumerable<Location> route)
         {
-            foreach(Location location in route)
-            {
-                if(this.includes(location))
-                {
-                    return location;
-                }
-            }
-            return null; //The route does not enter this CustomsZone
+            return route.FirstOrDefault(Includes);
         }
 
         /// <summary>
-        /// Convenience method for testing. Usage in application would be
-        /// <see cref="entryPoint(IEnumerable{Location})"/>
+        /// Convenience method for testing.
         /// </summary>
         /// <param name="route">a list of locations</param>
         /// <returns>The first location on the route that is in this customs zone.</returns>
-        public Location entryPoint(params Location[] route)
+        public virtual Location EntryPoint(params Location[] route)
         {
-            return entryPoint((IEnumerable<Location>)route);
+            return EntryPoint((IEnumerable<Location>)route);
         }
 
         /// <summary>
@@ -70,54 +73,33 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
         /// </summary>
         /// <param name="route">a list of locations</param>
         /// <returns>The clearance point for the list of locations.</returns>
-        public Location clearancePoint(IEnumerable<Location> route)
+        public virtual Location ClearancePoint(IEnumerable<Location> route)
         {
-            return entryPoint(route);
+            return EntryPoint(route);
         }
 
         /// <summary>
-        /// Convenience method for testing. Usage in application would be
-        /// <see cref="clearancePoint(IEnumerable{Location})"/>
+        /// Convenience method for testing.
         /// </summary>
         /// <param name="route">a list of locations</param>
         /// <returns>The clearance point for the list of locations.</returns>
-        public Location clearancePoint(params Location[] route)
+        public virtual Location ClearancePoint(params Location[] route)
         {
-            return clearancePoint((IEnumerable<Location>)route);
+            return ClearancePoint((IEnumerable<Location>)route);
         }
 
-        /// <summary>
-        /// Code, always upper case.
-        /// </summary>
-        /// <returns>Code, always upper case.</returns>
-        public String code()
+        public virtual bool Includes(Location location)
         {
-            return _code;
-        }
-
-        /// <summary>
-        /// The name.
-        /// </summary>
-        /// <returns>The name.</returns>
-        public String name()
-        {
-            return _name;
-        }
-
-        internal bool includes(Location location)
-        {
-            return this.sameValueAs(location.CustomsZone);
+            return sameValueAs(location.CustomsZone);
         }
 
         public override string ToString()
         {
-            return _code + "[" + _name + "]";
+            return Code + "[" + Name + "]";
         }
 
-        CustomsZone()
+        protected internal CustomsZone()
         {
-            // Needed by Hibernate
-            _code = _name = null;
         }
     }
 }

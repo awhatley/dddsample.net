@@ -61,12 +61,12 @@ namespace DomainDrivenDelivery.Application.Event
 
             handlingEventRepository.store(handlingEvent);
 
-            Assert.That(handlingEvent.Activity, Is.Not.EqualTo(cargo.mostRecentHandlingActivity()));
+            Assert.That(handlingEvent.Activity, Is.Not.EqualTo(cargo.MostRecentHandlingActivity));
 
             cargoUpdater.updateCargo(handlingEvent.SequenceNumber);
 
-            Assert.That(handlingEvent.Activity, Is.EqualTo(cargo.mostRecentHandlingActivity()));
-            Assert.True(handlingEvent.Activity != cargo.mostRecentHandlingActivity());
+            Assert.That(handlingEvent.Activity, Is.EqualTo(cargo.MostRecentHandlingActivity));
+            Assert.True(handlingEvent.Activity != cargo.MostRecentHandlingActivity);
 
             systemEvents.AssertWasCalled(se => se.notifyOfCargoUpdate(cargo));
         }
@@ -74,7 +74,7 @@ namespace DomainDrivenDelivery.Application.Event
         [Test]
         public void handlingEventNotFound()
         {
-            cargoUpdater.updateCargo(EventSequenceNumber.valueOf(999L));
+            cargoUpdater.updateCargo(EventSequenceNumber.ValueOf(999L));
             systemEvents.AssertWasNotCalled(se => se.notifyOfCargoUpdate(Arg<Cargo>.Is.TypeOf));
             systemEvents.AssertWasNotCalled(se => se.notifyOfHandlingEvent(Arg<HandlingEvent>.Is.TypeOf));
         }

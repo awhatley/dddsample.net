@@ -14,15 +14,15 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
     /// </summary>
     public class Delivery : ValueObjectSupport<Delivery>
     {
-        private readonly HandlingActivity _mostRecentHandlingActivity;
-        private readonly HandlingActivity _mostRecentPhysicalHandlingActivity;
-        private readonly DateTime _lastUpdatedOn;
+        internal HandlingActivity MostRecentHandlingActivity { get; private set; }
+        internal HandlingActivity MostRecentPhysicalHandlingActivity { get; private set; }
+        internal DateTime LastUpdatedOn { get; private set; }
 
         /// <summary>
         /// Initial delivery, before any handling has taken place.
         /// </summary>
         /// <returns>Initial delivery, before any handling has taken place.</returns>
-        public static Delivery beforeHandling()
+        public static Delivery BeforeHandling()
         {
             return new Delivery(null, null);
         }
@@ -32,95 +32,71 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="newHandlingActivity">handling activity</param>
         /// <returns>An up to date delivery</returns>
-        internal Delivery onHandling(HandlingActivity newHandlingActivity)
+        internal Delivery OnHandling(HandlingActivity newHandlingActivity)
         {
             Validate.notNull(newHandlingActivity, "Handling activity is required");
 
-            if(newHandlingActivity.Type.isPhysical())
-            {
-                return new Delivery(newHandlingActivity, newHandlingActivity);
-            }
-            else
-            {
-                return new Delivery(newHandlingActivity, _mostRecentPhysicalHandlingActivity);
-            }
+            return newHandlingActivity.Type.isPhysical()
+                ? new Delivery(newHandlingActivity, newHandlingActivity)
+                : new Delivery(newHandlingActivity, MostRecentPhysicalHandlingActivity);
         }
 
         /// <summary>
         /// An up to date delivery
         /// </summary>
         /// <returns>An up to date delivery</returns>
-        internal Delivery onRouting()
+        internal Delivery OnRouting()
         {
-            return new Delivery(_mostRecentHandlingActivity, _mostRecentPhysicalHandlingActivity);
+            return new Delivery(MostRecentHandlingActivity, MostRecentPhysicalHandlingActivity);
         }
 
         private Delivery(HandlingActivity mostRecentHandlingActivity,
                          HandlingActivity mostRecentPhysicalHandlingActivity)
         {
-            this._mostRecentHandlingActivity = mostRecentHandlingActivity;
-            this._mostRecentPhysicalHandlingActivity = mostRecentPhysicalHandlingActivity;
-            this._lastUpdatedOn = DateTime.Now;
-        }
-
-        internal HandlingActivity mostRecentHandlingActivity()
-        {
-            return _mostRecentHandlingActivity;
-        }
-
-        internal HandlingActivity mostRecentPhysicalHandlingActivity()
-        {
-            return _mostRecentPhysicalHandlingActivity;
+            MostRecentHandlingActivity = mostRecentHandlingActivity;
+            MostRecentPhysicalHandlingActivity = mostRecentPhysicalHandlingActivity;
+            LastUpdatedOn = DateTime.Now;
         }
 
         /// <summary>
         /// Transport status
         /// </summary>
-        /// <returns>Transport status</returns>
-        internal TransportStatus transportStatus()
+        /// <value>Transport status</value>
+        internal TransportStatus TransportStatus
         {
-            return TransportStatusExtensions.derivedFrom(_mostRecentHandlingActivity);
+            get { return TransportStatusExtensions.derivedFrom(MostRecentHandlingActivity); }
         }
 
         /// <summary>
         /// Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.
         /// </summary>
-        /// <returns>Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.</returns>
-        internal Location lastKnownLocation()
+        /// <value>Last known location of the cargo, or Location.UNKNOWN if the delivery history is empty.</value>
+        internal Location LastKnownLocation
         {
-            if(hasBeenHandled())
-            {
-                return _mostRecentHandlingActivity.Location;
-            }
-            else
-            {
-                return Location.NONE;
-            }
+            get { return HasBeenHandled ? MostRecentHandlingActivity.Location : Location.None; }
         }
 
         /// <summary>
         /// Current voyage.
         /// </summary>
-        /// <returns>Current voyage.</returns>
-        internal Voyage currentVoyage()
+        /// <value>Current voyage.</value>
+        internal Voyage CurrentVoyage
         {
-            if(hasBeenHandled() && transportStatus() == TransportStatus.ONBOARD_CARRIER)
+            get
             {
-                return _mostRecentHandlingActivity.Voyage;
-            }
-            else
-            {
-                return Voyage.NONE;
+                return HasBeenHandled && TransportStatus == TransportStatus.ONBOARD_CARRIER
+                    ? MostRecentHandlingActivity.Voyage
+                    : Voyage.None;
             }
         }
 
         /// <summary>
         /// True if the cargo has been handled at least once
         /// </summary>
-        /// <returns>True if the cargo has been handled at least once</returns>
-        internal bool hasBeenHandled()
+        /// <value>True if the cargo has been handled at least once</value>
+        internal bool HasBeenHandled
         {
-            return _mostRecentHandlingActivity != null;
+            get { return MostRecentHandlingActivity != null; }
         }
 
         /// <summary>
@@ -135,42 +111,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </remarks>
         /// <param name="itinerary">itinerary</param>
         /// <returns><code>true</code> if the cargo has been misdirected.</returns>
-        internal bool isMisdirected(Itinerary itinerary)
+        internal bool IsMisdirected(Itinerary itinerary)
         {
-            return hasBeenHandled() && !itinerary.isExpectedActivity(_mostRecentPhysicalHandlingActivity);
-        }
-
-        /// <summary>
-        /// Routing status.
-        /// </summary>
-        /// <param name="itinerary">itinerary</param>
-        /// <param name="routeSpecification">route specification</param>
-        /// <returns>Routing status.</returns>
-        internal RoutingStatus routingStatus(Itinerary itinerary, RouteSpecification routeSpecification)
-        {
-            if(itinerary == null)
-            {
-                return RoutingStatus.NOT_ROUTED;
-            }
-            else
-            {
-                if(routeSpecification.isSatisfiedBy(itinerary))
-                {
-                    return RoutingStatus.ROUTED;
-                }
-                else
-                {
-                    return RoutingStatus.MISROUTED;
-                }
-            }
-        }
-        /// <summary>
-        /// When this delivery was calculated.
-        /// </summary>
-        /// <returns>When this delivery was calculated.</returns>
-        internal DateTime lastUpdatedOn()
-        {
-            return _lastUpdatedOn;
+            return HasBeenHandled && !itinerary.IsExpectedActivity(MostRecentPhysicalHandlingActivity);
         }
 
         /// <summary>
@@ -179,22 +122,20 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="itinerary">itinerary</param>
         /// <param name="routeSpecification">route specification</param>
         /// <returns>True if the cargo is routed and not misdirected</returns>
-        internal bool isOnRoute(Itinerary itinerary, RouteSpecification routeSpecification)
+        internal bool IsOnRoute(Itinerary itinerary, RouteSpecification routeSpecification)
         {
-            return routingStatus(itinerary, routeSpecification) == RoutingStatus.ROUTED && !isMisdirected(itinerary);
+            return routeSpecification.StatusOf(itinerary) == RoutingStatus.ROUTED && !IsMisdirected(itinerary);
         }
 
-        internal bool isUnloadedIn(Location location)
+        internal bool IsUnloadedIn(Location location)
         {
-            return hasBeenHandled() &&
-              _mostRecentHandlingActivity.Location.sameAs(location) &&
-              mostRecentHandlingActivity().Type == HandlingActivityType.UNLOAD;
+            return HasBeenHandled &&
+              MostRecentHandlingActivity.Location.sameAs(location) &&
+              MostRecentHandlingActivity.Type == HandlingActivityType.UNLOAD;
         }
 
-        internal Delivery()
+        protected internal Delivery()
         {
-            // Needed by Hibernate
-            _mostRecentHandlingActivity = _mostRecentPhysicalHandlingActivity = null;
         }
     }
 }

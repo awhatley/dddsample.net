@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 using DomainDrivenDelivery.Utilities;
 
@@ -17,37 +18,18 @@ namespace DomainDrivenDelivery.Domain.Patterns.ValueObject
     /// in which case reflection might not be fast enough.
     /// </remarks>
     /// <typeparam name="T">The value object type.</typeparam>
-    public abstract class ValueObjectSupport<T> : ValueObject<T> where T : class, ValueObject<T>
+    public abstract class ValueObjectSupport<T> : ValueObject<T> where T : ValueObjectSupport<T>
     {
         private readonly long _primaryKey;
-        [NonSerialized]
-        private int _cachedHashCode;
-        private static readonly string[] EXCLUDED_FIELDS = { "_primaryKey", "_cachedHashCode" };
 
         public virtual bool sameValueAs(T other)
         {
-            return other != null && EqualsBuilder.reflectionEquals(this, other, EXCLUDED_FIELDS);
+            return other != null && EqualsBuilder.reflectionEquals(typeof(T), this, other);
         }
 
         public override int GetHashCode()
         {
-            // Using a local variable to ensure that we only do a single read
-            // of the _cachedHashCode field, to avoid race conditions.
-            // It doesn't matter if several threads compute the hash code and overwrite
-            // each other, but it's important that we never return 0, which could happen
-            // with multiple reads of the _cachedHashCode field.
-            //
-            // See java.lang.String.hashCode()
-            int h = _cachedHashCode;
-            if(h == 0)
-            {
-                // Lazy initialization of hash code.
-                // Value objects are immutable, so the hash code never changes.
-                h = HashCodeBuilder.reflectionHashCode(this, false);
-                _cachedHashCode = h;
-            }
-
-            return h;
+            return HashCodeBuilder.reflectionHashCode(this);
         }
 
         public override bool Equals(object obj)

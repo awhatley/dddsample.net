@@ -21,7 +21,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public Location find(UnLocode unLocode)
         {
             return sessionFactory.GetCurrentSession().
-              CreateQuery("from Location where _unLocode = ?").
+              CreateQuery("from Location where UnLocode = ?").
               SetParameter(0, unLocode).
               UniqueResult<Location>();
         }

@@ -1,7 +1,6 @@
 using System;
 
 using DomainDrivenDelivery.Domain.Model.Locations;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
@@ -12,10 +11,25 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
     /// </summary>
     public class CarrierMovement : ValueObjectSupport<CarrierMovement>
     {
-        private readonly Location _departureLocation;
-        private readonly Location _arrivalLocation;
-        private readonly DateTime _departureTime;
-        private readonly DateTime _arrivalTime;
+        /// <summary>
+        /// Departure location.
+        /// </summary>
+        public virtual Location DepartureLocation { get; private set; }
+
+        /// <summary>
+        /// Arrival location.
+        /// </summary>
+        public virtual Location ArrivalLocation { get; private set; }
+
+        /// <summary>
+        /// Time of departure.
+        /// </summary>
+        public virtual DateTime DepartureTime { get; private set; }
+
+        /// <summary>
+        /// Time of arrival.
+        /// </summary>
+        public virtual DateTime ArrivalTime { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -34,10 +48,10 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
             Validate.isTrue(arrivalTime > departureTime, "Arrival time must be after departure time");
             Validate.isTrue(!departureLocation.sameAs(arrivalLocation), "Departure location can't be the same as the arrival location");
 
-            this._departureTime = departureTime;
-            this._arrivalTime = arrivalTime;
-            this._departureLocation = departureLocation;
-            this._arrivalLocation = arrivalLocation;
+            DepartureTime = departureTime;
+            ArrivalTime = arrivalTime;
+            DepartureLocation = departureLocation;
+            ArrivalLocation = arrivalLocation;
         }
 
         /// <summary>
@@ -45,52 +59,18 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="newDepartureTime">new departure time</param>
         /// <returns>A new CarrierMovement which is a copy of the old one but with a new departure time</returns>
-        protected internal virtual CarrierMovement withDepartureTime(DateTime newDepartureTime)
+        protected internal virtual CarrierMovement WithDepartureTime(DateTime newDepartureTime)
         {
             return new CarrierMovement(
-              _departureLocation,
-              _arrivalLocation,
+              DepartureLocation,
+              ArrivalLocation,
               newDepartureTime,
-              _arrivalTime
+              ArrivalTime
             );
         }
 
-        /// <summary>
-        /// Departure location.
-        /// </summary>
-        public virtual Location DepartureLocation
+        protected internal CarrierMovement()
         {
-            get { return _departureLocation; }
-        }
-
-        /// <summary>
-        /// Arrival location.
-        /// </summary>
-        public virtual Location ArrivalLocation
-        {
-            get { return _arrivalLocation; }
-        }
-
-        /// <summary>
-        /// Time of departure.
-        /// </summary>
-        public virtual DateTime DepartureTime
-        {
-            get { return _departureTime; }
-        }
-
-        /// <summary>
-        /// Time of arrival.
-        /// </summary>
-        public virtual DateTime ArrivalTime
-        {
-            get { return _arrivalTime; }
-        }
-
-        internal CarrierMovement()
-        {
-            // Needed by Hibernate
-            _arrivalLocation = _departureLocation = null;
         }
     }
 }

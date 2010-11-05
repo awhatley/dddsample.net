@@ -11,6 +11,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     public class UnknownVoyageException : CannotCreateHandlingEventException
     {
         public UnknownVoyageException(VoyageNumber voyageNumber)
-            : base("No voyage with number " + voyageNumber.stringValue() + " exists in the system") { }
+            : base("No voyage with number " + voyageNumber.Value + " exists in the system") { }
     }
 }

@@ -42,18 +42,18 @@ namespace DomainDrivenDelivery.Infrastructure.Routing
             /*
               The RouteSpecification is picked apart and adapted to the external API.
              */
-            var origin = routeSpecification.origin();
-            var destination = routeSpecification.destination();
+            var origin = routeSpecification.Origin;
+            var destination = routeSpecification.Destination;
 
             var limitations = new Hashtable();
-            limitations.Add("DEADLINE", routeSpecification.arrivalDeadline().ToString());
+            limitations.Add("DEADLINE", routeSpecification.ArrivalDeadline.ToString());
 
             IEnumerable<TransitPath> transitPaths;
             try
             {
                 transitPaths = graphTraversalService.findShortestPath(
-                  origin.UnLocode.stringValue(),
-                  destination.UnLocode.stringValue(),
+                  origin.UnLocode.Value,
+                  destination.UnLocode.Value,
                   limitations
                 );
             }
@@ -72,7 +72,7 @@ namespace DomainDrivenDelivery.Infrastructure.Routing
             {
                 var itinerary = toItinerary(transitPath);
                 // Use the specification to safe-guard against invalid itineraries
-                if(routeSpecification.isSatisfiedBy(itinerary))
+                if(routeSpecification.IsSatisfiedBy(itinerary))
                 {
                     itineraries.Add(itinerary);
                 }
@@ -97,7 +97,7 @@ namespace DomainDrivenDelivery.Infrastructure.Routing
 
         private Leg toLeg(TransitEdge edge)
         {
-            return Leg.deriveLeg(
+            return Leg.DeriveLeg(
               voyageRepository.find(new VoyageNumber(edge.getVoyageNumber())),
               locationRepository.find(new UnLocode(edge.getFromUnLocode())),
               locationRepository.find(new UnLocode(edge.getToUnLocode()))

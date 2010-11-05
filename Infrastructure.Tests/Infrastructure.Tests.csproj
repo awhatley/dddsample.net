@@ -68,6 +68,8 @@
   <ItemGroup>
     <Compile Include="Persistence\NHibernate\AbstractRepositoryTest.cs" />
     <Compile Include="Persistence\NHibernate\CargoRepositoryTest.cs" />
+    <Compile Include="Persistence\NHibernate\DatabaseTrackingIdFactoryTest.cs" />
+    <Compile Include="Persistence\NHibernate\HandlingEventRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

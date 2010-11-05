@@ -35,10 +35,10 @@ namespace DomainDrivenDelivery.Application.Event
                 return;
             }
 
-            var activity = handlingEvent.Activity.copy();
+            var activity = handlingEvent.Activity.Copy();
             var cargo = handlingEvent.Cargo;
 
-            cargo.handled(activity);
+            cargo.Handled(activity);
             cargoRepository.store(cargo);
 
             systemEvents.notifyOfCargoUpdate(cargo);

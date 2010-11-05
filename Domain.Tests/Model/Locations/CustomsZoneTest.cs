@@ -12,20 +12,20 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Locations
         [Test]
         public void testIncludes()
         {
-            Assert.True(L.US.includes(L.DALLAS));
-            Assert.False(L.EU.includes(L.NEWYORK));
+            Assert.True(L.US.Includes(L.DALLAS));
+            Assert.False(L.EU.Includes(L.NEWYORK));
         }
 
         [Test]
         public void testEntryPoint()
         {
-            Assert.AreEqual(L.LONGBEACH, L.US.entryPoint(L.SHANGHAI, L.LONGBEACH, L.CHICAGO));
+            Assert.AreEqual(L.LONGBEACH, L.US.EntryPoint(L.SHANGHAI, L.LONGBEACH, L.CHICAGO));
         }
 
         [Test]
         public void testClearancePoint()
         {
-            Assert.AreEqual(L.LONGBEACH, L.US.entryPoint(L.SHANGHAI, L.LONGBEACH, L.CHICAGO));
+            Assert.AreEqual(L.LONGBEACH, L.US.EntryPoint(L.SHANGHAI, L.LONGBEACH, L.CHICAGO));
         }
     }
 }

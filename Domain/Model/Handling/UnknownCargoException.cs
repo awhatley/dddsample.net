@@ -11,6 +11,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     public sealed class UnknownCargoException : CannotCreateHandlingEventException
     {
         public UnknownCargoException(TrackingId trackingId)
-            : base("No cargo with tracking id " + trackingId.stringValue() + " exists in the system") { }
+            : base("No cargo with tracking id " + trackingId.Value + " exists in the system") { }
     }
 }

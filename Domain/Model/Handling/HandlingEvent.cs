@@ -4,7 +4,6 @@ using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Shared;
 using DomainDrivenDelivery.Domain.Model.Travel;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.DomainEvent;
 using DomainDrivenDelivery.Utilities;
 
@@ -29,12 +28,12 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     /// </remarks>
     public class HandlingEvent : DomainEvent<HandlingEvent>
     {
-        private EventSequenceNumber _sequenceNumber;
-        private HandlingActivity _activity;
-        private DateTime _completionTime;
-        private DateTime _registrationTime;
-        private Cargo _cargo;
-        private OperatorCode _operatorCode;
+        public virtual EventSequenceNumber SequenceNumber { get; private set; }
+        public virtual Cargo Cargo { get; private set; }
+        public virtual DateTime CompletionTime { get; private set; }
+        public virtual DateTime RegistrationTime { get; private set; }
+        public virtual HandlingActivity Activity { get; private set; }
+        public virtual OperatorCode OperatorCode { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -64,12 +63,12 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
                 throw new ArgumentException("Voyage is not allowed with event type " + type);
             }
 
-            this._sequenceNumber = EventSequenceNumber.next();
-            this._cargo = cargo;
-            this._completionTime = completionTime;
-            this._registrationTime = registrationTime;
-            this._activity = new HandlingActivity(type, location, voyage);
-            this._operatorCode = operatorCode;
+            SequenceNumber = EventSequenceNumber.Next();
+            Cargo = cargo;
+            CompletionTime = completionTime;
+            RegistrationTime = registrationTime;
+            Activity = new HandlingActivity(type, location, voyage);
+            OperatorCode = operatorCode;
         }
 
         /// <summary>
@@ -95,56 +94,26 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
                 throw new ArgumentException("Voyage is required for event type " + type);
             }
 
-            this._sequenceNumber = EventSequenceNumber.next();
-            this._completionTime = completionTime;
-            this._registrationTime = registrationTime;
-            this._cargo = cargo;
-            this._activity = new HandlingActivity(type, location);
-        }
-
-        public virtual EventSequenceNumber SequenceNumber
-        {
-            get { return _sequenceNumber; }
-        }
-
-        public virtual HandlingActivity Activity
-        {
-            get { return _activity; }
+            SequenceNumber = EventSequenceNumber.Next();
+            CompletionTime = completionTime;
+            RegistrationTime = registrationTime;
+            Cargo = cargo;
+            Activity = new HandlingActivity(type, location);
         }
 
         public virtual HandlingActivityType Type
         {
-            get { return _activity.Type; }
+            get { return Activity.Type; }
         }
 
         public virtual Voyage Voyage
         {
-            get { return _activity.Voyage != null ? _activity.Voyage : Voyage.NONE; }
-        }
-
-        public virtual OperatorCode OperatorCode
-        {
-            get { return _operatorCode; }
-        }
-
-        public virtual DateTime CompletionTime
-        {
-            get { return _completionTime; }
-        }
-
-        public virtual DateTime RegistrationTime
-        {
-            get { return _registrationTime; }
+            get { return Activity.Voyage != null ? Activity.Voyage : Voyage.None; }
         }
 
         public virtual Location Location
         {
-            get { return _activity.Location; }
-        }
-
-        public virtual Cargo Cargo
-        {
-            get { return this._cargo; }
+            get { return Activity.Location; }
         }
 
         public override bool Equals(Object o)
@@ -160,9 +129,9 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         public virtual bool sameEventAs(HandlingEvent other)
         {
             var equal = other != null &&
-                this.Cargo.Equals(other.Cargo) &&
-                this.CompletionTime.Equals(other.CompletionTime) &&
-                this.Activity.Equals(other.Activity);
+                Cargo.Equals(other.Cargo) &&
+                CompletionTime.Equals(other.CompletionTime) &&
+                Activity.Equals(other.Activity);
 
             return equal;
         }
@@ -170,9 +139,9 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
         public override int GetHashCode()
         {
             var hash = new HashCodeBuilder().
-              append(_cargo).
-              append(_completionTime).
-              append(_activity).
+              append(Cargo).
+              append(CompletionTime).
+              append(Activity).
               toHashCode();
 
             return hash;
@@ -180,15 +149,14 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
 
         public override string ToString()
         {
-            return "Cargo: " + _cargo +
-              "\nActivity: " + _activity +
-              "\nCompleted on: " + _completionTime +
-              "\nRegistered on: " + _registrationTime;
+            return "Cargo: " + Cargo +
+              "\nActivity: " + Activity +
+              "\nCompleted on: " + CompletionTime +
+              "\nRegistered on: " + RegistrationTime;
         }
 
-        internal HandlingEvent()
+        protected internal HandlingEvent()
         {
-            // Needed by Hibernate
         }
 
         // Auto-generated surrogate key

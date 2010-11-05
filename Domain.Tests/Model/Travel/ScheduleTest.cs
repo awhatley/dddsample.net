@@ -12,7 +12,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Travel
         [Test]
         public void testEmpty()
         {
-            Assert.True(!Schedule.EMPTY.carrierMovements().Any());
+            Assert.True(!Schedule.Empty.CarrierMovements.Any());
         }
 
         [Test]

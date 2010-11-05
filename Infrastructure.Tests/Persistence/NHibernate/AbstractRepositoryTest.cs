@@ -7,7 +7,7 @@ using Spring.Data.Generic;
 using Spring.Testing.NUnit;
 using Spring.Transaction.Support;
 
-namespace Infrastructure.Tests.Persistence.NHibernate
+namespace DomainDrivenDelivery.Infrastructure.Tests.Persistence.NHibernate
 {
     public abstract class AbstractRepositoryTest : AbstractTransactionalDbProviderSpringContextTests
     {

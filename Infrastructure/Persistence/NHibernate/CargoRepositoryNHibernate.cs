@@ -25,7 +25,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public Cargo find(TrackingId tid)
         {
             return sessionFactory.GetCurrentSession().
-              CreateQuery("from Cargo where _trackingId = :tid").
+              CreateQuery("from Cargo where TrackingId = :tid").
               SetParameter("tid", tid).
               UniqueResult<Cargo>();
         }
@@ -34,8 +34,8 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         {
             return sessionFactory.GetCurrentSession().CreateQuery(
               "select cargo from Cargo as cargo " +
-                "left join cargo._itinerary._legs as leg " +
-                "where leg._voyage = :voyage").
+                "left join cargo.Itinerary.Legs as leg " +
+                "where leg.Voyage = :voyage").
               SetParameter("voyage", voyage).
               List<Cargo>();
         }

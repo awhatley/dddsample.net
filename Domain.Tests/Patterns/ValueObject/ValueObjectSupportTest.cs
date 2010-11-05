@@ -12,7 +12,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.ValueObject
         {
             AValueObject vo1 = new AValueObject("A");
             AValueObject vo2 = new AValueObject("A");
-            BValueObject vo3 = new BValueObject("A", 1);
+            AValueObject vo3 = new AValueObject("1");
 
             Assert.AreEqual(vo1, vo2);
             Assert.AreEqual(vo2, vo1);
@@ -25,7 +25,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.ValueObject
 
         private class AValueObject : ValueObjectSupport<AValueObject>
         {
-            private string s;
+            public string s { get; private set; }
 
             internal AValueObject(string s)
             {
@@ -34,16 +34,6 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.ValueObject
 
             internal AValueObject()
             {
-            }
-        }
-
-        private class BValueObject : AValueObject
-        {
-            private int x;
-
-            internal BValueObject(string s, int x) : base(s)
-            {
-                this.x = x;
             }
         }
     }

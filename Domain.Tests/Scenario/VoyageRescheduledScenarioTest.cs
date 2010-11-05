@@ -35,10 +35,10 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
                 DateTime.Parse("2008-12-23"));
 
             cargo = new Cargo(trackingId, routeSpecification);
-            Itinerary itinerary = new Itinerary(Leg.deriveLeg(voyage1, L.HANGZOU, L.NEWYORK),
-                Leg.deriveLeg(voyage2, L.NEWYORK, L.DALLAS),
-                Leg.deriveLeg(voyage3, L.DALLAS, L.STOCKHOLM));
-            cargo.assignToRoute(itinerary);
+            Itinerary itinerary = new Itinerary(Leg.DeriveLeg(voyage1, L.HANGZOU, L.NEWYORK),
+                Leg.DeriveLeg(voyage2, L.NEWYORK, L.DALLAS),
+                Leg.DeriveLeg(voyage3, L.DALLAS, L.STOCKHOLM));
+            cargo.AssignToRoute(itinerary);
         }
 
         [Test]
@@ -48,24 +48,24 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
 
             DateTime oldDepartureTime = DateTime.Parse("2008-10-24 07:00");
 
-            Assert.That(voyage2.Schedule.departureTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
-            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(voyage2.Schedule.DepartureTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(cargo.Itinerary.LoadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
 
             // Now voyage2 is rescheduled, the departure from NYC is delayed a few hours.
             DateTime newDepartureTime = DateTime.Parse("2008-10-24 17:00");
-            voyage2.departureRescheduled(L.NEWYORK, newDepartureTime);
+            voyage2.DepartureRescheduled(L.NEWYORK, newDepartureTime);
 
             // The schedule of voyage2 is updated
-            Assert.That(voyage2.Schedule.departureTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
+            Assert.That(voyage2.Schedule.DepartureTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
             // ...but the cargo itinerary still has the old departure time
-            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
+            Assert.That(cargo.Itinerary.LoadTimeAt(L.NEWYORK), Is.EqualTo(oldDepartureTime));
 
             // Generate a new itinerary from the old one and assign the cargo to this route
-            Itinerary newItinerary = cargo.Itinerary.withRescheduledVoyage(voyage2);
-            cargo.assignToRoute(newItinerary);
+            Itinerary newItinerary = cargo.Itinerary.WithRescheduledVoyage(voyage2);
+            cargo.AssignToRoute(newItinerary);
 
             // Now the cargo aggregate is updated to reflect the scheduling change!
-            Assert.That(cargo.Itinerary.loadTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
+            Assert.That(cargo.Itinerary.LoadTimeAt(L.NEWYORK), Is.EqualTo(newDepartureTime));
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
         }
 
@@ -81,18 +81,18 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // is therefore truncated after unload in NYC.
 
             DateTime newDepartureTime = DateTime.Parse("2008-10-23 18:30");
-            voyage2.departureRescheduled(L.NEWYORK, newDepartureTime);
+            voyage2.DepartureRescheduled(L.NEWYORK, newDepartureTime);
 
             // Only the part of the itinerary up to and including NYC is maintainable, the rest is truncated
-            Itinerary truncatedItinerary = cargo.Itinerary.withRescheduledVoyage(voyage2);
-            Assert.That(truncatedItinerary.lastLeg().UnloadLocation, Is.EqualTo(L.NEWYORK));
+            Itinerary truncatedItinerary = cargo.Itinerary.WithRescheduledVoyage(voyage2);
+            Assert.That(truncatedItinerary.LastLeg.UnloadLocation, Is.EqualTo(L.NEWYORK));
 
             //Or... The Itinerary is created with an 'Illegal Connection' based on a coomparison of
             //each transfer with a Location.minimumAllowedConnectionTime(). Since Loation is an entity
             //we don't allow Itinerary to dynamically use the property directly because it is not immutable.
 
             // The cargo enters MISROUTED state
-            cargo.assignToRoute(truncatedItinerary);
+            cargo.AssignToRoute(truncatedItinerary);
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.MISROUTED));
         }
     }

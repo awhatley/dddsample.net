@@ -20,13 +20,13 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         [ExpectedException(typeof(ArgumentNullException))]
         public void testConstructor()
         {
-            Leg.deriveLeg(null, null, null);
+            Leg.DeriveLeg(null, null, null);
         }
 
         [Test]
         public void legThatFollowsPartOfAVoyage()
         {
-            Leg chicagoToDallas = Leg.deriveLeg(voyage, L.CHICAGO, L.DALLAS);
+            Leg chicagoToDallas = Leg.DeriveLeg(voyage, L.CHICAGO, L.DALLAS);
 
             Assert.AreEqual(chicagoToDallas.LoadTime, DateTime.Parse("2008-10-24 21:25"));
             Assert.AreEqual(chicagoToDallas.LoadLocation, L.CHICAGO);
@@ -37,7 +37,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         [Test]
         public void legThatFollowsAnEntireVoyage()
         {
-            Leg newYorkToDallas = Leg.deriveLeg(voyage, L.NEWYORK, L.DALLAS);
+            Leg newYorkToDallas = Leg.DeriveLeg(voyage, L.NEWYORK, L.DALLAS);
 
             Assert.AreEqual(newYorkToDallas.LoadTime, DateTime.Parse("2008-10-24 07:00"));
             Assert.AreEqual(newYorkToDallas.LoadLocation, L.NEWYORK);
@@ -49,49 +49,49 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         [ExpectedException(typeof(ArgumentException))]
         public void locationsInWrongOrder()
         {
-            Leg.deriveLeg(voyage, L.DALLAS, L.CHICAGO);
+            Leg.DeriveLeg(voyage, L.DALLAS, L.CHICAGO);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void endLocationNotOnVoyage()
         {
-            Leg.deriveLeg(voyage, L.CHICAGO, L.HELSINKI);
+            Leg.DeriveLeg(voyage, L.CHICAGO, L.HELSINKI);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void startLocationNotOnVoyage()
         {
-            Leg.deriveLeg(voyage, L.HONGKONG, L.DALLAS);
+            Leg.DeriveLeg(voyage, L.HONGKONG, L.DALLAS);
         }
 
         [Test]
         public void matchActivity()
         {
-            Leg newYorkToDallas = Leg.deriveLeg(voyage, L.NEWYORK, L.DALLAS);
+            Leg newYorkToDallas = Leg.DeriveLeg(voyage, L.NEWYORK, L.DALLAS);
 
-            Assert.True(newYorkToDallas.matchesActivity(HandlingActivity.loadOnto(voyage).@in(L.NEWYORK)));
-            Assert.True(newYorkToDallas.matchesActivity(HandlingActivity.unloadOff(voyage).@in(L.DALLAS)));
-            Assert.False(newYorkToDallas.matchesActivity(HandlingActivity.loadOnto(voyage).@in(L.DALLAS)));
-            Assert.False(newYorkToDallas.matchesActivity(HandlingActivity.unloadOff(voyage).@in(L.NEWYORK)));
+            Assert.True(newYorkToDallas.MatchesActivity(HandlingActivity.LoadOnto(voyage).In(L.NEWYORK)));
+            Assert.True(newYorkToDallas.MatchesActivity(HandlingActivity.UnloadOff(voyage).In(L.DALLAS)));
+            Assert.False(newYorkToDallas.MatchesActivity(HandlingActivity.LoadOnto(voyage).In(L.DALLAS)));
+            Assert.False(newYorkToDallas.MatchesActivity(HandlingActivity.UnloadOff(voyage).In(L.NEWYORK)));
         }
 
         [Test]
         public void deriveActivities()
         {
-            Leg newYorkToDallas = Leg.deriveLeg(voyage, L.NEWYORK, L.DALLAS);
+            Leg newYorkToDallas = Leg.DeriveLeg(voyage, L.NEWYORK, L.DALLAS);
 
-            Assert.That(newYorkToDallas.deriveLoadActivity(),
-                Is.EqualTo(HandlingActivity.loadOnto(voyage).@in(L.NEWYORK)));
-            Assert.That(newYorkToDallas.deriveUnloadActivity(),
-                Is.EqualTo(HandlingActivity.unloadOff(voyage).@in(L.DALLAS)));
+            Assert.That(newYorkToDallas.DeriveLoadActivity(),
+                Is.EqualTo(HandlingActivity.LoadOnto(voyage).In(L.NEWYORK)));
+            Assert.That(newYorkToDallas.DeriveUnloadActivity(),
+                Is.EqualTo(HandlingActivity.UnloadOff(voyage).In(L.DALLAS)));
         }
 
         [Test]
         public void intermediateLocations()
         {
-            Leg leg = Leg.deriveLeg(SampleVoyages.HONGKONG_TO_NEW_YORK, L.HONGKONG, L.NEWYORK);
+            Leg leg = Leg.DeriveLeg(SampleVoyages.HONGKONG_TO_NEW_YORK, L.HONGKONG, L.NEWYORK);
             Assert.AreEqual(new[] {L.HANGZOU, L.TOKYO, L.MELBOURNE}.ToList(), leg.IntermediateLocations);
         }
     }

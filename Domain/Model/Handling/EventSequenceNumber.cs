@@ -7,38 +7,33 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
 {
     public class EventSequenceNumber : ValueObjectSupport<EventSequenceNumber>
     {
-        private static long SEQUENCE = DateTime.Now.Millisecond;
-        private readonly long _value;
+        private static long _sequence = DateTime.Now.Millisecond;
+
+        private long Value { get; set; }
 
         private EventSequenceNumber(long value)
         {
-            this._value = value;
+            Value = value;
         }
 
-        public static EventSequenceNumber next()
+        public static EventSequenceNumber Next()
         {
-            return new EventSequenceNumber(Interlocked.Increment(ref SEQUENCE));
+            return new EventSequenceNumber(Interlocked.Increment(ref _sequence));
         }
 
-        public static EventSequenceNumber valueOf(long value)
+        public static EventSequenceNumber ValueOf(long value)
         {
             return new EventSequenceNumber(value);
         }
 
-        public long longValue()
-        {
-            return _value;
-        }
-
         public override string ToString()
         {
-            return _value.ToString();
+            return Value.ToString();
         }
 
-        EventSequenceNumber()
+        protected internal EventSequenceNumber()
         {
-            // Needed by Hibernate
-            _value = -1L;
+            Value = -1L;
         }
     }
 }

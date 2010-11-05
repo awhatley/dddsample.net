@@ -1,5 +1,4 @@
-﻿using DomainDrivenDelivery.Domain.Patterns;
-using DomainDrivenDelivery.Domain.Patterns.ValueObject;
+﻿using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
 namespace DomainDrivenDelivery.Domain.Model.Travel
@@ -9,29 +8,21 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
     /// </summary>
     public class VoyageNumber : ValueObjectSupport<VoyageNumber>
     {
-        private readonly string _number;
+        public string Value { get; private set; }
 
         public VoyageNumber(string number)
         {
             Validate.notNull(number);
-
-            this._number = number;
+            Value = number;
         }
 
         public override string ToString()
         {
-            return _number;
+            return Value;
         }
 
-        public string stringValue()
+        protected internal VoyageNumber()
         {
-            return _number;
-        }
-
-        VoyageNumber()
-        {
-            // Needed by Hibernate
-            _number = null;
         }
     }
 }

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2">
   <class name="DomainDrivenDelivery.Domain.Model.Travel.Voyage" table="Voyage">
 
-    <id name="_primaryKey" column="id">
+    <id name="_primaryKey" access="field" column="id">
       <generator class="NHibernate.Id.IdentityGenerator"/>
     </id>
 
-    <component name="_voyageNumber" unique="true" update="false">
-      <property name="_number" column="voyage_number"/>
+    <component name="VoyageNumber" unique="true" update="false">
+      <property name="Value" column="voyage_number"/>
     </component>
 
-    <component name="_schedule">
-      <list name="_carrierMovements" cascade="all-delete-orphan">
+    <component name="Schedule">
+      <list name="CarrierMovements" cascade="all-delete-orphan">
         <key column="voyage_id" foreign-key="cm_voyage_fk"/>
         <index column="cm_index"/>
         <one-to-many class="DomainDrivenDelivery.Domain.Model.Travel.CarrierMovement"/>

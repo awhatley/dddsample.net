@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2">
   <class name="DomainDrivenDelivery.Domain.Model.Locations.Location" table="Location">
-    <id name="_primaryKey" column="id">
+
+    <id name="_primaryKey" access="field" column="id">
       <generator class="NHibernate.Id.IdentityGenerator"/>
     </id>
-    <component name="_unLocode" unique="true" update="false">
-      <property name="_unLocode" column="unlocode" not-null="true"/>
+
+    <component name="UnLocode" unique="true" update="false">
+      <property name="Value" column="unlocode" not-null="true"/>
     </component>
-    <property name="_name" column="name" not-null="true"/>
+
+    <property name="Name" column="name" not-null="true"/>
+
   </class>
 </hibernate-mapping>

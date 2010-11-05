@@ -75,7 +75,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Handling
 
             Assert.IsNotNull(handlingEvent);
             Assert.AreEqual(L.STOCKHOLM, handlingEvent.Location);
-            Assert.AreEqual(Voyage.NONE, handlingEvent.Voyage);
+            Assert.AreEqual(Voyage.None, handlingEvent.Voyage);
             Assert.AreEqual(cargo, handlingEvent.Cargo);
             Assert.AreEqual(new DateTime(100), handlingEvent.CompletionTime);
             Assert.True(handlingEvent.RegistrationTime < DateTime.Now.AddMilliseconds(1));

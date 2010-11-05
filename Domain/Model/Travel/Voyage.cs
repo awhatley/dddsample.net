@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DomainDrivenDelivery.Domain.Model.Locations;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.Entity;
 using DomainDrivenDelivery.Utilities;
 
@@ -11,40 +10,33 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
 {
     public class Voyage : EntitySupport<Voyage, VoyageNumber>
     {
-        private readonly VoyageNumber _voyageNumber;
-        private Schedule _schedule;
+        /// <summary>
+        /// Null object pattern
+        /// </summary>
+        public static readonly Voyage None = new Voyage(new VoyageNumber(""), Schedule.Empty);
 
-        // Null object pattern
-        public static readonly Voyage NONE = new Voyage(new VoyageNumber(""), Schedule.EMPTY);
+        /// <summary>
+        /// Voyage number.
+        /// </summary>
+        public virtual VoyageNumber VoyageNumber { get; private set; }
+
+        /// <summary>
+        /// Schedule.
+        /// </summary>
+        public virtual Schedule Schedule { get; private set; }
 
         public Voyage(VoyageNumber voyageNumber, Schedule schedule)
         {
             Validate.notNull(voyageNumber, "Voyage number is required");
             Validate.notNull(schedule, "Schedule is required");
 
-            this._voyageNumber = voyageNumber;
-            this._schedule = schedule;
+            VoyageNumber = voyageNumber;
+            Schedule = schedule;
         }
 
         public override VoyageNumber Identity
         {
-            get { return _voyageNumber; }
-        }
-
-        /// <summary>
-        /// Voyage number.
-        /// </summary>
-        public virtual VoyageNumber VoyageNumber
-        {
-            get { return _voyageNumber; }
-        }
-
-        /// <summary>
-        /// Schedule.
-        /// </summary>
-        public virtual Schedule Schedule
-        {
-            get { return _schedule; }
+            get { return VoyageNumber; }
         }
 
         /// <summary>
@@ -52,29 +44,19 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="location">location from where the rescheduled departure happens.</param>
         /// <param name="newDepartureTime">new departure time</param>
-        public virtual void departureRescheduled(Location location, DateTime newDepartureTime)
+        public virtual void DepartureRescheduled(Location location, DateTime newDepartureTime)
         {
-            var carrierMovements = new List<CarrierMovement>();
+            var carrierMovements = Schedule.CarrierMovements.Select(
+                carrierMovement => carrierMovement.DepartureLocation.sameAs(location)
+                                       ? carrierMovement.WithDepartureTime(newDepartureTime)
+                                       : carrierMovement).ToList();
 
-            foreach(CarrierMovement carrierMovement in _schedule.carrierMovements())
-            {
-                if(carrierMovement.DepartureLocation.sameAs(location))
-                {
-                    carrierMovements.Add(carrierMovement.withDepartureTime(newDepartureTime));
-                }
-                else
-                {
-                    carrierMovements.Add(carrierMovement);
-                }
-            }
-
-            this._schedule = new Schedule(carrierMovements);
+            Schedule = new Schedule(carrierMovements);
         }
 
-
-        public virtual Location arrivalLocationWhenDepartedFrom(Location departureLocation)
+        public virtual Location ArrivalLocationWhenDepartedFrom(Location departureLocation)
         {
-            foreach(CarrierMovement carrierMovement in _schedule.carrierMovements())
+            foreach(var carrierMovement in Schedule.CarrierMovements)
             {
                 if(carrierMovement.DepartureLocation.sameAs(departureLocation))
                 {
@@ -82,16 +64,16 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
                 }
             }
 
-            return Location.NONE;
+            return Location.None;
         }
 
         public virtual IEnumerable<Location> Locations
         {
             get
             {
-                var locations = _schedule.carrierMovements().Select(cm => cm.DepartureLocation).ToList();
+                var locations = Schedule.CarrierMovements.Select(cm => cm.DepartureLocation).ToList();
 
-                locations.Add(_schedule.carrierMovements().Last().ArrivalLocation);
+                locations.Add(Schedule.CarrierMovements.Last().ArrivalLocation);
 
                 return locations.AsReadOnly();
             }
@@ -99,13 +81,11 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
 
         public override string ToString()
         {
-            return _voyageNumber.stringValue();
+            return VoyageNumber.Value;
         }
 
-        internal Voyage()
+        protected internal Voyage()
         {
-            // Needed by Hibernate
-            _voyageNumber = null;
         }
 
         /// <summary>

@@ -29,22 +29,22 @@ namespace DomainDrivenDelivery.Utilities
 
         private bool value = true;
 
-        public static bool reflectionEquals(Object lhs, Object rhs)
+        public static bool reflectionEquals(Type type, Object lhs, Object rhs)
         {
-            return reflectionEquals(lhs, rhs, true, null);
+            return reflectionEquals(type, lhs, rhs, true, null);
         }
 
-        public static bool reflectionEquals(Object lhs, Object rhs, IEnumerable<String> excludedFields)
+        public static bool reflectionEquals(Type type, Object lhs, Object rhs, IEnumerable<String> excludedFields)
         {
-            return reflectionEquals(lhs, rhs, true, excludedFields);
+            return reflectionEquals(type, lhs, rhs, true, excludedFields);
         }
 
-        public static bool reflectionEquals(Object lhs, Object rhs, bool testTransients)
+        public static bool reflectionEquals(Type type, Object lhs, Object rhs, bool testTransients)
         {
-            return reflectionEquals(lhs, rhs, testTransients, null);
+            return reflectionEquals(type, lhs, rhs, testTransients, null);
         }
 
-        public static bool reflectionEquals(Object lhs, Object rhs, bool testTransients, IEnumerable<String> excludedFields)
+        public static bool reflectionEquals(Type type, Object lhs, Object rhs, bool testTransients, IEnumerable<String> excludedFields)
         {
             if(lhs == rhs)
             {
@@ -54,32 +54,10 @@ namespace DomainDrivenDelivery.Utilities
             {
                 return false;
             }
-            // Find the leaf class since there may be transients in the leaf 
-            // class or in classes between the leaf and root.
-            // If we are not testing transients or a subclass has no ivars, 
-            // then a subclass can test equals to a superclass.
+
             var lhsClass = lhs.GetType();
             var rhsClass = rhs.GetType();
-            Type testClass;
-            if(lhsClass.IsInstanceOfType(rhs))
-            {
-                testClass = lhsClass;
-                if(!rhsClass.IsInstanceOfType(lhs))
-                {
-                    // rhsClass is a subclass of lhsClass
-                    testClass = rhsClass;
-                }
-            }
-            else if(rhsClass.IsInstanceOfType(lhs))
-            {
-                testClass = rhsClass;
-                if(!lhsClass.IsInstanceOfType(rhs))
-                {
-                    // lhsClass is a subclass of rhsClass
-                    testClass = lhsClass;
-                }
-            }
-            else
+            if(!lhsClass.IsInstanceOfType(rhs) && !rhsClass.IsInstanceOfType(lhs))
             {
                 // The two classes are not related.
                 return false;
@@ -87,11 +65,11 @@ namespace DomainDrivenDelivery.Utilities
             EqualsBuilder equalsBuilder = new EqualsBuilder();
             try
             {
-                reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludedFields);
-                while(testClass.BaseType != null)
+                reflectionAppend(lhs, rhs, type, equalsBuilder, testTransients, excludedFields);
+                while(type.BaseType != null)
                 {
-                    testClass = testClass.BaseType;
-                    reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludedFields);
+                    type = type.BaseType;
+                    reflectionAppend(lhs, rhs, type, equalsBuilder, testTransients, excludedFields);
                 }
             }
             catch(ArgumentException e)
@@ -124,12 +102,11 @@ namespace DomainDrivenDelivery.Utilities
             {
                 REGISTRY.Value.Add(Tuple.Create(new IDKey(lhs), new IDKey(rhs)));
                 var values = type
-                    .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(field => excludedFields == null || !excludedFields.Contains(field.Name))
-                    .Where(field => useTransients || !field.IsNotSerialized)
-                    .Select(field => new {
-                        lhs = field.GetValue(lhs),
-                        rhs = field.GetValue(rhs)
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(prop => prop.CanWrite)
+                    .Select(prop => new {
+                        lhs = prop.GetValue(lhs, null),
+                        rhs = prop.GetValue(rhs, null)
                     });
 
                 foreach(var value in values)

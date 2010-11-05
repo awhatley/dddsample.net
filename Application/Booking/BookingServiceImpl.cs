@@ -44,7 +44,7 @@ namespace DomainDrivenDelivery.Application.Booking
             var cargo = new Cargo(trackingId, routeSpecification);
             _cargoRepository.store(cargo);
 
-            _logger.Info("Booked new cargo with tracking id " + cargo.TrackingId.stringValue());
+            _logger.Info("Booked new cargo with tracking id " + cargo.TrackingId.Value);
 
             return cargo.TrackingId;
         }
@@ -64,7 +64,7 @@ namespace DomainDrivenDelivery.Application.Booking
         {
             var cargo = _cargoRepository.find(trackingId);
             Validate.notNull(cargo, "Can't assign itinerary to non-existing cargo " + trackingId);
-            cargo.assignToRoute(itinerary);
+            cargo.AssignToRoute(itinerary);
             _cargoRepository.store(cargo);
 
             _logger.Info("Assigned cargo " + trackingId + " to new route");
@@ -77,11 +77,11 @@ namespace DomainDrivenDelivery.Application.Booking
             Validate.notNull(cargo, "Can't change destination of non-existing cargo " + trackingId);
             var newDestination = _locationRepository.find(unLocode);
 
-            var routeSpecification = cargo.RouteSpecification.withDestination(newDestination);
-            cargo.specifyNewRoute(routeSpecification);
+            var routeSpecification = cargo.RouteSpecification.WithDestination(newDestination);
+            cargo.SpecifyNewRoute(routeSpecification);
 
             _cargoRepository.store(cargo);
-            _logger.Info("Changed destination for cargo " + trackingId + " to " + routeSpecification.destination());
+            _logger.Info("Changed destination for cargo " + trackingId + " to " + routeSpecification.Destination);
         }
 
         [Transaction(ReadOnly = true)]

@@ -28,7 +28,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Locations
         [Test]
         public void testStringValue()
         {
-            Assert.AreEqual("ABCDE", new UnLocode("AbcDe").stringValue());
+            Assert.AreEqual("ABCDE", new UnLocode("AbcDe").Value);
         }
 
         [Test]

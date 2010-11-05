@@ -1,6 +1,5 @@
 ﻿using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Travel;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
@@ -13,17 +12,28 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
     /// </summary>
     public class HandlingActivity : ValueObjectSupport<HandlingActivity>
     {
-        private readonly HandlingActivityType _type;
-        private readonly Location _location;
-        private readonly Voyage _voyage;
+        /// <summary>
+        /// Type of handling
+        /// </summary>
+        public virtual HandlingActivityType Type { get; private set; }
+
+        /// <summary>
+        /// Location
+        /// </summary>
+        public virtual Location Location { get; private set; }
+
+        /// <summary>
+        /// Voyage
+        /// </summary>
+        public virtual Voyage Voyage { get; private set; }
 
         public HandlingActivity(HandlingActivityType type, Location location)
         {
             Validate.notNull(location, "Location is required");
 
-            this._type = type;
-            this._location = location;
-            this._voyage = null;
+            Type = type;
+            Location = location;
+            Voyage = null;
         }
 
         public HandlingActivity(HandlingActivityType type, Location location, Voyage voyage)
@@ -31,96 +41,69 @@ namespace DomainDrivenDelivery.Domain.Model.Shared
             Validate.notNull(location, "Location is required");
             Validate.notNull(voyage, "Voyage is required");
 
-            this._type = type;
-            this._location = location;
-            this._voyage = voyage;
-        }
-
-        /// <summary>
-        /// Type of handling
-        /// </summary>
-        public virtual HandlingActivityType Type
-        {
-            get { return _type; }
-        }
-
-        /// <summary>
-        /// Location
-        /// </summary>
-        public virtual Location Location
-        {
-            get { return _location; }
-        }
-
-        /// <summary>
-        /// Voyage
-        /// </summary>
-        public virtual Voyage Voyage
-        {
-            get { return _voyage; }
+            Type = type;
+            Location = location;
+            Voyage = voyage;
         }
 
         /// <summary>
         /// Copies this activity.
         /// </summary>
-        public virtual HandlingActivity copy()
+        public virtual HandlingActivity Copy()
         {
-            return new HandlingActivity(_type, _location, _voyage);
+            return new HandlingActivity(Type, Location, Voyage);
         }
 
         public override string ToString()
         {
-            return _type + " in " + _location + (_voyage != null ? ", " + _voyage : "");
+            return Type + " in " + Location + (Voyage != null ? ", " + Voyage : "");
         }
 
-        internal HandlingActivity()
+        protected internal HandlingActivity()
         {
-            // Needed by Hibernate
-            _location = null;
-            _voyage = null;
         }
 
         // DSL-like factory methods
 
-        public static InLocation loadOnto(Voyage voyage)
+        public static InLocation LoadOnto(Voyage voyage)
         {
             return new InLocation(HandlingActivityType.LOAD, voyage);
         }
 
-        public static InLocation unloadOff(Voyage voyage)
+        public static InLocation UnloadOff(Voyage voyage)
         {
             return new InLocation(HandlingActivityType.UNLOAD, voyage);
         }
 
-        public static HandlingActivity receiveIn(Location location)
+        public static HandlingActivity ReceiveIn(Location location)
         {
             return new HandlingActivity(HandlingActivityType.RECEIVE, location);
         }
 
-        public static HandlingActivity claimIn(Location location)
+        public static HandlingActivity ClaimIn(Location location)
         {
             return new HandlingActivity(HandlingActivityType.CLAIM, location);
         }
 
-        public static HandlingActivity customsIn(Location location)
+        public static HandlingActivity CustomsIn(Location location)
         {
             return new HandlingActivity(HandlingActivityType.CUSTOMS, location);
         }
 
         public class InLocation
         {
-            private readonly HandlingActivityType type;
-            private readonly Voyage voyage;
+            private readonly HandlingActivityType _type;
+            private readonly Voyage _voyage;
 
             public InLocation(HandlingActivityType type, Voyage voyage)
             {
-                this.type = type;
-                this.voyage = voyage;
+                _type = type;
+                _voyage = voyage;
             }
 
-            public HandlingActivity @in(Location location)
+            public HandlingActivity In(Location location)
             {
-                return new HandlingActivity(type, location, voyage);
+                return new HandlingActivity(_type, location, _voyage);
             }
         }
     }

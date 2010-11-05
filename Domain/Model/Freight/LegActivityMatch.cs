@@ -6,115 +6,89 @@ using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 
 namespace DomainDrivenDelivery.Domain.Model.Freight
 {
-    public class LegActivityMatch : ValueObjectSupport<LegActivityMatch>, IComparable<LegActivityMatch>
+    internal class LegActivityMatch : ValueObjectSupport<LegActivityMatch>, IComparable<LegActivityMatch>
     {
-        private readonly Leg _leg;
-        private readonly LegEnd _legEnd;
-        private readonly HandlingActivity _handlingActivity;
-        private readonly Itinerary _itinerary;
+        public virtual Leg Leg { get; private set; }
+        public virtual HandlingActivity HandlingActivity { get; private set; }
+        public virtual LegEnd LegEnd { get; private set; }
+        public virtual Itinerary Itinerary { get; private set; }
 
         private LegActivityMatch(Leg leg, LegEnd legEnd, HandlingActivity handlingActivity, Itinerary itinerary)
         {
-            this._leg = leg;
-            this._legEnd = legEnd;
-            this._handlingActivity = handlingActivity;
-            this._itinerary = itinerary;
+            Leg = leg;
+            LegEnd = legEnd;
+            HandlingActivity = handlingActivity;
+            Itinerary = itinerary;
         }
 
-        internal static LegActivityMatch match(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
+        public static LegActivityMatch Match(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
         {
             switch(handlingActivity.Type)
             {
                 case HandlingActivityType.RECEIVE:
                 case HandlingActivityType.LOAD:
-                    return new LegActivityMatch(leg, LegEnd.LOAD_END, handlingActivity, itinerary);
+                    return new LegActivityMatch(leg, LegEnd.LoadEnd, handlingActivity, itinerary);
 
                 case HandlingActivityType.UNLOAD:
                 case HandlingActivityType.CLAIM:
                 case HandlingActivityType.CUSTOMS:
-                    return new LegActivityMatch(leg, LegEnd.UNLOAD_END, handlingActivity, itinerary);
+                    return new LegActivityMatch(leg, LegEnd.UnloadEnd, handlingActivity, itinerary);
 
                 default:
-                    return noMatch(handlingActivity, itinerary);
+                    return NoMatch(handlingActivity, itinerary);
             }
         }
 
-        internal static LegActivityMatch ifLoadLocationSame(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
+        public static LegActivityMatch IfLoadLocationSame(Leg leg,
+            HandlingActivity handlingActivity,
+            Itinerary itinerary)
         {
-            if(leg.LoadLocation.sameAs(handlingActivity.Location))
-            {
-                return new LegActivityMatch(leg, LegEnd.LOAD_END, handlingActivity, itinerary);
-            }
-            else
-            {
-                return noMatch(handlingActivity, itinerary);
-            }
+            return leg.LoadLocation.sameAs(handlingActivity.Location)
+                ? new LegActivityMatch(leg, LegEnd.LoadEnd, handlingActivity, itinerary)
+                : NoMatch(handlingActivity, itinerary);
         }
 
-        internal static LegActivityMatch ifUnloadLocationSame(Leg leg, HandlingActivity handlingActivity, Itinerary itinerary)
+        public static LegActivityMatch IfUnloadLocationSame(Leg leg,
+            HandlingActivity handlingActivity,
+            Itinerary itinerary)
         {
-            if(leg.UnloadLocation.sameAs(handlingActivity.Location))
-            {
-                return new LegActivityMatch(leg, LegEnd.UNLOAD_END, handlingActivity, itinerary);
-            }
-            else
-            {
-                return noMatch(handlingActivity, itinerary);
-            }
+            return leg.UnloadLocation.sameAs(handlingActivity.Location)
+                ? new LegActivityMatch(leg, LegEnd.UnloadEnd, handlingActivity, itinerary)
+                : NoMatch(handlingActivity, itinerary);
         }
 
-        internal static LegActivityMatch noMatch(HandlingActivity handlingActivity, Itinerary itinerary)
+        public static LegActivityMatch NoMatch(HandlingActivity handlingActivity, Itinerary itinerary)
         {
-            return new LegActivityMatch(null, LegEnd.NO_END, handlingActivity, itinerary);
+            return new LegActivityMatch(null, LegEnd.NoEnd, handlingActivity, itinerary);
         }
 
-        internal Leg leg()
+        public virtual int CompareTo(LegActivityMatch other)
         {
-            return _leg;
+            var thisLegIndex = Itinerary.Legs.ToList().IndexOf(Leg);
+            var otherLegIndex = Itinerary.Legs.ToList().IndexOf(other.Leg);
+
+            return thisLegIndex.Equals(otherLegIndex)
+                ? LegEnd.CompareTo(other.LegEnd)
+                : ToPositive(thisLegIndex).CompareTo(ToPositive(otherLegIndex));
         }
 
-        internal HandlingActivity handlingActivity()
-        {
-            return _handlingActivity;
-        }
-
-        public int CompareTo(LegActivityMatch other)
-        {
-            var thisLegIndex = _itinerary.legs().ToList().IndexOf(_leg);
-            var otherLegIndex = _itinerary.legs().ToList().IndexOf(other._leg);
-
-            if(thisLegIndex.Equals(otherLegIndex))
-            {
-                return this._legEnd.CompareTo(other._legEnd);
-            }
-            else
-            {
-                return toPositive(thisLegIndex).CompareTo(toPositive(otherLegIndex));
-            }
-        }
-
-        private int toPositive(int thisLegIndex)
+        private static int ToPositive(int thisLegIndex)
         {
             return thisLegIndex >= 0 ? thisLegIndex : Int32.MaxValue;
         }
 
         public override string ToString()
         {
-            if(_legEnd == LegEnd.NO_END)
-            {
-                return "No match";
-            }
-            else
-            {
-                return "Activity " + _handlingActivity + " matches leg " + _leg + " at " + _legEnd;
-            }
+            return LegEnd == LegEnd.NoEnd
+                ? "No match"
+                : "Activity " + HandlingActivity + " matches leg " + Leg + " at " + LegEnd;
         }
+    }
 
-        enum LegEnd
-        {
-            LOAD_END,
-            UNLOAD_END,
-            NO_END
-        }
+    internal enum LegEnd
+    {
+        LoadEnd,
+        UnloadEnd,
+        NoEnd
     }
 }

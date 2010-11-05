@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2" default-access="field">
+<hibernate-mapping assembly="DomainDrivenDelivery.Domain" xmlns="urn:nhibernate-mapping-2.2">
   <class name="DomainDrivenDelivery.Domain.Model.Freight.Leg" table="Leg" mutable="false">
-    <id name="_primaryKey" column="id">
+    
+    <id name="_primaryKey" access="field" column="id">
       <generator class="NHibernate.Id.IdentityGenerator"/>
     </id>
 
-    <many-to-one name="_voyage" column="voyage_id" cascade="none" foreign-key="leg_voyage_fk"/>
+    <many-to-one name="Voyage" column="voyage_id" cascade="none" foreign-key="leg_voyage_fk"/>
 
-    <many-to-one name="_loadLocation" column="load_location_id" cascade="none" foreign-key="load_location_fk"/>
-    <property name="_loadTime" column="load_time" not-null="true"/>
+    <many-to-one name="LoadLocation" column="load_location_id" cascade="none" foreign-key="load_location_fk"/>
+    <property name="LoadTime" column="load_time" not-null="true"/>
 
-    <many-to-one name="_unloadLocation" column="unload_location_id" cascade="none" foreign-key="unload_location_fk"/>
-    <property name="_unloadTime" column="unload_time" not-null="true"/>
+    <many-to-one name="UnloadLocation" column="unload_location_id" cascade="none" foreign-key="unload_location_fk"/>
+    <property name="UnloadTime" column="unload_time" not-null="true"/>
     
   </class>
 </hibernate-mapping>

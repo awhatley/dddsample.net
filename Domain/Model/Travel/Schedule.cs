@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using DomainDrivenDelivery.Domain.Model.Locations;
-using DomainDrivenDelivery.Domain.Patterns;
 using DomainDrivenDelivery.Domain.Patterns.ValueObject;
 using DomainDrivenDelivery.Utilities;
 
@@ -14,9 +12,13 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
     /// </summary>
     public class Schedule : ValueObjectSupport<Schedule>
     {
-        private readonly IEnumerable<CarrierMovement> _carrierMovements;
+        /// <summary>
+        /// Carrier movements.
+        /// </summary>
+        /// <returns>Carrier movements.</returns>
+        public IEnumerable<CarrierMovement> CarrierMovements { get; private set; }
 
-        public static readonly Schedule EMPTY = new Schedule();
+        public static readonly Schedule Empty = new Schedule();
 
         internal Schedule(IEnumerable<CarrierMovement> carrierMovements)
         {
@@ -24,16 +26,7 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
             Validate.noNullElements(carrierMovements, "There are null elements in the list of carrier movments");
             Validate.notEmpty(carrierMovements, "There must be at least one carrier movement in a schedule");
 
-            this._carrierMovements = carrierMovements;
-        }
-
-        /// <summary>
-        /// Carrier movements.
-        /// </summary>
-        /// <returns>Carrier movements.</returns>
-        public IEnumerable<CarrierMovement> carrierMovements()
-        {
-            return _carrierMovements.ToList().AsReadOnly();
+            CarrierMovements = carrierMovements;
         }
 
         /// <summary>
@@ -41,9 +34,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="location">location of departure</param>
         /// <returns>Date of departure from this location, or null if it's not part of the voyage.</returns>
-        public DateTime departureTimeAt(Location location)
+        public DateTime DepartureTimeAt(Location location)
         {
-            foreach(CarrierMovement movement in _carrierMovements)
+            foreach(var movement in CarrierMovements)
             {
                 if(movement.DepartureLocation.sameAs(location))
                 {
@@ -58,9 +51,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
         /// </summary>
         /// <param name="location">location of arrival</param>
         /// <returns>Date of arrival at this location, or null if it's not part of the voyage.</returns>
-        public DateTime arrivalTimeAt(Location location)
+        public DateTime ArrivalTimeAt(Location location)
         {
-            foreach(CarrierMovement movement in _carrierMovements)
+            foreach(var movement in CarrierMovements)
             {
                 if(movement.ArrivalLocation.sameAs(location))
                 {
@@ -70,10 +63,9 @@ namespace DomainDrivenDelivery.Domain.Model.Travel
             return DateTime.MinValue;
         }
 
-        Schedule()
+        protected internal Schedule()
         {
-            // Needed by Hibernate
-            _carrierMovements = new List<CarrierMovement>();
+            CarrierMovements = new List<CarrierMovement>();
         }
     }
 }

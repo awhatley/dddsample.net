@@ -15,7 +15,10 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
     /// </summary>
     public class Itinerary : ValueObjectSupport<Itinerary>
     {
-        private readonly IEnumerable<Leg> _legs;
+        /// <summary>
+        /// the legs of this itinerary, as an <b>immutable</b> list.
+        /// </summary>
+        public IEnumerable<Leg> Legs { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -37,7 +40,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             //    leg = nextLeg;
             //}
 
-            _legs = legs;
+            Legs = legs;
         }
 
         public Itinerary(params Leg[] legs)
@@ -46,35 +49,26 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         }
 
         /// <summary>
-        /// the legs of this itinerary, as an <b>immutable</b> list.
-        /// </summary>
-        /// <returns>the legs of this itinerary, as an <b>immutable</b> list.</returns>
-        public IEnumerable<Leg> legs()
-        {
-            return new List<Leg>(_legs).AsReadOnly();
-        }
-
-        /// <summary>
         /// A new itinerary which is a copy of the old one, adjusted for the delay of the given voyage.
         /// </summary>
         /// <param name="rescheduledVoyage">the voyage that has been rescheduled</param>
         /// <returns>A new itinerary which is a copy of the old one, adjusted for the delay of the given voyage.</returns>
-        public Itinerary withRescheduledVoyage(Voyage rescheduledVoyage)
+        public Itinerary WithRescheduledVoyage(Voyage rescheduledVoyage)
         {
-            var newLegsList = new List<Leg>(this._legs.Count());
+            var newLegsList = new List<Leg>(Legs.Count());
 
             Leg lastAdded = null;
-            foreach(var leg in _legs)
+            foreach(var leg in Legs)
             {
                 if(leg.Voyage.sameAs(rescheduledVoyage))
                 {
-                    Leg modifiedLeg = leg.withRescheduledVoyage(rescheduledVoyage);
+                    var modifiedLeg = leg.WithRescheduledVoyage(rescheduledVoyage);
+
                     // This truncates the itinerary if the voyage rescheduling makes
                     // it impossible to maintain the old unload-load chain.
                     if(lastAdded != null && modifiedLeg.LoadTime < lastAdded.UnloadTime)
-                    {
                         break;
-                    }
+
                     newLegsList.Add(modifiedLeg);
                 }
                 else
@@ -92,51 +86,50 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="handlingActivity">Event to test.</param>
         /// <returns><code>true</code> if the event is expected</returns>
-        internal bool isExpectedActivity(HandlingActivity handlingActivity)
+        internal bool IsExpectedActivity(HandlingActivity handlingActivity)
         {
-            return matchLeg(handlingActivity).leg() != null;
+            return MatchLeg(handlingActivity).Leg != null;
         }
 
         /// <summary>
         /// The initial departure location.
         /// </summary>
-        /// <returns>The initial departure location.</returns>
-        internal Location initialLoadLocation()
+        /// <value>The initial departure location.</value>
+        internal Location InitialLoadLocation
         {
-            return firstLeg().LoadLocation;
+            get { return FirstLeg.LoadLocation; }
         }
 
         /// <summary>
         /// The final arrival location.
         /// </summary>
-        /// <returns>The final arrival location.</returns>
-        internal Location finalUnloadLocation()
+        /// <value>The final arrival location.</value>
+        internal Location FinalUnloadLocation
         {
-            return lastLeg().UnloadLocation;
+            get { return LastLeg.UnloadLocation; }
         }
 
         /// <summary>
         /// Date when cargo arrives at final destination.
         /// </summary>
-        /// <returns>Date when cargo arrives at final destination.</returns>
-        internal DateTime finalUnloadTime()
+        /// <value>Date when cargo arrives at final destination.</value>
+        internal DateTime FinalUnloadTime
         {
-            return lastLeg().UnloadTime;
+            get { return LastLeg.UnloadTime; }
         }
 
         /// <summary>
         /// A list of all locations on this itinerary.
         /// </summary>
-        /// <returns>A list of all locations on this itinerary.</returns>
-        internal List<Location> locations()
+        /// <value>A list of all locations on this itinerary.</value>
+        internal List<Location> Locations
         {
-            var result = new List<Location>(_legs.Count() + 1);
-            result.Add(firstLeg().LoadLocation);
-            foreach(var leg in _legs)
+            get
             {
-                result.Add(leg.UnloadLocation);
+                var result = new List<Location>(Legs.Count() + 1) { FirstLeg.LoadLocation };
+                result.AddRange(Legs.Select(leg => leg.UnloadLocation));
+                return result;
             }
-            return result;
         }
 
         /// <summary>
@@ -144,9 +137,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="location">a location</param>
         /// <returns>Load time at this location, or null if the location isn't on this itinerary.</returns>
-        public DateTime loadTimeAt(Location location)
+        public DateTime LoadTimeAt(Location location)
         {
-            foreach(var leg in _legs)
+            foreach(var leg in Legs)
             {
                 if(leg.LoadLocation.sameAs(location))
                 {
@@ -160,10 +153,10 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <summary>
         /// Estimated time of arrival
         /// </summary>
-        /// <returns>Estimated time of arrival</returns>
-        internal DateTime estimatedTimeOfArrival()
+        /// <value>Estimated time of arrival</value>
+        internal DateTime EstimatedTimeOfArrival
         {
-            return finalUnloadTime();
+            get { return FinalUnloadTime; }
         }
 
         /// <summary>
@@ -171,9 +164,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="location">a location</param>
         /// <returns>Unload time at this location, or null if the location isn't on this itinerary.</returns>
-        internal DateTime unloadTimeAt(Location location)
+        internal DateTime UnloadTimeAt(Location location)
         {
-            foreach(var leg in _legs)
+            foreach(var leg in Legs)
             {
                 if(leg.UnloadLocation.sameAs(location))
                 {
@@ -189,16 +182,11 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="previousActivity">previous handling activity</param>
         /// <returns>Handling activity that succeeds, or null if it can't be determined.</returns>
-        internal HandlingActivity activitySucceeding(HandlingActivity previousActivity)
+        internal HandlingActivity ActivitySucceeding(HandlingActivity previousActivity)
         {
-            if(previousActivity == null)
-            {
-                return HandlingActivity.receiveIn(firstLeg().LoadLocation);
-            }
-            else
-            {
-                return deriveFromMatchingLeg(previousActivity, matchLeg(previousActivity).leg());
-            }
+            return previousActivity == null
+                ? HandlingActivity.ReceiveIn(FirstLeg.LoadLocation)
+                : DeriveFromMatchingLeg(previousActivity, MatchLeg(previousActivity).Leg);
         }
 
         /// <summary>
@@ -207,24 +195,18 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="handlingActivity1">handling activity</param>
         /// <param name="handlingActivity2">handling activity</param>
         /// <returns>The activity which is strictly prior to the other, according to the itinerary, or null if neither is strictly prior.</returns>
-        internal HandlingActivity strictlyPriorOf(HandlingActivity handlingActivity1, HandlingActivity handlingActivity2)
+        internal HandlingActivity StrictlyPriorOf(HandlingActivity handlingActivity1, HandlingActivity handlingActivity2)
         {
-            var match1 = matchLeg(handlingActivity1);
-            var match2 = matchLeg(handlingActivity2);
+            var match1 = MatchLeg(handlingActivity1);
+            var match2 = MatchLeg(handlingActivity2);
             var compared = match1.CompareTo(match2);
 
             if(compared < 0)
-            {
-                return match1.handlingActivity();
-            }
+                return match1.HandlingActivity;
             else if(compared > 0)
-            {
-                return match2.handlingActivity();
-            }
+                return match2.HandlingActivity;
             else
-            {
                 return null;
-            }
         }
 
         /// <summary>
@@ -232,9 +214,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="leg">leg</param>
         /// <returns>The next leg, or null if this is the last leg.</returns>
-        internal Leg nextLeg(Leg leg)
+        internal Leg NextLeg(Leg leg)
         {
-            for(var it = _legs.GetEnumerator(); it.MoveNext(); )
+            for(var it = Legs.GetEnumerator(); it.MoveNext(); )
             {
                 if(it.Current.sameValueAs(leg))
                 {
@@ -250,53 +232,53 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="handlingActivity">handling activity</param>
         /// <returns>The leg match of this handling activity. Never null.</returns>
-        internal LegActivityMatch matchLeg(HandlingActivity handlingActivity)
+        internal LegActivityMatch MatchLeg(HandlingActivity handlingActivity)
         {
             if(handlingActivity == null)
             {
-                return LegActivityMatch.noMatch(handlingActivity, this);
+                return LegActivityMatch.NoMatch(handlingActivity, this);
             }
             else if(handlingActivity.Type == HandlingActivityType.RECEIVE)
             {
-                return LegActivityMatch.ifLoadLocationSame(firstLeg(), handlingActivity, this);
+                return LegActivityMatch.IfLoadLocationSame(FirstLeg, handlingActivity, this);
             }
             else if(handlingActivity.Type == HandlingActivityType.CLAIM)
             {
-                return LegActivityMatch.ifUnloadLocationSame(lastLeg(), handlingActivity, this);
+                return LegActivityMatch.IfUnloadLocationSame(LastLeg, handlingActivity, this);
             }
             else
             {
-                return findLegMatchingActivity(handlingActivity);
+                return FindLegMatchingActivity(handlingActivity);
             }
         }
 
         /// <summary>
         /// The first leg on the itinerary.
         /// </summary>
-        /// <returns>The first leg on the itinerary.</returns>
-        internal Leg firstLeg()
+        /// <value>The first leg on the itinerary.</value>
+        internal Leg FirstLeg
         {
-            return _legs.First();
+            get { return Legs.First(); }
         }
 
         /// <summary>
         /// The last leg on the itinerary.
         /// </summary>
-        /// <returns>The last leg on the itinerary.</returns>
-        public Leg lastLeg()
+        /// <value>The last leg on the itinerary.</value>
+        public Leg LastLeg
         {
-            return _legs.Last();
+            get { return Legs.Last(); }
         }
 
-        internal Itinerary truncatedAfter(Location location)
+        internal Itinerary TruncatedAfter(Location location)
         {
             var newLegs = new List<Leg>();
 
-            foreach(var leg in _legs)
+            foreach(var leg in Legs)
             {
                 if(leg.Voyage.Locations.Contains(location))
                 {
-                    newLegs.Add(Leg.deriveLeg(leg.Voyage, leg.LoadLocation, location));
+                    newLegs.Add(Leg.DeriveLeg(leg.Voyage, leg.LoadLocation, location));
                     break;
                 }
                 else
@@ -312,83 +294,71 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             return new Itinerary(newLegs);
         }
 
-        internal Itinerary withLeg(Leg leg)
+        internal Itinerary WithLeg(Leg leg)
         {
-            var newLegs = new List<Leg>(_legs.Count() + 1);
-            newLegs.AddRange(_legs);
+            var newLegs = new List<Leg>(Legs.Count() + 1);
+            newLegs.AddRange(Legs);
             newLegs.Add(leg);
 
             return new Itinerary(newLegs);
         }
 
-        internal Itinerary appendBy(Itinerary other)
+        internal Itinerary AppendBy(Itinerary other)
         {
-            var newLegs = new List<Leg>(this._legs.Count() + other._legs.Count());
-            newLegs.AddRange(this._legs);
-            newLegs.AddRange(other._legs);
+            var newLegs = new List<Leg>(Legs.Count() + other.Legs.Count());
+            newLegs.AddRange(Legs);
+            newLegs.AddRange(other.Legs);
 
             return new Itinerary(newLegs);
         }
 
-        private LegActivityMatch findLegMatchingActivity(HandlingActivity handlingActivity)
+        private LegActivityMatch FindLegMatchingActivity(HandlingActivity handlingActivity)
         {
-            foreach(var leg in _legs)
+            foreach(var leg in Legs)
             {
-                if(leg.matchesActivity(handlingActivity))
+                if(leg.MatchesActivity(handlingActivity))
                 {
-                    return LegActivityMatch.match(leg, handlingActivity, this);
+                    return LegActivityMatch.Match(leg, handlingActivity, this);
                 }
             }
 
-            return LegActivityMatch.noMatch(handlingActivity, this);
+            return LegActivityMatch.NoMatch(handlingActivity, this);
         }
 
-        private HandlingActivity deriveFromMatchingLeg(HandlingActivity handlingActivity, Leg matchingLeg)
+        private HandlingActivity DeriveFromMatchingLeg(HandlingActivity handlingActivity, Leg matchingLeg)
         {
             if(matchingLeg == null)
             {
                 return null;
             }
+            if(handlingActivity.Type == HandlingActivityType.LOAD)
+            {
+                return matchingLeg.DeriveUnloadActivity();
+            }
+            else if(handlingActivity.Type == HandlingActivityType.UNLOAD)
+            {
+                return DeriveFromNextLeg(NextLeg(matchingLeg));
+            }
             else
             {
-                if(handlingActivity.Type == HandlingActivityType.LOAD)
-                {
-                    return matchingLeg.deriveUnloadActivity();
-                }
-                else if(handlingActivity.Type == HandlingActivityType.UNLOAD)
-                {
-                    return deriveFromNextLeg(nextLeg(matchingLeg));
-                }
-                else
-                {
-                    // Will only derive from load and unload within the itinerary context
-                    return null;
-                }
+                // Will only derive from load and unload within the itinerary context
+                return null;
             }
         }
 
-        private HandlingActivity deriveFromNextLeg(Leg nextLeg)
+        private HandlingActivity DeriveFromNextLeg(Leg nextLeg)
         {
-            if(nextLeg == null)
-            {
-                return HandlingActivity.claimIn(lastLeg().UnloadLocation);
-            }
-            else
-            {
-                return nextLeg.deriveLoadActivity();
-            }
+            return nextLeg == null ? HandlingActivity.ClaimIn(LastLeg.UnloadLocation) : nextLeg.DeriveLoadActivity();
         }
-
 
         public override string ToString()
         {
-            return String.Join("\n", _legs);
+            return String.Join("\n", Legs);
         }
 
-        Itinerary()
+        protected internal Itinerary()
         {
-            // Needed by Hibernate
-            _legs = new List<Leg>();
+            Legs = new List<Leg>();
         }
     }
 }

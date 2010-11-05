@@ -11,6 +11,6 @@ namespace DomainDrivenDelivery.Domain.Model.Handling
     public class UnknownLocationException : CannotCreateHandlingEventException
     {
         public UnknownLocationException(UnLocode unlocode)
-            : base("No location with UN locode " + unlocode.stringValue() + " exists in the system") { }
+            : base("No location with UN locode " + unlocode.Value + " exists in the system") { }
     }
 }

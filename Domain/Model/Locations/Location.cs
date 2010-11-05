@@ -14,78 +14,59 @@ namespace DomainDrivenDelivery.Domain.Model.Locations
     /// </remarks>
     public class Location : EntitySupport<Location, UnLocode>
     {
-        private readonly UnLocode _unLocode;
-        private readonly String _name;
-        private TimeZoneInfo _timeZone;
-        private CustomsZone _customsZone;
+        /// <summary>
+        /// UN Locode for this location.
+        /// </summary>
+        public virtual UnLocode UnLocode { get; private set; }
+
+        /// <summary>
+        /// Actual name of this location, e.g. "Stockholm".
+        /// </summary>
+        public virtual string Name { get; private set; }
+
+        /// <summary>
+        /// Customs zone of this location.
+        /// </summary>
+        public virtual CustomsZone CustomsZone { get; private set; }
+
+        /// <summary>
+        /// Time zone of this location.
+        /// </summary>
+        public virtual TimeZoneInfo TimeZone { get; private set; }
 
         /// <summary>
         /// Special Location object that marks an unknown location.
         /// </summary>
-        public static readonly Location NONE = new Location(
-            new UnLocode("XXXXX"), "-", TimeZoneInfo.FindSystemTimeZoneById("UTC"), null
-        );
+        public static readonly Location None = new Location(
+            new UnLocode("XXXXX"), "-", 
+            TimeZoneInfo.FindSystemTimeZoneById("UTC"), 
+            CustomsZone.None);
 
         internal Location(UnLocode unLocode, String name, TimeZoneInfo timeZone, CustomsZone customsZone)
         {
             Validate.notNull(unLocode);
             Validate.notNull(name);
             Validate.notNull(timeZone);
-            //    Validate.notNull(customsZone);
+            Validate.notNull(customsZone);
 
-            this._unLocode = unLocode;
-            this._name = name;
-            this._timeZone = timeZone;
-            this._customsZone = customsZone;
+            UnLocode = unLocode;
+            Name = name;
+            TimeZone = timeZone;
+            CustomsZone = customsZone;
         }
 
         public override UnLocode Identity
         {
-            get { return _unLocode; }
-        }
-
-        /// <summary>
-        /// UN Locode for this location.
-        /// </summary>
-        public virtual UnLocode UnLocode
-        {
-            get { return _unLocode; }
-        }
-
-        /// <summary>
-        /// Actual name of this location, e.g. "Stockholm".
-        /// </summary>
-        public virtual string Name
-        {
-            get { return _name; }
-        }
-
-        /// <summary>
-        /// Customs zone of this location.
-        /// </summary>
-        public virtual CustomsZone CustomsZone
-        {
-            get { return _customsZone; }
-        }
-
-        /// <summary>
-        /// Time zone of this location.
-        /// </summary>
-        public virtual TimeZoneInfo TimeZone
-        {
-            get { return _timeZone; }
+            get { return UnLocode; }
         }
 
         public override string ToString()
         {
-            return _name + " [" + _unLocode + "]";
+            return Name + " [" + UnLocode + "]";
         }
 
-        internal Location()
+        protected internal Location()
         {
-            // Needed by Hibernate
-            _unLocode = null;
-            _name = null;
         }
     }
 }

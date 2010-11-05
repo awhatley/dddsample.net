@@ -23,7 +23,7 @@ namespace DomainDrivenDelivery.Application.Event
         {
             var cargo = cargoRepository.find(trackingId);
 
-            if(cargo.isReadyToClaim())
+            if(cargo.IsReadyToClaim)
             {
                 // At this point, a real system would probably send an email or SMS
                 // or something, but we simply log a message.

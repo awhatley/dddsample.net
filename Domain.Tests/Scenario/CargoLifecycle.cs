@@ -36,7 +36,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Route: Hongkong - Long Beach - New York - Stockholm
             IEnumerable<Itinerary> itineraries = routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
             Itinerary itinerary = selectAppropriateRoute(itineraries);
-            cargo.assignToRoute(itinerary);
+            cargo.AssignToRoute(itinerary);
 
             // Routed
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.NOT_RECEIVED));
@@ -44,78 +44,78 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
 
             // Static factory + builder:
             // [HandlingActivity.]HandlingActivity.receiveIn(L.HONGKONG) <=> new HandlingActivity(RECEIVE, L.HONGKONG)
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.receiveIn(L.HONGKONG)));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ReceiveIn(L.HONGKONG)));
 
             Assert.IsNotNull(cargo.EstimatedTimeOfArrival);
-            Assert.That(cargo.customsClearancePoint(), Is.EqualTo(L.STOCKHOLM));
+            Assert.That(cargo.CustomsClearancePoint, Is.EqualTo(L.STOCKHOLM));
 
             // Received
-            cargo.handled(HandlingActivity.receiveIn(L.HONGKONG));
+            cargo.Handled(HandlingActivity.ReceiveIn(L.HONGKONG));
 
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
 
             // Loaded
-            cargo.handled(HandlingActivity.loadOnto(V.pacific1).@in(L.HONGKONG));
+            cargo.Handled(HandlingActivity.LoadOnto(V.pacific1).In(L.HONGKONG));
 
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.pacific1));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH)));
             Assert.False(cargo.IsMisdirected);
 
             // Unloaded
-            cargo.handled(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH));
 
             Assert.False(cargo.IsMisdirected);
-            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.NONE));
+            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.None));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.LONGBEACH));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.loadOnto(V.continental1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.LoadOnto(V.continental1).In(L.LONGBEACH)));
 
-            cargo.handled(HandlingActivity.loadOnto(V.continental1).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.LoadOnto(V.continental1).In(L.LONGBEACH));
 
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.LONGBEACH));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.continental1));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.continental1).@in(L.NEWYORK)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.continental1).In(L.NEWYORK)));
 
-            cargo.handled(HandlingActivity.unloadOff(V.continental1).@in(L.NEWYORK));
+            cargo.Handled(HandlingActivity.UnloadOff(V.continental1).In(L.NEWYORK));
 
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.NEWYORK));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
-            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.NONE));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.loadOnto(V.atlantic2).@in(L.NEWYORK)));
+            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.None));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.LoadOnto(V.atlantic2).In(L.NEWYORK)));
 
-            cargo.handled(HandlingActivity.loadOnto(V.atlantic2).@in(L.NEWYORK));
+            cargo.Handled(HandlingActivity.LoadOnto(V.atlantic2).In(L.NEWYORK));
 
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.NEWYORK));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.atlantic2));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.atlantic2).@in(L.STOCKHOLM)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.atlantic2).In(L.STOCKHOLM)));
 
-            cargo.handled(HandlingActivity.unloadOff(V.atlantic2).@in(L.STOCKHOLM));
+            cargo.Handled(HandlingActivity.UnloadOff(V.atlantic2).In(L.STOCKHOLM));
 
-            Assert.False(cargo.isReadyToClaim());
+            Assert.False(cargo.IsReadyToClaim);
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.STOCKHOLM));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
-            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.NONE));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.customsIn(L.STOCKHOLM)));
+            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.None));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.CustomsIn(L.STOCKHOLM)));
 
-            cargo.handled(HandlingActivity.customsIn(L.STOCKHOLM));
+            cargo.Handled(HandlingActivity.CustomsIn(L.STOCKHOLM));
 
-            Assert.True(cargo.isReadyToClaim());
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.claimIn(L.STOCKHOLM)));
+            Assert.True(cargo.IsReadyToClaim);
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ClaimIn(L.STOCKHOLM)));
 
-            cargo.handled(HandlingActivity.claimIn(L.STOCKHOLM));
+            cargo.Handled(HandlingActivity.ClaimIn(L.STOCKHOLM));
 
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.CLAIMED));
             Assert.IsNull(cargo.NextExpectedActivity);
@@ -136,32 +136,32 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Route: Hongkong - Long Beach - New York - Stockholm
             IEnumerable<Itinerary> itineraries = routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
             Itinerary itinerary = selectAppropriateRoute(itineraries);
-            cargo.assignToRoute(itinerary);
+            cargo.AssignToRoute(itinerary);
 
             // Routed
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.NOT_RECEIVED));
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.receiveIn(L.HONGKONG)));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ReceiveIn(L.HONGKONG)));
             Assert.IsNotNull(cargo.EstimatedTimeOfArrival);
 
             // Received
-            cargo.handled(HandlingActivity.receiveIn(L.HONGKONG));
+            cargo.Handled(HandlingActivity.ReceiveIn(L.HONGKONG));
 
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
 
             // Loaded
-            cargo.handled(HandlingActivity.loadOnto(V.pacific1).@in(L.HONGKONG));
+            cargo.Handled(HandlingActivity.LoadOnto(V.pacific1).In(L.HONGKONG));
 
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.pacific1));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH)));
             Assert.False(cargo.IsMisdirected);
 
             // Unloaded in Seattle, wasn't supposed to happen
-            cargo.handled(HandlingActivity.unloadOff(V.pacific1).@in(L.SEATTLE));
+            cargo.Handled(HandlingActivity.UnloadOff(V.pacific1).In(L.SEATTLE));
 
             // Misdirected
             Assert.True(cargo.IsMisdirected);
@@ -175,19 +175,19 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Assign to new route
             IEnumerable<Itinerary> available =
                 routingService.fetchRoutesForSpecification(
-                    cargo.RouteSpecification.withOrigin(cargo.earliestReroutingLocation()));
+                    cargo.RouteSpecification.WithOrigin(cargo.EarliestReroutingLocation));
 
             Itinerary newItinerary = selectAppropriateRoute(available);
-            Itinerary mergedItinerary = cargo.itineraryMergedWith(newItinerary);
-            cargo.assignToRoute(mergedItinerary);
+            Itinerary mergedItinerary = cargo.ItineraryMergedWith(newItinerary);
+            cargo.AssignToRoute(mergedItinerary);
 
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.loadOnto(V.continental3).@in(L.SEATTLE)));
+                Is.EqualTo(HandlingActivity.LoadOnto(V.continental3).In(L.SEATTLE)));
 
             // Loaded, back on track
-            cargo.handled(HandlingActivity.loadOnto(V.continental3).@in(L.SEATTLE));
+            cargo.Handled(HandlingActivity.LoadOnto(V.continental3).In(L.SEATTLE));
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.SEATTLE));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
@@ -210,40 +210,40 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Route: Hongkong - Long Beach - New York - Stockholm
             IEnumerable<Itinerary> itineraries = routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
             Itinerary itinerary = selectAppropriateRoute(itineraries);
-            cargo.assignToRoute(itinerary);
+            cargo.AssignToRoute(itinerary);
 
             // Routed
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.NOT_RECEIVED));
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.receiveIn(L.HONGKONG)));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ReceiveIn(L.HONGKONG)));
             Assert.That(cargo.EstimatedTimeOfArrival, Is.EqualTo(DateTime.Parse("2009-03-26")));
 
             // Received
-            cargo.handled(HandlingActivity.receiveIn(L.HONGKONG));
+            cargo.Handled(HandlingActivity.ReceiveIn(L.HONGKONG));
 
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
 
             // Loaded
-            cargo.handled(HandlingActivity.loadOnto(V.pacific1).@in(L.HONGKONG));
+            cargo.Handled(HandlingActivity.LoadOnto(V.pacific1).In(L.HONGKONG));
 
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.pacific1));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH)));
             Assert.False(cargo.IsMisdirected);
 
             // Unload
-            cargo.handled(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH));
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.LONGBEACH));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.loadOnto(V.continental1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.LoadOnto(V.continental1).In(L.LONGBEACH)));
 
             // Load onto wrong voyage
-            cargo.handled(HandlingActivity.loadOnto(V.pacific2).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.LoadOnto(V.pacific2).In(L.LONGBEACH));
             Assert.True(cargo.IsMisdirected);
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.IsNull(cargo.NextExpectedActivity);
@@ -251,25 +251,25 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
 
             // Reroute: specify new route
 
-            Assert.That(cargo.earliestReroutingLocation(), Is.EqualTo(L.SEATTLE));
+            Assert.That(cargo.EarliestReroutingLocation, Is.EqualTo(L.SEATTLE));
 
             // Assign to new route
             IEnumerable<Itinerary> available =
                 routingService.fetchRoutesForSpecification(
-                    cargo.RouteSpecification.withOrigin(cargo.earliestReroutingLocation()));
+                    cargo.RouteSpecification.WithOrigin(cargo.EarliestReroutingLocation));
 
             Itinerary newItinerary = selectAppropriateRoute(available);
 
-            Itinerary mergedItinerary = cargo.itineraryMergedWith(newItinerary);
-            cargo.assignToRoute(mergedItinerary);
+            Itinerary mergedItinerary = cargo.ItineraryMergedWith(newItinerary);
+            cargo.AssignToRoute(mergedItinerary);
 
             // No longer misdirected
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.unloadOff(V.pacific2).@in(L.SEATTLE)));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.UnloadOff(V.pacific2).In(L.SEATTLE)));
 
             // Loaded
-            cargo.handled(HandlingActivity.unloadOff(V.pacific2).@in(L.SEATTLE));
+            cargo.Handled(HandlingActivity.UnloadOff(V.pacific2).In(L.SEATTLE));
 
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.SEATTLE));
@@ -293,43 +293,43 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Route: Hongkong - Long Beach - New York - Stockholm
             IEnumerable<Itinerary> itineraries = routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
             Itinerary itinerary = selectAppropriateRoute(itineraries);
-            cargo.assignToRoute(itinerary);
+            cargo.AssignToRoute(itinerary);
 
             // Routed
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.NOT_RECEIVED));
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.receiveIn(L.HONGKONG)));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ReceiveIn(L.HONGKONG)));
             Assert.IsNotNull(cargo.EstimatedTimeOfArrival);
 
             // Received
-            cargo.handled(HandlingActivity.receiveIn(L.HONGKONG));
+            cargo.Handled(HandlingActivity.ReceiveIn(L.HONGKONG));
 
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
 
             // Loaded
-            cargo.handled(HandlingActivity.loadOnto(V.pacific1).@in(L.HONGKONG));
+            cargo.Handled(HandlingActivity.LoadOnto(V.pacific1).In(L.HONGKONG));
 
             Assert.That(cargo.CurrentVoyage, Is.EqualTo(V.pacific1));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.HONGKONG));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH)));
             Assert.False(cargo.IsMisdirected);
 
             // Unloaded
-            cargo.handled(HandlingActivity.unloadOff(V.pacific1).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.UnloadOff(V.pacific1).In(L.LONGBEACH));
 
-            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.NONE));
+            Assert.That(cargo.CurrentVoyage, Is.EqualTo(Voyage.None));
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.LONGBEACH));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.IN_PORT));
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.loadOnto(V.continental1).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.LoadOnto(V.continental1).In(L.LONGBEACH)));
 
             // Customer wants cargo to go to Rotterdam instead of Stockholm
-            RouteSpecification toRotterdam = cargo.RouteSpecification.withDestination(L.ROTTERDAM);
-            cargo.specifyNewRoute(toRotterdam);
+            RouteSpecification toRotterdam = cargo.RouteSpecification.WithDestination(L.ROTTERDAM);
+            cargo.SpecifyNewRoute(toRotterdam);
 
             // Misrouted
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.MISROUTED));
@@ -340,31 +340,31 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
             // Assign to new route
             IEnumerable<Itinerary> available = routingService.fetchRoutesForSpecification(cargo.RouteSpecification);
             Itinerary newItinerary = selectAppropriateRoute(available);
-            Itinerary mergedItinerary = cargo.itineraryMergedWith(newItinerary);
+            Itinerary mergedItinerary = cargo.ItineraryMergedWith(newItinerary);
 
-            cargo.assignToRoute(mergedItinerary);
+            cargo.AssignToRoute(mergedItinerary);
 
             Assert.That(cargo.RoutingStatus, Is.EqualTo(RoutingStatus.ROUTED));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.loadOnto(V.continental2).@in(L.LONGBEACH)));
+                Is.EqualTo(HandlingActivity.LoadOnto(V.continental2).In(L.LONGBEACH)));
 
             // Loaded, back on track
-            cargo.handled(HandlingActivity.loadOnto(V.continental2).@in(L.LONGBEACH));
+            cargo.Handled(HandlingActivity.LoadOnto(V.continental2).In(L.LONGBEACH));
             Assert.False(cargo.IsMisdirected);
             Assert.That(cargo.LastKnownLocation, Is.EqualTo(L.LONGBEACH));
             Assert.That(cargo.TransportStatus, Is.EqualTo(TransportStatus.ONBOARD_CARRIER));
             Assert.That(cargo.NextExpectedActivity,
-                Is.EqualTo(HandlingActivity.unloadOff(V.continental2).@in(L.NEWYORK)));
+                Is.EqualTo(HandlingActivity.UnloadOff(V.continental2).In(L.NEWYORK)));
 
             // Fast forward a bit
-            cargo.handled(HandlingActivity.unloadOff(V.continental2).@in(L.NEWYORK));
-            cargo.handled(HandlingActivity.loadOnto(V.atlantic1).@in(L.NEWYORK));
+            cargo.Handled(HandlingActivity.UnloadOff(V.continental2).In(L.NEWYORK));
+            cargo.Handled(HandlingActivity.LoadOnto(V.atlantic1).In(L.NEWYORK));
 
             // Cargo enters its destination customs zone
-            cargo.handled(HandlingActivity.unloadOff(V.atlantic1).@in(L.ROTTERDAM));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.customsIn(L.ROTTERDAM)));
-            cargo.handled(HandlingActivity.customsIn(L.ROTTERDAM));
-            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.claimIn(L.ROTTERDAM)));
+            cargo.Handled(HandlingActivity.UnloadOff(V.atlantic1).In(L.ROTTERDAM));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.CustomsIn(L.ROTTERDAM)));
+            cargo.Handled(HandlingActivity.CustomsIn(L.ROTTERDAM));
+            Assert.That(cargo.NextExpectedActivity, Is.EqualTo(HandlingActivity.ClaimIn(L.ROTTERDAM)));
         }
 
         // --- Support ---
@@ -390,34 +390,34 @@ namespace DomainDrivenDelivery.Domain.Tests.Patterns.Scenario
         private class ScenarioStubRoutingService : RoutingService
         {
             private static readonly Itinerary itinerary1 =
-                new Itinerary(Leg.deriveLeg(V.pacific1, L.HONGKONG, L.LONGBEACH),
-                    Leg.deriveLeg(V.continental1, L.LONGBEACH, L.NEWYORK),
-                    Leg.deriveLeg(V.atlantic2, L.NEWYORK, L.STOCKHOLM));
+                new Itinerary(Leg.DeriveLeg(V.pacific1, L.HONGKONG, L.LONGBEACH),
+                    Leg.DeriveLeg(V.continental1, L.LONGBEACH, L.NEWYORK),
+                    Leg.DeriveLeg(V.atlantic2, L.NEWYORK, L.STOCKHOLM));
 
             private static readonly Itinerary itinerary2 =
-                new Itinerary(Leg.deriveLeg(V.continental3, L.SEATTLE, L.NEWYORK),
-                    Leg.deriveLeg(V.atlantic2, L.NEWYORK, L.STOCKHOLM));
+                new Itinerary(Leg.DeriveLeg(V.continental3, L.SEATTLE, L.NEWYORK),
+                    Leg.DeriveLeg(V.atlantic2, L.NEWYORK, L.STOCKHOLM));
 
             private static readonly Itinerary itinerary3 =
-                new Itinerary(Leg.deriveLeg(V.continental2, L.LONGBEACH, L.NEWYORK),
-                    Leg.deriveLeg(V.atlantic1, L.NEWYORK, L.ROTTERDAM));
+                new Itinerary(Leg.DeriveLeg(V.continental2, L.LONGBEACH, L.NEWYORK),
+                    Leg.DeriveLeg(V.atlantic1, L.NEWYORK, L.ROTTERDAM));
 
             public IEnumerable<Itinerary> fetchRoutesForSpecification(RouteSpecification routeSpecification)
             {
-                if(routeSpecification.origin().sameAs(L.HONGKONG) &&
-                    routeSpecification.destination().sameAs(L.STOCKHOLM))
+                if(routeSpecification.Origin.sameAs(L.HONGKONG) &&
+                    routeSpecification.Destination.sameAs(L.STOCKHOLM))
                 {
                     // Hongkong - Long Beach - New York - Stockholm, initial routing
                     return new[] {itinerary1};
                 }
-                else if(routeSpecification.origin().sameAs(L.SEATTLE) &&
-                    routeSpecification.destination().sameAs(L.STOCKHOLM))
+                else if(routeSpecification.Origin.sameAs(L.SEATTLE) &&
+                    routeSpecification.Destination.sameAs(L.STOCKHOLM))
                 {
                     // Rotterdam - Hamburg - Stockholm, rerouting misdirected cargo from Rotterdam
                     return new[] {itinerary2};
                 }
-                else if(routeSpecification.origin().sameAs(L.HONGKONG) &&
-                    routeSpecification.destination().sameAs(L.ROTTERDAM))
+                else if(routeSpecification.Origin.sameAs(L.HONGKONG) &&
+                    routeSpecification.Destination.sameAs(L.ROTTERDAM))
                 {
                     // Customer requested change of destination
                     return new[] {itinerary3};

@@ -48,28 +48,28 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         [Test]
         public void testIfCargoIsOnTrack()
         {
-            Itinerary itinerary = new Itinerary(Leg.deriveLeg(voyage, L.SHANGHAI, L.ROTTERDAM),
-                Leg.deriveLeg(voyage, L.ROTTERDAM, L.GOTHENBURG));
+            Itinerary itinerary = new Itinerary(Leg.DeriveLeg(voyage, L.SHANGHAI, L.ROTTERDAM),
+                Leg.DeriveLeg(voyage, L.ROTTERDAM, L.GOTHENBURG));
 
             // HandlingActivity.Load(cargo, HandlingActivityType.RECEIVE, L.SHANGHAI, toDate("2009-05-03"))
             //Happy path
             HandlingActivity receiveShanghai = new HandlingActivity(HandlingActivityType.RECEIVE, L.SHANGHAI);
-            Assert.IsTrue(itinerary.isExpectedActivity(receiveShanghai));
+            Assert.IsTrue(itinerary.IsExpectedActivity(receiveShanghai));
 
             HandlingActivity loadShanghai = new HandlingActivity(HandlingActivityType.LOAD, L.SHANGHAI, voyage);
-            Assert.IsTrue(itinerary.isExpectedActivity(loadShanghai));
+            Assert.IsTrue(itinerary.IsExpectedActivity(loadShanghai));
 
             HandlingActivity unloadRotterdam = new HandlingActivity(HandlingActivityType.UNLOAD, L.ROTTERDAM, voyage);
-            Assert.IsTrue(itinerary.isExpectedActivity(unloadRotterdam));
+            Assert.IsTrue(itinerary.IsExpectedActivity(unloadRotterdam));
 
             HandlingActivity loadRotterdam = new HandlingActivity(HandlingActivityType.LOAD, L.ROTTERDAM, voyage);
-            Assert.IsTrue(itinerary.isExpectedActivity(loadRotterdam));
+            Assert.IsTrue(itinerary.IsExpectedActivity(loadRotterdam));
 
             HandlingActivity unloadGothenburg = new HandlingActivity(HandlingActivityType.UNLOAD, L.GOTHENBURG, voyage);
-            Assert.IsTrue(itinerary.isExpectedActivity(unloadGothenburg));
+            Assert.IsTrue(itinerary.IsExpectedActivity(unloadGothenburg));
 
             HandlingActivity claimGothenburg = new HandlingActivity(HandlingActivityType.CLAIM, L.GOTHENBURG);
-            Assert.IsTrue(itinerary.isExpectedActivity(claimGothenburg));
+            Assert.IsTrue(itinerary.IsExpectedActivity(claimGothenburg));
 
             //TODO Customs event can only be interpreted properly by knowing the destination of the cargo.
             // This can be inferred from the Itinerary, but it isn't definitive. So, do we answer based on
@@ -81,103 +81,103 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
 
             //Received at the wrong location
             HandlingActivity receiveHangzou = new HandlingActivity(HandlingActivityType.RECEIVE, L.HANGZOU);
-            Assert.IsFalse(itinerary.isExpectedActivity(receiveHangzou));
+            Assert.IsFalse(itinerary.IsExpectedActivity(receiveHangzou));
 
             //Loaded to onto the wrong ship, correct location
             HandlingActivity loadRotterdam666 = new HandlingActivity(HandlingActivityType.LOAD, L.ROTTERDAM, wrongVoyage);
-            Assert.IsFalse(itinerary.isExpectedActivity(loadRotterdam666));
+            Assert.IsFalse(itinerary.IsExpectedActivity(loadRotterdam666));
 
             //Unloaded from the wrong ship in the wrong location
             HandlingActivity unloadHelsinki = new HandlingActivity(HandlingActivityType.UNLOAD, L.HELSINKI, wrongVoyage);
-            Assert.IsFalse(itinerary.isExpectedActivity(unloadHelsinki));
+            Assert.IsFalse(itinerary.IsExpectedActivity(unloadHelsinki));
 
             HandlingActivity claimRotterdam = new HandlingActivity(HandlingActivityType.CLAIM, L.ROTTERDAM);
-            Assert.IsFalse(itinerary.isExpectedActivity(claimRotterdam));
+            Assert.IsFalse(itinerary.IsExpectedActivity(claimRotterdam));
         }
 
         [Test]
         public void testMatchingLeg()
         {
-            Leg shanghaiToRotterdam = Leg.deriveLeg(voyage, L.SHANGHAI, L.ROTTERDAM);
-            Leg rotterdamToGothenburg = Leg.deriveLeg(voyage, L.ROTTERDAM, L.GOTHENBURG);
+            Leg shanghaiToRotterdam = Leg.DeriveLeg(voyage, L.SHANGHAI, L.ROTTERDAM);
+            Leg rotterdamToGothenburg = Leg.DeriveLeg(voyage, L.ROTTERDAM, L.GOTHENBURG);
             Itinerary itinerary = new Itinerary(shanghaiToRotterdam, rotterdamToGothenburg);
 
-            Assert.That(itinerary.matchLeg(HandlingActivity.receiveIn(L.SHANGHAI)).leg(),
+            Assert.That(itinerary.MatchLeg(HandlingActivity.ReceiveIn(L.SHANGHAI)).Leg,
                 Is.EqualTo(shanghaiToRotterdam));
-            Assert.That(itinerary.matchLeg(HandlingActivity.loadOnto(voyage).@in(L.SHANGHAI)).leg(),
+            Assert.That(itinerary.MatchLeg(HandlingActivity.LoadOnto(voyage).In(L.SHANGHAI)).Leg,
                 Is.EqualTo(shanghaiToRotterdam));
-            Assert.That(itinerary.matchLeg(HandlingActivity.unloadOff(voyage).@in(L.ROTTERDAM)).leg(),
+            Assert.That(itinerary.MatchLeg(HandlingActivity.UnloadOff(voyage).In(L.ROTTERDAM)).Leg,
                 Is.EqualTo(shanghaiToRotterdam));
-            Assert.That(itinerary.matchLeg(HandlingActivity.claimIn(L.GOTHENBURG)).leg(),
+            Assert.That(itinerary.MatchLeg(HandlingActivity.ClaimIn(L.GOTHENBURG)).Leg,
                 Is.EqualTo(rotterdamToGothenburg));
 
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.loadOnto(wrongVoyage).@in(L.SHANGHAI)).leg());
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.loadOnto(wrongVoyage).@in(L.NEWYORK)).leg());
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.LoadOnto(wrongVoyage).In(L.SHANGHAI)).Leg);
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.LoadOnto(wrongVoyage).In(L.NEWYORK)).Leg);
 
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.unloadOff(wrongVoyage).@in(L.ROTTERDAM)).leg());
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.unloadOff(wrongVoyage).@in(L.NEWYORK)).leg());
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.UnloadOff(wrongVoyage).In(L.ROTTERDAM)).Leg);
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.UnloadOff(wrongVoyage).In(L.NEWYORK)).Leg);
 
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.receiveIn(L.NEWYORK)).leg());
-            Assert.IsNull(itinerary.matchLeg(HandlingActivity.claimIn(L.NEWYORK)).leg());
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.ReceiveIn(L.NEWYORK)).Leg);
+            Assert.IsNull(itinerary.MatchLeg(HandlingActivity.ClaimIn(L.NEWYORK)).Leg);
         }
 
         [Test]
         public void testNextLeg()
         {
-            Leg shanghaiToLongBeach = Leg.deriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
-            Leg longBeachToNewYork = Leg.deriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
-            Leg newYorkToRotterdam = Leg.deriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
+            Leg shanghaiToLongBeach = Leg.DeriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
+            Leg longBeachToNewYork = Leg.DeriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
+            Leg newYorkToRotterdam = Leg.DeriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
 
             Itinerary itinerary = new Itinerary(shanghaiToLongBeach, longBeachToNewYork, newYorkToRotterdam);
 
-            Assert.That(itinerary.nextLeg(shanghaiToLongBeach), Is.EqualTo(longBeachToNewYork));
-            Assert.That(itinerary.nextLeg(longBeachToNewYork), Is.EqualTo(newYorkToRotterdam));
-            Assert.IsNull(itinerary.nextLeg(newYorkToRotterdam));
+            Assert.That(itinerary.NextLeg(shanghaiToLongBeach), Is.EqualTo(longBeachToNewYork));
+            Assert.That(itinerary.NextLeg(longBeachToNewYork), Is.EqualTo(newYorkToRotterdam));
+            Assert.IsNull(itinerary.NextLeg(newYorkToRotterdam));
         }
 
         [Test]
         public void testLatestLeg()
         {
-            Leg shanghaiToLongBeach = Leg.deriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
-            Leg longBeachToNewYork = Leg.deriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
-            Leg newYorkToRotterdam = Leg.deriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
+            Leg shanghaiToLongBeach = Leg.DeriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
+            Leg longBeachToNewYork = Leg.DeriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
+            Leg newYorkToRotterdam = Leg.DeriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
 
             Itinerary itinerary = new Itinerary(shanghaiToLongBeach, longBeachToNewYork, newYorkToRotterdam);
 
-            HandlingActivity notOnRoute = HandlingActivity.loadOnto(pacific).@in(L.STOCKHOLM);
-            HandlingActivity loadInShanghai = HandlingActivity.loadOnto(pacific).@in(L.SHANGHAI);
-            HandlingActivity unloadInLongbeach = HandlingActivity.unloadOff(pacific).@in(L.LONGBEACH);
+            HandlingActivity notOnRoute = HandlingActivity.LoadOnto(pacific).In(L.STOCKHOLM);
+            HandlingActivity loadInShanghai = HandlingActivity.LoadOnto(pacific).In(L.SHANGHAI);
+            HandlingActivity unloadInLongbeach = HandlingActivity.UnloadOff(pacific).In(L.LONGBEACH);
 
-            Assert.That(itinerary.strictlyPriorOf(loadInShanghai, unloadInLongbeach), Is.EqualTo(loadInShanghai));
-            Assert.That(itinerary.strictlyPriorOf(unloadInLongbeach, loadInShanghai), Is.EqualTo(loadInShanghai));
+            Assert.That(itinerary.StrictlyPriorOf(loadInShanghai, unloadInLongbeach), Is.EqualTo(loadInShanghai));
+            Assert.That(itinerary.StrictlyPriorOf(unloadInLongbeach, loadInShanghai), Is.EqualTo(loadInShanghai));
 
-            Assert.That(itinerary.strictlyPriorOf(unloadInLongbeach, notOnRoute), Is.EqualTo(unloadInLongbeach));
-            Assert.That(itinerary.strictlyPriorOf(notOnRoute, loadInShanghai), Is.EqualTo(loadInShanghai));
+            Assert.That(itinerary.StrictlyPriorOf(unloadInLongbeach, notOnRoute), Is.EqualTo(unloadInLongbeach));
+            Assert.That(itinerary.StrictlyPriorOf(notOnRoute, loadInShanghai), Is.EqualTo(loadInShanghai));
 
-            Assert.IsNull(itinerary.strictlyPriorOf(unloadInLongbeach, unloadInLongbeach));
+            Assert.IsNull(itinerary.StrictlyPriorOf(unloadInLongbeach, unloadInLongbeach));
         }
 
         [Test]
         public void testTruncatedAfter()
         {
-            Leg shanghaiToLongBeach = Leg.deriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
-            Leg longBeachToNewYork = Leg.deriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
-            Leg newYorkToRotterdam = Leg.deriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
+            Leg shanghaiToLongBeach = Leg.DeriveLeg(pacific, L.SHANGHAI, L.LONGBEACH);
+            Leg longBeachToNewYork = Leg.DeriveLeg(transcontinental, L.LONGBEACH, L.NEWYORK);
+            Leg newYorkToRotterdam = Leg.DeriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM);
 
             Itinerary itinerary = new Itinerary(shanghaiToLongBeach, longBeachToNewYork, newYorkToRotterdam);
 
-            Itinerary toNewYork = itinerary.truncatedAfter(L.NEWYORK);
-            Assert.AreEqual(new[] {shanghaiToLongBeach, longBeachToNewYork}.ToList(), toNewYork.legs());
+            Itinerary toNewYork = itinerary.TruncatedAfter(L.NEWYORK);
+            Assert.AreEqual(new[] {shanghaiToLongBeach, longBeachToNewYork}.ToList(), toNewYork.Legs);
 
-            Itinerary toChicago = itinerary.truncatedAfter(L.CHICAGO);
+            Itinerary toChicago = itinerary.TruncatedAfter(L.CHICAGO);
             Assert.AreEqual(
-                new[] {shanghaiToLongBeach, Leg.deriveLeg(transcontinental, L.LONGBEACH, L.CHICAGO)}.ToList(),
-                toChicago.legs());
+                new[] {shanghaiToLongBeach, Leg.DeriveLeg(transcontinental, L.LONGBEACH, L.CHICAGO)}.ToList(),
+                toChicago.Legs);
 
-            Itinerary toRotterdam = itinerary.truncatedAfter(L.ROTTERDAM);
+            Itinerary toRotterdam = itinerary.TruncatedAfter(L.ROTTERDAM);
             Assert.AreEqual(
-                new[] {shanghaiToLongBeach, longBeachToNewYork, Leg.deriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM)}.ToList(),
-                toRotterdam.legs());
+                new[] {shanghaiToLongBeach, longBeachToNewYork, Leg.DeriveLeg(atlantic, L.NEWYORK, L.ROTTERDAM)}.ToList(),
+                toRotterdam.Legs);
         }
 
         [Test]

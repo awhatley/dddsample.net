@@ -22,7 +22,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
         public Voyage find(VoyageNumber voyageNumber)
         {
             return sessionFactory.GetCurrentSession().
-              CreateQuery("from Voyage where _voyageNumber = :vn").
+              CreateQuery("from Voyage where VoyageNumber = :vn").
               SetParameter("vn", voyageNumber).
               UniqueResult<Voyage>();
         }

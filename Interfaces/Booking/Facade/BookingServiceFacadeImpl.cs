@@ -47,7 +47,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
               new UnLocode(destination),
               arrivalDeadline
             );
-            return trackingId.stringValue();
+            return trackingId.Value;
         }
 
         public CargoRoutingDTO loadCargoForRouting(string trackingId)

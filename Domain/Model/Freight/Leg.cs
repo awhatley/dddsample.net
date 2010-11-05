@@ -15,14 +15,13 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
     /// </summary>
     public class Leg : ValueObjectSupport<Leg>
     {
-        private readonly Voyage _voyage;
-        private readonly Location _loadLocation;
-        private readonly Location _unloadLocation;
-        private readonly DateTime _loadTime;
-        private readonly DateTime _unloadTime;
+        public virtual Voyage Voyage { get; private set; }
+        public virtual Location LoadLocation { get; private set; }
+        public virtual Location UnloadLocation { get; private set; }
+        public virtual DateTime LoadTime { get; private set; }
+        public virtual DateTime UnloadTime { get; private set; }
 
-        // TODO hide this, use factory only
-        public Leg(Voyage voyage, Location loadLocation, Location unloadLocation, DateTime loadTime, DateTime unloadTime)
+        private Leg(Voyage voyage, Location loadLocation, Location unloadLocation, DateTime loadTime, DateTime unloadTime)
         {
             Validate.notNull(voyage, "Voyage is required");
             Validate.notNull(loadLocation, "Load location is required");
@@ -32,11 +31,11 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
             Validate.isTrue(!loadLocation.sameAs(unloadLocation), "Load location can't be the same as unload location");
             Validate.isTrue(unloadTime > loadTime, "Load time cannot be before unload time");
 
-            this._voyage = voyage;
-            this._loadLocation = loadLocation;
-            this._unloadLocation = unloadLocation;
-            this._loadTime = loadTime;
-            this._unloadTime = unloadTime;
+            Voyage = voyage;
+            LoadLocation = loadLocation;
+            UnloadLocation = unloadLocation;
+            LoadTime = loadTime;
+            UnloadTime = unloadTime;
         }
 
         /// <summary>
@@ -55,40 +54,15 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// <param name="loadLocation">load location</param>
         /// <param name="unloadLocation">unload location</param>
         /// <returns>A leg on this voyage between the given locations.</returns>
-        public static Leg deriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation)
+        public static Leg DeriveLeg(Voyage voyage, Location loadLocation, Location unloadLocation)
         {
             Validate.notNull(voyage, "Voyage is required");
             Validate.notNull(loadLocation, "Load location is required");
             Validate.notNull(unloadLocation, "Unload location is required");
             Validate.isTrue(voyage.Locations.Contains(loadLocation), "Load location must be part of the voyage");
             Validate.isTrue(voyage.Locations.Contains(unloadLocation), "Unload location must be part of the voyage");
-            return new Leg(voyage, loadLocation, unloadLocation, voyage.Schedule.departureTimeAt(loadLocation),
-                           voyage.Schedule.arrivalTimeAt(unloadLocation));
-        }
-
-        public virtual Voyage Voyage
-        {
-            get { return _voyage; }
-        }
-
-        public virtual Location LoadLocation
-        {
-            get { return _loadLocation; }
-        }
-
-        public virtual Location UnloadLocation
-        {
-            get { return _unloadLocation; }
-        }
-
-        public virtual DateTime LoadTime
-        {
-            get { return _loadTime; }
-        }
-
-        public virtual DateTime UnloadTime
-        {
-            get { return _unloadTime; }
+            return new Leg(voyage, loadLocation, unloadLocation, voyage.Schedule.DepartureTimeAt(loadLocation),
+                           voyage.Schedule.ArrivalTimeAt(unloadLocation));
         }
 
         /// <summary>
@@ -96,9 +70,9 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="voyage">voyage</param>
         /// <returns>A new leg with the same load and unload locations, but with updated load/unload times.</returns>
-        protected internal virtual Leg withRescheduledVoyage(Voyage voyage)
+        protected internal virtual Leg WithRescheduledVoyage(Voyage voyage)
         {
-            return Leg.deriveLeg(voyage, _loadLocation, _unloadLocation);
+            return DeriveLeg(voyage, LoadLocation, UnloadLocation);
         }
 
         /// <summary>
@@ -106,41 +80,41 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="handlingActivity">handling activity</param>
         /// <returns>True if this legs matches the handling activity, i.e. the voyage and load location is the same in case of a load activity and so on.</returns>
-        protected internal virtual bool matchesActivity(HandlingActivity handlingActivity)
+        protected internal virtual bool MatchesActivity(HandlingActivity handlingActivity)
         {
-            if(_voyage.sameAs(handlingActivity.Voyage))
+            if(Voyage.sameAs(handlingActivity.Voyage))
             {
                 if(handlingActivity.Type == HandlingActivityType.LOAD)
                 {
-                    return _loadLocation.sameAs(handlingActivity.Location);
+                    return LoadLocation.sameAs(handlingActivity.Location);
                 }
                 if(handlingActivity.Type == HandlingActivityType.UNLOAD)
                 {
-                    return _unloadLocation.sameAs(handlingActivity.Location);
+                    return UnloadLocation.sameAs(handlingActivity.Location);
                 }
             }
 
             return false;
         }
 
-        protected internal virtual HandlingActivity deriveLoadActivity()
+        protected internal virtual HandlingActivity DeriveLoadActivity()
         {
-            return HandlingActivity.loadOnto(_voyage).@in(_loadLocation);
+            return HandlingActivity.LoadOnto(Voyage).In(LoadLocation);
         }
 
-        protected internal virtual HandlingActivity deriveUnloadActivity()
+        protected internal virtual HandlingActivity DeriveUnloadActivity()
         {
-            return HandlingActivity.unloadOff(_voyage).@in(_unloadLocation);
+            return HandlingActivity.UnloadOff(Voyage).In(UnloadLocation);
         }
 
         public virtual IEnumerable<Location> IntermediateLocations
         {
             get
             {
-                return _voyage.Locations
-                    .SkipWhile(l => !_loadLocation.sameAs(l))
+                return Voyage.Locations
+                    .SkipWhile(l => !LoadLocation.sameAs(l))
                     .Skip(1)
-                    .TakeWhile(l => !_unloadLocation.sameAs(l))
+                    .TakeWhile(l => !UnloadLocation.sameAs(l))
                     .ToList()
                     .AsReadOnly();
             }
@@ -148,15 +122,12 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
 
         public override string ToString()
         {
-            return "Load in " + _loadLocation + " at " + _loadTime +
-            " --- Unload in " + _unloadLocation + " at " + _unloadTime;
+            return "Load in " + LoadLocation + " at " + LoadTime +
+            " --- Unload in " + UnloadLocation + " at " + UnloadTime;
         }
 
-        internal Leg()
+        protected internal Leg()
         {
-            // Needed by Hibernate
-            _voyage = null;
-            _loadLocation = _unloadLocation = null;
         }
     }
 }

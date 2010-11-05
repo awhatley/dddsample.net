@@ -25,8 +25,8 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
             .build();
 
         private static Itinerary itinerary = new Itinerary(
-            Leg.deriveLeg(hongKongTokyoNewYork, L.HONGKONG, L.NEWYORK),
-            Leg.deriveLeg(dallasNewYorkChicago, L.NEWYORK, L.CHICAGO));
+            Leg.DeriveLeg(hongKongTokyoNewYork, L.HONGKONG, L.NEWYORK),
+            Leg.DeriveLeg(dallasNewYorkChicago, L.NEWYORK, L.CHICAGO));
 
         [Test]
         public void testIsSatisfiedBy_Success()
@@ -35,7 +35,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 L.CHICAGO,
                 DateTime.Parse("2009-03-01"));
 
-            Assert.True(routeSpecification.isSatisfiedBy(itinerary));
+            Assert.True(routeSpecification.IsSatisfiedBy(itinerary));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 L.CHICAGO,
                 DateTime.Parse("2009-03-01"));
 
-            Assert.False(routeSpecification.isSatisfiedBy(itinerary));
+            Assert.False(routeSpecification.IsSatisfiedBy(itinerary));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 L.DALLAS,
                 DateTime.Parse("2009-03-01"));
 
-            Assert.False(routeSpecification.isSatisfiedBy(itinerary));
+            Assert.False(routeSpecification.IsSatisfiedBy(itinerary));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
                 L.CHICAGO,
                 DateTime.Parse("2009-02-15"));
 
-            Assert.False(routeSpecification.isSatisfiedBy(itinerary));
+            Assert.False(routeSpecification.IsSatisfiedBy(itinerary));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         {
             RouteSpecification original = new RouteSpecification(L.HONGKONG, L.DALLAS, DateTime.Parse("2009-03-01"));
             RouteSpecification desired = new RouteSpecification(L.HONGKONG, L.CHICAGO, DateTime.Parse("2009-03-01"));
-            Assert.AreEqual(desired, original.withDestination(L.CHICAGO));
+            Assert.AreEqual(desired, original.WithDestination(L.CHICAGO));
         }
     }
 }

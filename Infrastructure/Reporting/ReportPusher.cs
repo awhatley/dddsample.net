@@ -26,7 +26,7 @@ namespace DomainDrivenDelivery.Infrastructure.Reporting
         {
             HandlingEvent handlingEvent = handlingEventRepository.find(sequenceNumber);
             Handling handling = assembleFrom(handlingEvent);
-            string trackingIdString = handlingEvent.Cargo.TrackingId.stringValue();
+            string trackingIdString = handlingEvent.Cargo.TrackingId.Value;
 
             reportSubmission.submitHandling(trackingIdString, handling);
         }
@@ -45,15 +45,15 @@ namespace DomainDrivenDelivery.Infrastructure.Reporting
             Handling handling = new Handling();
             handling.setLocation(handlingEvent.Location.Name);
             handling.setType(handlingEvent.Activity.Type.ToString());
-            handling.setVoyage(handlingEvent.Voyage.VoyageNumber.stringValue());
+            handling.setVoyage(handlingEvent.Voyage.VoyageNumber.Value);
             return handling;
         }
 
         private CargoDetails assembleFrom(Cargo cargo)
         {
             CargoDetails cargoDetails = new CargoDetails();
-            cargoDetails.setTrackingId(cargo.TrackingId.stringValue());
-            cargoDetails.setFinalDestination(cargo.RouteSpecification.destination().Name);
+            cargoDetails.setTrackingId(cargo.TrackingId.Value);
+            cargoDetails.setFinalDestination(cargo.RouteSpecification.Destination.Name);
             cargoDetails.setCurrentLocation(cargo.LastKnownLocation.Name);
             cargoDetails.setCurrentStatus(cargo.TransportStatus.ToString());
             return cargoDetails;

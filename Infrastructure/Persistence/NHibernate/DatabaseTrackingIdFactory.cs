@@ -1,9 +1,9 @@
+using System;
+
 using DomainDrivenDelivery.Domain.Model.Freight;
 
 using NHibernate;
 
-using Spring.Data.NHibernate;
-using Spring.Objects.Factory;
 using Spring.Stereotype;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
@@ -20,8 +20,13 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 
         public TrackingId nextTrackingId()
         {
+            string cargoSql = @"insert Cargo " + 
+                @"(tracking_id, spec_origin_id, spec_destination_id, spec_arrival_deadline, last_update)" + 
+                @" values (NULL, NULL, NULL, '{0}', '{1}');" +
+                @" SELECT CAST(SCOPE_IDENTITY() AS bigint)";
+
             var seq = sessionFactory.GetCurrentSession().
-              CreateSQLQuery("select ROW_NUMBER() OVER (ORDER BY tracking_id) FROM Cargo").
+              CreateSQLQuery(String.Format(cargoSql, DateTime.Now, DateTime.Now)).
               UniqueResult<long>();
 
             return new TrackingId(seq);

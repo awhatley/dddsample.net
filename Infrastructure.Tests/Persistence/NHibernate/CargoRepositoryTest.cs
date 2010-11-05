@@ -12,10 +12,7 @@ using DomainDrivenDelivery.Domain.Model.Travel;
 
 using NUnit.Framework;
 
-using L = DomainDrivenDelivery.Domain.Model.Locations.SampleLocations;
-using V = DomainDrivenDelivery.Domain.Model.Travel.SampleVoyages;
-
-namespace Infrastructure.Tests.Persistence.NHibernate
+namespace DomainDrivenDelivery.Infrastructure.Tests.Persistence.NHibernate
 {
     [TestFixture]
     public class CargoRepositoryTest : AbstractRepositoryTest
@@ -45,44 +42,44 @@ namespace Infrastructure.Tests.Persistence.NHibernate
             TrackingId trackingId = new TrackingId("FGH");
             Cargo cargo = cargoRepository.find(trackingId);
 
-            Assert.AreEqual(L.HONGKONG, cargo.RouteSpecification.origin());
-            Assert.AreEqual(L.HELSINKI, cargo.RouteSpecification.destination());
+            Assert.AreEqual(SampleLocations.HONGKONG, cargo.RouteSpecification.Origin);
+            Assert.AreEqual(SampleLocations.HELSINKI, cargo.RouteSpecification.Destination);
 
             IEnumerable<HandlingEvent> events =
                 HandlingEventRepository.lookupHandlingHistoryOfCargo(cargo).distinctEventsByCompletionTime();
             Assert.AreEqual(2, events.Count());
 
             HandlingEvent firstEvent = events.ElementAt(0);
-            assertHandlingEvent(cargo, firstEvent, HandlingActivityType.RECEIVE, L.HONGKONG, 100, 160, Voyage.NONE);
+            assertHandlingEvent(cargo, firstEvent, HandlingActivityType.RECEIVE, SampleLocations.HONGKONG, 100, 160, Voyage.None);
 
             HandlingEvent secondEvent = events.ElementAt(1);
 
             Voyage hongkongMelbourneTokyoAndBack =
-                new Voyage.Builder(new VoyageNumber("0303"), L.HONGKONG).addMovement(L.MELBOURNE,
+                new Voyage.Builder(new VoyageNumber("0303"), SampleLocations.HONGKONG).addMovement(SampleLocations.MELBOURNE,
                     new DateTime(1),
-                    new DateTime(2)).addMovement(L.TOKYO, new DateTime(3), new DateTime(4)).addMovement(L.HONGKONG,
+                    new DateTime(2)).addMovement(SampleLocations.TOKYO, new DateTime(3), new DateTime(4)).addMovement(SampleLocations.HONGKONG,
                         new DateTime(5),
                         new DateTime(6)).build();
 
             assertHandlingEvent(cargo,
                 secondEvent,
                 HandlingActivityType.LOAD,
-                L.HONGKONG,
+                SampleLocations.HONGKONG,
                 150,
                 110,
                 hongkongMelbourneTokyoAndBack);
 
-            IEnumerable<Leg> legs = cargo.Itinerary.legs();
+            IEnumerable<Leg> legs = cargo.Itinerary.Legs;
             Assert.AreEqual(3, legs.Count());
 
             Leg firstLeg = legs.ElementAt(0);
-            assertLeg(firstLeg, "0101", L.HONGKONG, L.MELBOURNE);
+            assertLeg(firstLeg, "0101", SampleLocations.HONGKONG, SampleLocations.MELBOURNE);
 
             Leg secondLeg = legs.ElementAt(1);
-            assertLeg(secondLeg, "0101", L.MELBOURNE, L.STOCKHOLM);
+            assertLeg(secondLeg, "0101", SampleLocations.MELBOURNE, SampleLocations.STOCKHOLM);
 
             Leg thirdLeg = legs.ElementAt(2);
-            assertLeg(thirdLeg, "0101", L.STOCKHOLM, L.HELSINKI);
+            assertLeg(thirdLeg, "0101", SampleLocations.STOCKHOLM, SampleLocations.HELSINKI);
         }
 
         private void assertHandlingEvent(Cargo cargo,
@@ -123,8 +120,8 @@ namespace Infrastructure.Tests.Persistence.NHibernate
         public void testSave()
         {
             TrackingId trackingId = new TrackingId("AAA");
-            Location origin = locationRepository.find(L.STOCKHOLM.UnLocode);
-            Location destination = locationRepository.find(L.MELBOURNE.UnLocode);
+            Location origin = locationRepository.find(SampleLocations.STOCKHOLM.UnLocode);
+            Location destination = locationRepository.find(SampleLocations.MELBOURNE.UnLocode);
 
             Cargo cargo = new Cargo(trackingId, new RouteSpecification(origin, destination, DateTime.Now));
             cargoRepository.store(cargo);
@@ -135,15 +132,15 @@ namespace Infrastructure.Tests.Persistence.NHibernate
             cargo = cargoRepository.find(trackingId);
             Assert.IsNull(cargo.Itinerary);
 
-            cargo.assignToRoute(
-                new Itinerary(Leg.deriveLeg(voyageRepository.find(new VoyageNumber("0101")),
-                    locationRepository.find(L.STOCKHOLM.UnLocode),
-                    locationRepository.find(L.MELBOURNE.UnLocode))));
+            cargo.AssignToRoute(
+                new Itinerary(Leg.DeriveLeg(voyageRepository.find(new VoyageNumber("0101")),
+                    locationRepository.find(SampleLocations.STOCKHOLM.UnLocode),
+                    locationRepository.find(SampleLocations.MELBOURNE.UnLocode))));
 
             flush();
 
             var map = GenericTemplate.QueryForObjectDelegate(CommandType.Text,
-                String.Format("select * from Cargo where tracking_id = '{0}'", trackingId.stringValue()),
+                String.Format("select * from Cargo where tracking_id = '{0}'", trackingId.Value),
                 (r, i) => new {TRACKING_ID = r["TRACKING_ID"]});
 
             Assert.AreEqual("AAA", map.TRACKING_ID);
@@ -157,7 +154,7 @@ namespace Infrastructure.Tests.Persistence.NHibernate
             getSession().Clear();
 
             Cargo loadedCargo = cargoRepository.find(trackingId);
-            Assert.AreEqual(1, loadedCargo.Itinerary.legs().Count());
+            Assert.AreEqual(1, loadedCargo.Itinerary.Legs.Count());
         }
 
         [Test]
@@ -171,9 +168,9 @@ namespace Infrastructure.Tests.Persistence.NHibernate
 
             Location legFrom = locationRepository.find(new UnLocode("DEHAM"));
             Location legTo = locationRepository.find(new UnLocode("FIHEL"));
-            Itinerary newItinerary = new Itinerary(Leg.deriveLeg(V.atlantic2, legFrom, legTo));
+            Itinerary newItinerary = new Itinerary(Leg.DeriveLeg(SampleVoyages.atlantic2, legFrom, legTo));
 
-            cargo.assignToRoute(newItinerary);
+            cargo.AssignToRoute(newItinerary);
 
             cargoRepository.store(cargo);
             flush();
@@ -200,7 +197,7 @@ namespace Infrastructure.Tests.Persistence.NHibernate
             foreach(Cargo cargo in cargos)
             {
                 bool found = false;
-                foreach(Leg leg in cargo.Itinerary.legs())
+                foreach(Leg leg in cargo.Itinerary.Legs)
                 {
                     if(leg.Voyage.sameAs(voyage))
                     {

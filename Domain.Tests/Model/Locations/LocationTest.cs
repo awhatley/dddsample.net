@@ -16,23 +16,23 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Locations
         {
             // Same UN locode - equal
             Assert.True(
-                new Location(new UnLocode("ATEST"), "test-name", CET, null).Equals(
-                new Location(new UnLocode("ATEST"), "test-name", CET, null)));
+                new Location(new UnLocode("ATEST"), "test-name", CET, CustomsZone.None).Equals(
+                new Location(new UnLocode("ATEST"), "test-name", CET, CustomsZone.None)));
 
             // Different UN locodes - not equal
             Assert.False(
-                new Location(new UnLocode("ATEST"), "test-name", CET, null).Equals(
-                new Location(new UnLocode("TESTB"), "test-name", CET, null)));
+                new Location(new UnLocode("ATEST"), "test-name", CET, CustomsZone.None).Equals(
+                new Location(new UnLocode("TESTB"), "test-name", CET, CustomsZone.None)));
 
             // Always equal to itself
-            Location location = new Location(new UnLocode("ATEST"), "test-name", CET, null);
+            Location location = new Location(new UnLocode("ATEST"), "test-name", CET, CustomsZone.None);
             Assert.True(location.Equals(location));
 
             // Never equal to null
             Assert.False(location.Equals(null));
 
             // Special NONE location is equal to itself
-            Assert.True(Location.NONE.Equals(Location.NONE));
+            Assert.True(Location.None.Equals(Location.None));
 
             try
             {
