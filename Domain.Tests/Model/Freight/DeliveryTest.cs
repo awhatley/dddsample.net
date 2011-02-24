@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 using DomainDrivenDelivery.Domain.Model.Freight;
 using DomainDrivenDelivery.Domain.Model.Locations;
@@ -23,10 +24,12 @@ namespace DomainDrivenDelivery.Domain.Tests.Model.Freight
         protected void setUp()
         {
             routeSpecification = new RouteSpecification(L.HANGZOU, L.STOCKHOLM, DateTime.Parse("2008-11-03"));
-            itinerary = new Itinerary(Leg.DeriveLeg(V.HONGKONG_TO_NEW_YORK, L.HANGZOU, L.NEWYORK),
+            itinerary = new Itinerary(
+                Leg.DeriveLeg(V.HONGKONG_TO_NEW_YORK, L.HANGZOU, L.NEWYORK),
                 Leg.DeriveLeg(V.NEW_YORK_TO_DALLAS, L.NEWYORK, L.DALLAS),
                 Leg.DeriveLeg(V.DALLAS_TO_HELSINKI, L.DALLAS, L.STOCKHOLM));
             delivery = Delivery.BeforeHandling();
+            Thread.Sleep(1);
         }
 
         [Test]
