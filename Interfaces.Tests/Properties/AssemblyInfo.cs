@@ -1,19 +1,17 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DomainDrivenDelivery.Interfaces")]
-[assembly: AssemblyDescription("DomainDrivenDelivery.Interfaces")]
+[assembly: AssemblyTitle("DomainDrivenDelivery.Interfaces.Tests")]
+[assembly: AssemblyDescription("DomainDrivenDelivery.Interfaces.Tests")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DomainDrivenDelivery")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
+[assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("DomainDrivenDelivery.Interfaces.Tests")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -21,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c8d8dd71-aad9-4db7-bde0-d3e661431991")]
+[assembly: Guid("540e2344-0cb2-4c36-98ca-e9f26e23cd62")]
 
 // Version information for an assembly consists of the following four values:
 //
