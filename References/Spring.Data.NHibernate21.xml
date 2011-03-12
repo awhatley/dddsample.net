@@ -146,6 +146,10 @@
             </summary>
             <returns>The lazy-load proxy factory.</returns>
         </member>
+        <member name="M:Spring.Data.NHibernate.Bytecode.ProxyFactoryFactory.IsInstrumented(System.Type)">
+            <summary>
+            </summary>
+        </member>
         <member name="P:Spring.Data.NHibernate.Bytecode.ProxyFactoryFactory.ProxyValidator">
             <summary>
             </summary>
@@ -175,6 +179,839 @@
             
             </summary>
             <param name="type"></param>
+        </member>
+        <member name="T:Spring.Data.NHibernate.DelegatingLocalSessionFactoryObject">
+            <summary>
+             Delegates to an implementation of ISessionFactory that can select among multiple instances based on
+             thread local storage.
+            </summary>
+        </member>
+        <member name="T:Spring.Data.NHibernate.LocalSessionFactoryObject">
+            <summary>
+             An IFactoryObject that creates a local Hibernate SessionFactory instance.
+            Behaves like a SessionFactory instance when used as bean reference,
+            e.g. for HibernateTemplate's "SessionFactory" property.
+            </summary>
+            <remarks>
+            The typical usage will be to register this as singleton factory
+            in an application context and give objects references to application services
+            that need it.
+            <para>
+            Hibernate configuration settings can be set using the IDictionary property 'HibernateProperties'.
+            </para>
+            <para>
+            This class implements the <see cref="T:Spring.Dao.Support.IPersistenceExceptionTranslator"/> interface,
+            as autodetected by Spring's <see cref="T:Spring.Dao.Attributes.PersistenceExceptionTranslationPostProcessor"/>
+            for AOP-based translation of PersistenceExceptionTranslationPostProcessor.
+            Hence, the presence of e.g. LocalSessionFactoryBean automatically enables
+            a PersistenceExceptionTranslationPostProcessor to translate Hibernate exceptions. 
+            </para>
+            </remarks>
+            <author>Mark Pollack (.NET)</author>
+        </member>
+        <member name="F:Spring.Data.NHibernate.LocalSessionFactoryObject.log">
+            <summary>
+            The shared <see cref="T:Common.Logging.ILog"/> instance for this class (and derived classes).
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Data.NHibernate.LocalSessionFactoryObject"/> class.
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.GetObject">
+            <summary>
+            Return the singleon session factory.
+            </summary>
+            <returns>The singleon session factory.</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.AfterPropertiesSet">
+            <summary>
+            Initialize the SessionFactory for the given or the
+            default location.
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.Dispose">
+            <summary>
+            Close the SessionFactory on application context shutdown.
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.NewConfiguration">
+            <summary>
+            Subclasses can override this method to perform custom initialization
+            of the Configuration instance used for ISessionFactory creation.
+            </summary>
+            <remarks>
+            The properties of this LocalSessionFactoryObject will be applied to
+            the Configuration object that gets returned here.
+            <p>The default implementation creates a new Configuration instance.
+            A custom implementation could prepare the instance in a specific way,
+            or use a custom Configuration subclass.
+            </p>
+            </remarks>
+            <returns>The configuration instance.</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.PostProcessMappings(NHibernate.Cfg.Configuration)">
+            <summary>
+            To be implemented by subclasses that want to to register further mappings
+            on the Configuration object after this FactoryObject registered its specified
+            mappings.
+            </summary>
+            <remarks>
+            Invoked <i>before</i> the <code>BuildMappings</code> call,
+            so that it can still extend and modify the mapping information.
+            </remarks>
+            <param name="config">the current Configuration object</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.PostProcessConfiguration(NHibernate.Cfg.Configuration)">
+            <summary>
+            To be implemented by subclasses that want to to perform custom
+            post-processing of the Configuration object after this FactoryObject
+            performed its default initialization.
+            </summary>
+            <param name="config">The current configuration object.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.AfterSessionFactoryCreation">
+            <summary>
+            Executes schema update if requested.
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.DropDatabaseSchema">
+            <summary>
+            Execute schema drop script, determined by the Configuration object
+            used for creating the SessionFactory. A replacement for NHibernate's
+            SchemaExport class, to be invoked on application setup.
+            </summary>
+            <remarks>
+            Fetch the LocalSessionFactoryBean itself rather than the exposed
+            SessionFactory to be able to invoke this method, e.g. via
+            <code>LocalSessionFactoryObject lsfb = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
+            <p>
+            Uses the SessionFactory that this bean generates for accessing a ADO.NET
+            connection to perform the script.
+            </p>
+            </remarks>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.CreateDatabaseSchema">
+            <summary>
+            Execute schema creation script, determined by the Configuration object
+            used for creating the SessionFactory. A replacement for NHibernate's
+            SchemaExport class, to be invoked on application setup.
+            </summary>
+            <remarks>
+            Fetch the LocalSessionFactoryObject itself rather than the exposed
+            SessionFactory to be able to invoke this method, e.g. via
+            <code>LocalSessionFactoryObject lsfo = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
+            <p>
+            Uses the SessionFactory that this bean generates for accessing a ADO.NET
+            connection to perform the script.
+            </p>
+            </remarks>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.UpdateDatabaseSchema">
+            <summary>
+            Execute schema update script, determined by the Configuration object
+            used for creating the SessionFactory. A replacement for NHibernate's
+            SchemaUpdate class, for automatically executing schema update scripts
+            on application startup. Can also be invoked manually.
+            </summary>
+            <remarks>
+            Fetch the LocalSessionFactoryObject itself rather than the exposed
+            SessionFactory to be able to invoke this method, e.g. via
+            <code>LocalSessionFactoryObject lsfo = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
+            <p>
+            Uses the SessionFactory that this bean generates for accessing a ADO.NET
+            connection to perform the script.
+            </p>
+            </remarks>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ExecuteSchemaScript(System.Data.IDbConnection,System.String[])">
+            <summary>
+            Execute the given schema script on the given ADO.NET Connection.
+            </summary>
+            <remarks>
+            Note that the default implementation will log unsuccessful statements
+            and continue to execute. Override the <code>ExecuteSchemaStatement</code>
+            method to treat failures differently.
+            </remarks>
+            <param name="con">The connection to use.</param>
+            <param name="sql">The SQL statement to execute.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ExecuteSchemaStatement(System.Data.IDbCommand,System.String)">
+            <summary>
+            Execute the given schema SQL on the given ADO.NET command.
+            </summary>
+            <remarks>
+            Note that the default implementation will log unsuccessful statements
+            and continue to execute. Override this method to treat failures differently.
+            </remarks>
+            <param name="cmd"></param>
+            <param name="sql"></param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.NewSessionFactory(NHibernate.Cfg.Configuration)">
+            <summary>
+            Subclasses can override this method to perform custom initialization
+            of the SessionFactory instance, creating it via the given Configuration
+            object that got prepared by this LocalSessionFactoryObject.
+            </summary>
+            <remarks>
+            <p>The default implementation invokes Configuration's BuildSessionFactory.
+            A custom implementation could prepare the instance in a specific way,
+            or use a custom ISessionFactory subclass.
+            </p>
+            </remarks>
+            <returns>The ISessionFactory instance.</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.TranslateExceptionIfPossible(System.Exception)">
+            <summary>
+            Implementation of the PersistenceExceptionTranslator interface,
+            as autodetected by Spring's PersistenceExceptionTranslationPostProcessor.
+            Converts the exception if it is a HibernateException;
+            else returns <code>null</code> to indicate an unknown exception.
+            translate the given exception thrown by a persistence framework to a
+            corresponding exception from Spring's generic DataAccessException hierarchy,
+            if possible.
+            </summary>
+            <param name="ex">The exception thrown.</param>
+            <returns>
+            the corresponding DataAccessException (or <code>null</code> if the
+            exception could not be translated.
+            </returns>
+            <seealso cref="T:Spring.Dao.Attributes.PersistenceExceptionTranslationPostProcessor"/>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ConvertHibernateException(NHibernate.HibernateException)">
+            <summary>
+            Convert the given HibernateException to an appropriate exception from the
+            Spring's DAO Exception hierarchy.
+            Will automatically apply a specified IAdoExceptionTranslator to a
+            Hibernate ADOException, else rely on Hibernate's default translation.
+            </summary>
+            <param name="ex">The Hibernate exception that occured.</param>
+            <returns>A corresponding DataAccessException</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ConvertAdoAccessException(NHibernate.ADOException)">
+            <summary>
+            Converts the ADO.NET access exception to an appropriate exception from the
+            <code>org.springframework.dao</code> hierarchy. Can be overridden in subclasses.
+            </summary>
+            <param name="ex">ADOException that occured, wrapping underlying ADO.NET exception.</param>
+            <returns>
+            the corresponding DataAccessException instance
+            </returns>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ApplicationContext">
+            <summary>
+            Setting the Application Context determines were resources are loaded from
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ResourceLoader">
+            <summary>
+            Gets or sets the <see cref="T:Spring.Core.IO.IResourceLoader"/> to use for loading mapping assemblies etc.
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.MappingAssemblies">
+            <summary>
+            Sets the assemblies to load that contain mapping files.
+            </summary>
+            <value>The mapping assemblies.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ConfigFilenames">
+            <summary>
+            Sets the hibernate configuration files to load, i.e. hibernate.cfg.xml.
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.MappingResources">
+            <summary>
+            Sets the locations of Spring IResources that contain mapping
+            files.
+            </summary>
+            <value>The location of mapping resources.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.Configuration">
+            <summary>
+            Return the Configuration object used to build the SessionFactory.
+            Allows access to configuration metadata stored there (rarely needed).
+            </summary>
+            <value>The hibernate configuration.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.HibernateProperties">
+            <summary>
+            Set NHibernate configuration properties, like "hibernate.dialect".
+            </summary>
+            <value>The hibernate properties.</value>
+            <remarks>
+            	<p>Can be used to override values in a NHibernate XML config file,
+            or to specify all necessary properties locally.
+            </p>
+            	<p>Note: Do not specify a transaction provider here when using
+            Spring-driven transactions. It is also advisable to omit connection
+            provider settings and use a Spring-set IDbProvider instead.
+            </p>
+            </remarks>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.DbProvider">
+            <summary>
+            Get or set the DataSource to be used by the SessionFactory.
+            </summary>
+            <value>The db provider.</value>
+            <remarks>
+            If set, this will override corresponding settings in Hibernate properties.
+            <note>Note: If this is set, the Hibernate settings should not define
+            a connection string
+            (hibernate.connection.connection_string) to avoid meaningless double configuration.
+            </note>
+            </remarks>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ExposeTransactionAwareSessionFactory">
+            <summary>
+            Gets or sets a value indicating whether to expose a transaction aware session factory.
+            </summary>
+            <value>
+            	<c>true</c> if want to expose transaction aware session factory; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EntityInterceptor">
+            <summary>
+            Set a NHibernate entity interceptor that allows to inspect and change
+            property values before writing to and reading from the database.
+            Will get applied to any new Session created by this factory.
+            <p>Such an interceptor can either be set at the SessionFactory level, i.e. on
+            LocalSessionFactoryObject, or at the Session level, i.e. on HibernateTemplate,
+            HibernateInterceptor, and HibernateTransactionManager. It's preferable to set
+            it on LocalSessionFactoryObject or HibernateTransactionManager to avoid repeated
+            configuration and guarantee consistent behavior in transactions.</p>
+            </summary>
+            <seealso cref="P:Spring.Data.NHibernate.HibernateTemplate.EntityInterceptor"/>
+            <seealso cref="P:Spring.Data.NHibernate.HibernateTransactionManager.EntityInterceptor"/>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.NamingStrategy">
+            <summary>
+            Set a Hibernate NamingStrategy for the SessionFactory, determining the
+            physical column and table names given the info in the mapping document.
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.TypeDefinitions">
+            <summary>
+            Specify the Hibernate type definitions to register with the SessionFactory,
+            as Spring IObjectDefinition instances. This is an alternative to specifying
+            &lt;typedef&gt; elements in Hibernate mapping files.
+            <p>Unfortunately, Hibernate itself does not define a complete object that
+            represents a type definition, hence the need for Spring's TypeDefinitionBean.</p>
+            @see TypeDefinitionBean
+            @see org.hibernate.cfg.Mappings#addTypeDef(String, String, java.util.Properties)
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.FilterDefinitions">
+            <summary>
+            Specify the NHibernate FilterDefinitions to register with the SessionFactory.
+            This is an alternative to specifying &lt;filter-def&gt; elements in
+            Hibernate mapping files.
+            </summary>
+            <remarks>
+            Typically, the passed-in FilterDefinition objects will have been defined
+            as Spring FilterDefinitionFactoryBeans, probably as inner beans within the
+            LocalSessionFactoryObject definition.
+            </remarks>
+            <see cref="T:Spring.Data.NHibernate.FilterDefinitionFactoryObject"/>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EntityCacheStrategies">
+            <summary>
+            Specify the cache strategies for entities (persistent classes or named entities).
+            This configuration setting corresponds to the &lt;class-cache&gt; entry
+            in the "hibernate.cfg.xml" configuration format.
+            <p>For example:
+            <pre>
+            &lt;property name="entityCacheStrategies"&gt;
+              &lt;props&gt;
+                &lt;prop key="MyCompany.Customer"&gt;read-write&lt;/prop&gt;
+                &lt;prop key="MyCompany.Product"&gt;read-only,myRegion&lt;/prop&gt;
+              &lt;/props&gt;
+            &lt;/property&gt;</pre>
+            </p>
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.CollectionCacheStrategies">
+            <summary>
+            Specify the cache strategies for persistent collections (with specific roles).
+            This configuration setting corresponds to the &lt;collection-cache&gt; entry
+            in the "hibernate.cfg.xml" configuration format.
+            <p>For example:
+            <pre>
+            &lt;property name="CollectionCacheStrategies"&gt;
+              &lt;props&gt;
+                &lt;prop key="MyCompany.Order.Items">read-write&lt;/prop&gt;
+                &lt;prop key="MyCompany.Product.Categories"&gt;read-only,myRegion&lt;/prop&gt;
+              &lt;/props&gt;
+            &lt;/property&gt;</pre>
+            </p>
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EventListeners">
+            <summary>
+            Specify the NHibernate event listeners to register, with listener types
+            as keys and listener objects as values.
+            <p>
+            Instead of a single listener object, you can also pass in a list
+            or set of listeners objects as value.
+            </p>
+            </summary>
+            <value>listener objects as values</value>
+            <remarks>
+            See the NHibernate documentation for further details on listener types
+            and associated listener interfaces.
+            </remarks>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.SchemaUpdate">
+            <summary>
+            Set whether to execute a schema update after SessionFactory initialization.
+            <p>
+            For details on how to make schema update scripts work, see the NHibernate
+            documentation, as this class leverages the same schema update script support
+            in <see cref="P:Spring.Data.NHibernate.LocalSessionFactoryObject.Configuration"/> as NHibernate's own SchemaUpdate tool.
+            </p>
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.AdoExceptionTranslator">
+            <summary>
+            Set the ADO.NET exception translator for this instance.
+            Applied to System.Data.Common.DbException (or provider specific exception type
+            in .NET 1.1) thrown by callback code, be it direct
+            DbException or wrapped Hibernate ADOExceptions.
+            <p>The default exception translator is either a ErrorCodeExceptionTranslator
+            if a DbProvider is available, or a FalbackExceptionTranslator otherwise
+            </p>
+            </summary>
+            <value>The ADO exception translator.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.BytecodeProvider">
+            <summary>
+            Sets custom byte code provider implementation to be used. This corresponds to setting
+            the <see cref="P:NHibernate.Cfg.Environment.BytecodeProvider"/> property before NHibernate session factory
+            configuration.
+            </summary>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ObjectType">
+            <summary>
+            Return the type <see cref="T:NHibernate.ISessionFactory"/> or subclass.
+            </summary>
+            <value>The type created by this factory</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.IsSingleton">
+            <summary>
+            Returns true
+            </summary>
+            <value>true</value>
+        </member>
+        <member name="M:Spring.Data.NHibernate.DelegatingLocalSessionFactoryObject.NewSessionFactory(NHibernate.Cfg.Configuration)">
+            <summary>
+            Subclasses can override this method to perform custom initialization
+            of the SessionFactory instance, creating it via the given Configuration
+            object that got prepared by this LocalSessionFactoryObject.
+            </summary>
+            <remarks>
+            <p>The default implementation invokes Configuration's BuildSessionFactory.
+            A custom implementation could prepare the instance in a specific way,
+            or use a custom ISessionFactory subclass.
+            </p>
+            </remarks>
+            <returns>The ISessionFactory instance.</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.DelegatingLocalSessionFactoryObject.PostProcessConfiguration(NHibernate.Cfg.Configuration)">
+            <summary>
+            PostProcessConfiguration
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="T:Spring.Data.NHibernate.DelegatingSessionFactory">
+            <summary>
+            DelegatingSessionFactory class
+            </summary>
+        </member>
+        <member name="T:Spring.Data.NHibernate.HibernateTxScopeTransactionManager">
+            <summary>
+            PlatformTransactionManager implementation for a single Hibernate SessionFactory.
+            Binds a Hibernate Session from the specified factory to the thread, potentially
+            allowing for one thread Session per factory
+            </summary>
+            <remarks>
+            SessionFactoryUtils and HibernateTemplate are aware of thread-bound Sessions and participate in such
+            transactions automatically. Using either of those is required for Hibernate
+            access code that needs to support this transaction handling mechanism.
+            <para>
+            Supports custom isolation levels at the start of the transaction
+            , and timeouts that get applied as appropriate
+            Hibernate query timeouts. To support the latter, application code must either use
+            <code>HibernateTemplate</code> (which by default applies the timeouts) or call
+            <code>SessionFactoryUtils.applyTransactionTimeout</code> for each created
+            Hibernate Query object.
+            </para>
+            <para>Note that you can specify a Spring IDbProvider instance which if shared with
+            a corresponding instance of AdoTemplate will allow for mixing ADO.NET/NHibernate
+            operations within a single transaction.</para>
+            </remarks>
+            <author>Mark Pollack (.NET)</author>
+        </member>
+        <member name="F:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.objectFactory">
+            <summary>
+            Just needed for entityInterceptorBeanName. 
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Data.NHibernate.HibernateTxScopeTransactionManager"/> class.
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.#ctor(NHibernate.ISessionFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Data.NHibernate.HibernateTxScopeTransactionManager"/> class.
+            </summary>
+            <param name="sessionFactory">The session factory.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoGetTransaction">
+            <summary>
+            Return the current transaction object.
+            </summary>
+            <returns>The current transaction object.</returns>
+            <exception cref="T:Spring.Transaction.CannotCreateTransactionException">
+            If transaction support is not available.
+            </exception>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of lookup or system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.IsExistingTransaction(System.Object)">
+            <summary>
+            Check if the given transaction object indicates an existing,
+            i.e. already begun, transaction.
+            </summary>
+            <param name="transaction">
+            Transaction object returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoGetTransaction"/>.
+            </param>
+            <returns>True if there is an existing transaction.</returns>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoBegin(System.Object,Spring.Transaction.ITransactionDefinition)">
+            <summary>
+            Begin a new transaction with the given transaction definition.
+            </summary>
+            <param name="transaction">
+            Transaction object returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoGetTransaction"/>.
+            </param>
+            <param name="definition">
+            <see cref="T:Spring.Transaction.ITransactionDefinition"/> instance, describing
+            propagation behavior, isolation level, timeout etc.
+            </param>
+            <remarks>
+            Does not have to care about applying the propagation behavior,
+            as this has already been handled by this abstract manager.
+            </remarks>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of creation or system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoSuspend(System.Object)">
+            <summary>
+            Suspend the resources of the current transaction.
+            </summary>
+            <param name="transaction">
+            Transaction object returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoGetTransaction"/>.
+            </param>
+            <returns>
+            An object that holds suspended resources (will be kept unexamined for passing it into
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoResume(System.Object,System.Object)"/>.)
+            </returns>
+            <remarks>
+            Transaction synchronization will already have been suspended.
+            </remarks>
+            <exception cref="T:Spring.Transaction.IllegalTransactionStateException">
+            If suspending is not supported by the transaction manager implementation.
+            </exception>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            in case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoResume(System.Object,System.Object)">
+            <summary>
+            Resume the resources of the current transaction.
+            </summary>
+            <param name="transaction">
+            Transaction object returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoGetTransaction"/>.
+            </param>
+            <param name="suspendedResources">
+            The object that holds suspended resources as returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoSuspend(System.Object)"/>.
+            </param>
+            <remarks>
+            Transaction synchronization will be resumed afterwards.
+            </remarks>
+            <exception cref="T:Spring.Transaction.IllegalTransactionStateException">
+            If suspending is not supported by the transaction manager implementation.
+            </exception>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoCommit(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Perform an actual commit on the given transaction.
+            </summary>
+            <param name="status">The status representation of the transaction.</param>
+            <remarks>
+            <p>
+            An implementation does not need to check the rollback-only flag.
+            </p>
+            </remarks>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoTxScopeCommit(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Does the tx scope commit.
+            </summary>
+            <param name="status">The status.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoRollback(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Perform an actual rollback on the given transaction.
+            </summary>
+            <param name="status">The status representation of the transaction.</param>
+            <remarks>
+            An implementation does not need to check the new transaction flag.
+            </remarks>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoTxScopeRollback(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Does the tx scope rollback.
+            </summary>
+            <param name="status">The status.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoSetRollbackOnly(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Set the given transaction rollback-only. Only called on rollback
+            if the current transaction takes part in an existing one.
+            </summary>
+            <param name="status">The status representation of the transaction.</param>
+            <exception cref="T:Spring.Transaction.TransactionException">
+            In the case of system errors.
+            </exception>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoTxScopeSetRollbackOnly(Spring.Transaction.Support.DefaultTransactionStatus)">
+            <summary>
+            Does the tx scope set rollback only.
+            </summary>
+            <param name="status">The status.</param>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.GetIDbTransaction(NHibernate.ITransaction)">
+            <summary>
+            Gets the ADO.NET IDbTransaction object from the NHibernate ITransaction object.
+            </summary>
+            <param name="hibernateTx">The hibernate transaction.</param>
+            <returns>The ADO.NET transaction.  Null if could not get the transaction.  Warning
+            messages will be logged in that case.</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.ConvertHibernateAccessException(NHibernate.HibernateException)">
+            <summary>
+            Convert the given HibernateException to an appropriate exception from
+            the Spring.Dao hierarchy. Can be overridden in subclasses.
+            </summary>
+            <param name="ex">The HibernateException that occured.</param>
+            <returns>The corresponding DataAccessException instance</returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.ConvertAdoAccessException(NHibernate.ADOException,Spring.Data.Support.IAdoExceptionTranslator)">
+            <summary>
+            Convert the given ADOException to an appropriate exception from the
+            the Spring.Dao hierarchy. Can be overridden in subclasses.
+            </summary>
+            <param name="ex">The ADOException that occured, wrapping the underlying
+            ADO.NET thrown exception.</param>
+            <param name="translator">The translator to convert hibernate ADOExceptions.</param>
+            <returns>
+            The corresponding DataAccessException instance
+            </returns>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DoCleanupAfterCompletion(System.Object)">
+            <summary>
+            Cleanup resources after transaction completion.
+            </summary>
+            <param name="transaction">Transaction object returned by
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoGetTransaction"/>.</param>
+            <remarks>
+            <note>
+            This implemenation unbinds the SessionFactory and 
+            DbProvider from thread local storage and closes the 
+            ISession.
+            </note>
+            	<p>
+            Called after <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoCommit(Spring.Transaction.Support.DefaultTransactionStatus)"/>
+            and
+            <see cref="M:Spring.Transaction.Support.AbstractPlatformTransactionManager.DoRollback(Spring.Transaction.Support.DefaultTransactionStatus)"/>
+            execution on any outcome.
+            </p>
+            	<p>
+            Should not throw any exceptions but just issue warnings on errors.
+            </p>
+            </remarks>
+        </member>
+        <member name="M:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.AfterPropertiesSet">
+            <summary>
+            Invoked by an <see cref="T:Spring.Objects.Factory.IObjectFactory"/>
+            after it has injected all of an object's dependencies.
+            </summary>
+            <remarks>
+            <p>
+            This method allows the object instance to perform the kind of
+            initialization only possible when all of it's dependencies have
+            been injected (set), and to throw an appropriate exception in the
+            event of misconfiguration.
+            </p>
+            <p>
+            Please do consult the class level documentation for the
+            <see cref="T:Spring.Objects.Factory.IObjectFactory"/> interface for a
+            description of exactly <i>when</i> this method is invoked. In
+            particular, it is worth noting that the
+            <see cref="T:Spring.Objects.Factory.IObjectFactoryAware"/>
+            and <see cref="T:Spring.Context.IApplicationContextAware"/>
+            callbacks will have been invoked <i>prior</i> to this method being
+            called.
+            </p>
+            </remarks>
+            <exception cref="T:System.ArgumentException">
+            In the event of misconfiguration (such as the failure to set a
+            required property) or if initialization fails.
+            </exception>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DbProvider">
+            <summary>
+            Gets or sets the db provider.
+            </summary>
+            <value>The db provider.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.EntityInterceptor">
+            <summary>
+            Gets or sets a Hibernate entity interceptor that allows to inspect and change
+            property values before writing to and reading from the database.
+            When getting, return the current Hibernate entity interceptor, or <code>null</code> if none.
+            </summary>
+            <value>The entity interceptor.</value>
+            <remarks>
+            Resolves an entity interceptor object name via the object factory,
+            if necessary.
+            Will get applied to any new Session created by this transaction manager.
+            Such an interceptor can either be set at the SessionFactory level,
+            i.e. on LocalSessionFactoryObject, or at the Session level, i.e. on
+            HibernateTemplate, HibernateInterceptor, and HibernateTransactionManager.
+            It's preferable to set it on LocalSessionFactoryObject or HibernateTransactionManager
+            to avoid repeated configuration and guarantee consistent behavior in transactions.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">If object factory is null and need to get entity interceptor via object name.</exception>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.EntityInterceptorObjectName">
+            <summary>
+            Sets the object name of a Hibernate entity interceptor that
+            allows to inspect and change property values before writing to and reading from the database.
+            </summary>
+            <value>The name of the entity interceptor object.</value>
+            <remarks>
+            Will get applied to any new Session created by this transaction manager.
+            <p>Requires the object factory to be known, to be able to resolve the object
+            name to an interceptor instance on session creation. Typically used for
+            prototype interceptors, i.e. a new interceptor instance per session.
+            </p>
+            	<p>Can also be used for shared interceptor instances, but it is recommended
+            to set the interceptor reference directly in such a scenario.
+            </p>
+            </remarks>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.AdoExceptionTranslator">
+            <summary>
+            Gets or sets the ADO.NET exception translator for this transaction manager.
+            </summary>
+            <remarks>
+            Applied to ADO.NET Exceptions (wrapped by Hibernate's ADOException)
+            </remarks>
+            <value>The ADO exception translator.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.DefaultAdoExceptionTranslator">
+            <summary>
+            Gets the default IAdoException translator, lazily creating it if nece
+            </summary>
+            <value>The default IAdoException translator.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.SessionFactory">
+            <summary>
+            Gets or sets the SessionFactory that this instance should manage transactions for.
+            </summary>
+            <value>The session factory.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.ResourceFactory">
+            <summary>
+            Gets the resource factory that this transaction manager operates on,
+            For the HibenratePlatformTransactionManager this the SessionFactory
+            </summary>
+            <value>The SessionFactory.</value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.AutodetectDbProvider">
+            <summary>
+            Set whether to autodetect a ADO.NET connection used by the Hibernate SessionFactory,
+            if set via LocalSessionFactoryObject's <code>DbProvider</code>. Default is "true".
+            </summary>
+            <value>
+            	<c>true</c> if [autodetect data source]; otherwise, <c>false</c>.
+            </value>
+            <remarks>
+            	<p>Can be turned off to deliberately ignore an available IDbProvider,
+            to not expose Hibernate transactions as ADO.NET transactions for that IDbProvider.
+            </p>
+            </remarks>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.ObjectFactory">
+            <summary>
+            The object factory just needs to be known for resolving entity interceptor
+            It does not need to be set for any other mode of operation.
+            </summary>
+            <value>
+            Owning <see cref="T:Spring.Objects.Factory.IObjectFactory"/>
+            (may not be <see langword="null"/>). The object can immediately
+            call methods on the factory.
+            </value>
+        </member>
+        <member name="P:Spring.Data.NHibernate.HibernateTxScopeTransactionManager.HibernateTransactionObject.RollbackOnly">
+            <summary>
+            Return whether the transaction is internally marked as rollback-only.
+            </summary>
+            <value></value>
+            <returns>True of the transaction is marked as rollback-only.</returns>
+        </member>
+        <member name="T:Spring.Data.NHibernate.SimpleDelegatingSessionFactory">
+            <summary>
+            SimpleDelegatingSessionFactory class
+            </summary>
+        </member>
+        <member name="F:Spring.Data.NHibernate.SimpleDelegatingSessionFactory.CONNECTION_STRING">
+            <summary>
+            Connection string config element name
+            </summary>
+        </member>
+        <member name="M:Spring.Data.NHibernate.SimpleDelegatingSessionFactory.#ctor(NHibernate.Cfg.Configuration)">
+            <summary>
+            public Constructor
+            </summary>
+            <param name="defaultConfiguration"></param>
+        </member>
+        <member name="P:Spring.Data.NHibernate.SimpleDelegatingSessionFactory.TargetSessionFactory">
+            <summary>
+            TargetSessionFactory
+            </summary>
         </member>
         <member name="T:Spring.Data.NHibernate.Support.ConfigSectionSessionScopeSettings">
             <summary>
@@ -839,7 +1676,7 @@
         <member name="M:Spring.Data.NHibernate.Support.OpenSessionInViewModule.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Spring.Data.NHibernate.Support.OpenSessionInViewModule"/> class.  Creates a SessionScope,
-            but does not yet associate a session with a thread, that is lef to the lifecycle of the request.
+            but does not yet associate a session with a thread, that is left to the lifecycle of the request.
             </summary>
         </member>
         <member name="M:Spring.Data.NHibernate.Support.OpenSessionInViewModule.Init(System.Web.HttpApplication)">
@@ -5332,6 +6169,19 @@
             	<c>true</c> if the session transactional; otherwise, <c>false</c>.
             </returns>
         </member>
+        <member name="M:Spring.Data.NHibernate.SessionFactoryUtils.ConvertAdoAccessException(Spring.Data.Support.IAdoExceptionTranslator,NHibernate.ADOException)">
+            <summary>
+            Converts a Hibernate ADOException to a Spring DataAccessExcption, extracting the underlying error code from 
+            ADO.NET.  Will extract the ADOException Message and SqlString properties and pass them to the translate method
+            of the provided IAdoExceptionTranslator.
+            </summary>
+            <param name="translator">The IAdoExceptionTranslator, may be a user provided implementation as configured on
+            HibernateTemplate.
+            </param>
+            <param name="ex">The ADOException throw</param>
+            <returns>The translated DataAccessException or UncategorizedAdoException in case of an error in translation
+            itself.</returns>
+        </member>
         <member name="M:Spring.Data.NHibernate.SessionFactoryUtils.ConvertHibernateAccessException(NHibernate.HibernateException)">
             <summary>
             Convert the given HibernateException to an appropriate exception from the
@@ -5790,422 +6640,6 @@
             The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
             that contains contextual information about the source or destination.
             </param>
-        </member>
-        <member name="T:Spring.Data.NHibernate.LocalSessionFactoryObject">
-            <summary>
-             An IFactoryObject that creates a local Hibernate SessionFactory instance.
-            Behaves like a SessionFactory instance when used as bean reference,
-            e.g. for HibernateTemplate's "SessionFactory" property.
-            </summary>
-            <remarks>
-            The typical usage will be to register this as singleton factory
-            in an application context and give objects references to application services
-            that need it.
-            <para>
-            Hibernate configuration settings can be set using the IDictionary property 'HibernateProperties'.
-            </para>
-            <para>
-            This class implements the <see cref="T:Spring.Dao.Support.IPersistenceExceptionTranslator"/> interface,
-            as autodetected by Spring's <see cref="T:Spring.Dao.Attributes.PersistenceExceptionTranslationPostProcessor"/>
-            for AOP-based translation of PersistenceExceptionTranslationPostProcessor.
-            Hence, the presence of e.g. LocalSessionFactoryBean automatically enables
-            a PersistenceExceptionTranslationPostProcessor to translate Hibernate exceptions. 
-            </para>
-            </remarks>
-            <author>Mark Pollack (.NET)</author>
-        </member>
-        <member name="F:Spring.Data.NHibernate.LocalSessionFactoryObject.log">
-            <summary>
-            The shared <see cref="T:Common.Logging.ILog"/> instance for this class (and derived classes).
-            </summary>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Spring.Data.NHibernate.LocalSessionFactoryObject"/> class.
-            </summary>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.GetObject">
-            <summary>
-            Return the singleon session factory.
-            </summary>
-            <returns>The singleon session factory.</returns>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.AfterPropertiesSet">
-            <summary>
-            Initialize the SessionFactory for the given or the
-            default location.
-            </summary>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.Dispose">
-            <summary>
-            Close the SessionFactory on application context shutdown.
-            </summary>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.NewConfiguration">
-            <summary>
-            Subclasses can override this method to perform custom initialization
-            of the Configuration instance used for ISessionFactory creation.
-            </summary>
-            <remarks>
-            The properties of this LocalSessionFactoryObject will be applied to
-            the Configuration object that gets returned here.
-            <p>The default implementation creates a new Configuration instance.
-            A custom implementation could prepare the instance in a specific way,
-            or use a custom Configuration subclass.
-            </p>
-            </remarks>
-            <returns>The configuration instance.</returns>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.PostProcessMappings(NHibernate.Cfg.Configuration)">
-            <summary>
-            To be implemented by subclasses that want to to register further mappings
-            on the Configuration object after this FactoryObject registered its specified
-            mappings.
-            </summary>
-            <remarks>
-            Invoked <i>before</i> the <code>BuildMappings</code> call,
-            so that it can still extend and modify the mapping information.
-            </remarks>
-            <param name="config">the current Configuration object</param>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.PostProcessConfiguration(NHibernate.Cfg.Configuration)">
-            <summary>
-            To be implemented by subclasses that want to to perform custom
-            post-processing of the Configuration object after this FactoryObject
-            performed its default initialization.
-            </summary>
-            <param name="config">The current configuration object.</param>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.AfterSessionFactoryCreation">
-            <summary>
-            Executes schema update if requested.
-            </summary>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.DropDatabaseSchema">
-            <summary>
-            Execute schema drop script, determined by the Configuration object
-            used for creating the SessionFactory. A replacement for NHibernate's
-            SchemaExport class, to be invoked on application setup.
-            </summary>
-            <remarks>
-            Fetch the LocalSessionFactoryBean itself rather than the exposed
-            SessionFactory to be able to invoke this method, e.g. via
-            <code>LocalSessionFactoryObject lsfb = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
-            <p>
-            Uses the SessionFactory that this bean generates for accessing a ADO.NET
-            connection to perform the script.
-            </p>
-            </remarks>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.CreateDatabaseSchema">
-            <summary>
-            Execute schema creation script, determined by the Configuration object
-            used for creating the SessionFactory. A replacement for NHibernate's
-            SchemaExport class, to be invoked on application setup.
-            </summary>
-            <remarks>
-            Fetch the LocalSessionFactoryObject itself rather than the exposed
-            SessionFactory to be able to invoke this method, e.g. via
-            <code>LocalSessionFactoryObject lsfo = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
-            <p>
-            Uses the SessionFactory that this bean generates for accessing a ADO.NET
-            connection to perform the script.
-            </p>
-            </remarks>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.UpdateDatabaseSchema">
-            <summary>
-            Execute schema update script, determined by the Configuration object
-            used for creating the SessionFactory. A replacement for NHibernate's
-            SchemaUpdate class, for automatically executing schema update scripts
-            on application startup. Can also be invoked manually.
-            </summary>
-            <remarks>
-            Fetch the LocalSessionFactoryObject itself rather than the exposed
-            SessionFactory to be able to invoke this method, e.g. via
-            <code>LocalSessionFactoryObject lsfo = (LocalSessionFactoryObject) ctx.GetObject("mySessionFactory");</code>.
-            <p>
-            Uses the SessionFactory that this bean generates for accessing a ADO.NET
-            connection to perform the script.
-            </p>
-            </remarks>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ExecuteSchemaScript(System.Data.IDbConnection,System.String[])">
-            <summary>
-            Execute the given schema script on the given ADO.NET Connection.
-            </summary>
-            <remarks>
-            Note that the default implementation will log unsuccessful statements
-            and continue to execute. Override the <code>ExecuteSchemaStatement</code>
-            method to treat failures differently.
-            </remarks>
-            <param name="con">The connection to use.</param>
-            <param name="sql">The SQL statement to execute.</param>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ExecuteSchemaStatement(System.Data.IDbCommand,System.String)">
-            <summary>
-            Execute the given schema SQL on the given ADO.NET command.
-            </summary>
-            <remarks>
-            Note that the default implementation will log unsuccessful statements
-            and continue to execute. Override this method to treat failures differently.
-            </remarks>
-            <param name="cmd"></param>
-            <param name="sql"></param>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.NewSessionFactory(NHibernate.Cfg.Configuration)">
-            <summary>
-            Subclasses can override this method to perform custom initialization
-            of the SessionFactory instance, creating it via the given Configuration
-            object that got prepared by this LocalSessionFactoryObject.
-            </summary>
-            <remarks>
-            <p>The default implementation invokes Configuration's BuildSessionFactory.
-            A custom implementation could prepare the instance in a specific way,
-            or use a custom ISessionFactory subclass.
-            </p>
-            </remarks>
-            <returns>The ISessionFactory instance.</returns>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.TranslateExceptionIfPossible(System.Exception)">
-            <summary>
-            Implementation of the PersistenceExceptionTranslator interface,
-            as autodetected by Spring's PersistenceExceptionTranslationPostProcessor.
-            Converts the exception if it is a HibernateException;
-            else returns <code>null</code> to indicate an unknown exception.
-            translate the given exception thrown by a persistence framework to a
-            corresponding exception from Spring's generic DataAccessException hierarchy,
-            if possible.
-            </summary>
-            <param name="ex">The exception thrown.</param>
-            <returns>
-            the corresponding DataAccessException (or <code>null</code> if the
-            exception could not be translated.
-            </returns>
-            <seealso cref="T:Spring.Dao.Attributes.PersistenceExceptionTranslationPostProcessor"/>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ConvertHibernateException(NHibernate.HibernateException)">
-            <summary>
-            Convert the given HibernateException to an appropriate exception from the
-            Spring's DAO Exception hierarchy.
-            Will automatically apply a specified IAdoExceptionTranslator to a
-            Hibernate ADOException, else rely on Hibernate's default translation.
-            </summary>
-            <param name="ex">The Hibernate exception that occured.</param>
-            <returns>A corresponding DataAccessException</returns>
-        </member>
-        <member name="M:Spring.Data.NHibernate.LocalSessionFactoryObject.ConvertAdoAccessException(NHibernate.ADOException)">
-            <summary>
-            Converts the ADO.NET access exception to an appropriate exception from the
-            <code>org.springframework.dao</code> hierarchy. Can be overridden in subclasses.
-            </summary>
-            <param name="ex">ADOException that occured, wrapping underlying ADO.NET exception.</param>
-            <returns>
-            the corresponding DataAccessException instance
-            </returns>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ApplicationContext">
-            <summary>
-            Setting the Application Context determines were resources are loaded from
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ResourceLoader">
-            <summary>
-            Gets or sets the <see cref="T:Spring.Core.IO.IResourceLoader"/> to use for loading mapping assemblies etc.
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.MappingAssemblies">
-            <summary>
-            Sets the assemblies to load that contain mapping files.
-            </summary>
-            <value>The mapping assemblies.</value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ConfigFilenames">
-            <summary>
-            Sets the hibernate configuration files to load, i.e. hibernate.cfg.xml.
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.MappingResources">
-            <summary>
-            Sets the locations of Spring IResources that contain mapping
-            files.
-            </summary>
-            <value>The location of mapping resources.</value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.Configuration">
-            <summary>
-            Return the Configuration object used to build the SessionFactory.
-            Allows access to configuration metadata stored there (rarely needed).
-            </summary>
-            <value>The hibernate configuration.</value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.HibernateProperties">
-            <summary>
-            Set NHibernate configuration properties, like "hibernate.dialect".
-            </summary>
-            <value>The hibernate properties.</value>
-            <remarks>
-            	<p>Can be used to override values in a NHibernate XML config file,
-            or to specify all necessary properties locally.
-            </p>
-            	<p>Note: Do not specify a transaction provider here when using
-            Spring-driven transactions. It is also advisable to omit connection
-            provider settings and use a Spring-set IDbProvider instead.
-            </p>
-            </remarks>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.DbProvider">
-            <summary>
-            Get or set the DataSource to be used by the SessionFactory.
-            </summary>
-            <value>The db provider.</value>
-            <remarks>
-            If set, this will override corresponding settings in Hibernate properties.
-            <note>Note: If this is set, the Hibernate settings should not define
-            a connection string
-            (hibernate.connection.connection_string) to avoid meaningless double configuration.
-            </note>
-            </remarks>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ExposeTransactionAwareSessionFactory">
-            <summary>
-            Gets or sets a value indicating whether to expose a transaction aware session factory.
-            </summary>
-            <value>
-            	<c>true</c> if want to expose transaction aware session factory; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EntityInterceptor">
-            <summary>
-            Set a NHibernate entity interceptor that allows to inspect and change
-            property values before writing to and reading from the database.
-            Will get applied to any new Session created by this factory.
-            <p>Such an interceptor can either be set at the SessionFactory level, i.e. on
-            LocalSessionFactoryObject, or at the Session level, i.e. on HibernateTemplate,
-            HibernateInterceptor, and HibernateTransactionManager. It's preferable to set
-            it on LocalSessionFactoryObject or HibernateTransactionManager to avoid repeated
-            configuration and guarantee consistent behavior in transactions.</p>
-            </summary>
-            <seealso cref="P:Spring.Data.NHibernate.HibernateTemplate.EntityInterceptor"/>
-            <seealso cref="P:Spring.Data.NHibernate.HibernateTransactionManager.EntityInterceptor"/>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.NamingStrategy">
-            <summary>
-            Set a Hibernate NamingStrategy for the SessionFactory, determining the
-            physical column and table names given the info in the mapping document.
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.TypeDefinitions">
-            <summary>
-            Specify the Hibernate type definitions to register with the SessionFactory,
-            as Spring IObjectDefinition instances. This is an alternative to specifying
-            &lt;typedef&gt; elements in Hibernate mapping files.
-            <p>Unfortunately, Hibernate itself does not define a complete object that
-            represents a type definition, hence the need for Spring's TypeDefinitionBean.</p>
-            @see TypeDefinitionBean
-            @see org.hibernate.cfg.Mappings#addTypeDef(String, String, java.util.Properties)
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.FilterDefinitions">
-            <summary>
-            Specify the NHibernate FilterDefinitions to register with the SessionFactory.
-            This is an alternative to specifying &lt;filter-def&gt; elements in
-            Hibernate mapping files.
-            </summary>
-            <remarks>
-            Typically, the passed-in FilterDefinition objects will have been defined
-            as Spring FilterDefinitionFactoryBeans, probably as inner beans within the
-            LocalSessionFactoryObject definition.
-            </remarks>
-            <see cref="T:Spring.Data.NHibernate.FilterDefinitionFactoryObject"/>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EntityCacheStrategies">
-            <summary>
-            Specify the cache strategies for entities (persistent classes or named entities).
-            This configuration setting corresponds to the &lt;class-cache&gt; entry
-            in the "hibernate.cfg.xml" configuration format.
-            <p>For example:
-            <pre>
-            &lt;property name="entityCacheStrategies"&gt;
-              &lt;props&gt;
-                &lt;prop key="MyCompany.Customer"&gt;read-write&lt;/prop&gt;
-                &lt;prop key="MyCompany.Product"&gt;read-only,myRegion&lt;/prop&gt;
-              &lt;/props&gt;
-            &lt;/property&gt;</pre>
-            </p>
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.CollectionCacheStrategies">
-            <summary>
-            Specify the cache strategies for persistent collections (with specific roles).
-            This configuration setting corresponds to the &lt;collection-cache&gt; entry
-            in the "hibernate.cfg.xml" configuration format.
-            <p>For example:
-            <pre>
-            &lt;property name="CollectionCacheStrategies"&gt;
-              &lt;props&gt;
-                &lt;prop key="MyCompany.Order.Items">read-write&lt;/prop&gt;
-                &lt;prop key="MyCompany.Product.Categories"&gt;read-only,myRegion&lt;/prop&gt;
-              &lt;/props&gt;
-            &lt;/property&gt;</pre>
-            </p>
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.EventListeners">
-            <summary>
-            Specify the NHibernate event listeners to register, with listener types
-            as keys and listener objects as values.
-            <p>
-            Instead of a single listener object, you can also pass in a list
-            or set of listeners objects as value.
-            </p>
-            </summary>
-            <value>listener objects as values</value>
-            <remarks>
-            See the NHibernate documentation for further details on listener types
-            and associated listener interfaces.
-            </remarks>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.SchemaUpdate">
-            <summary>
-            Set whether to execute a schema update after SessionFactory initialization.
-            <p>
-            For details on how to make schema update scripts work, see the NHibernate
-            documentation, as this class leverages the same schema update script support
-            in <see cref="P:Spring.Data.NHibernate.LocalSessionFactoryObject.Configuration"/> as NHibernate's own SchemaUpdate tool.
-            </p>
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.AdoExceptionTranslator">
-            <summary>
-            Set the ADO.NET exception translator for this instance.
-            Applied to System.Data.Common.DbException (or provider specific exception type
-            in .NET 1.1) thrown by callback code, be it direct
-            DbException or wrapped Hibernate ADOExceptions.
-            <p>The default exception translator is either a ErrorCodeExceptionTranslator
-            if a DbProvider is available, or a FalbackExceptionTranslator otherwise
-            </p>
-            </summary>
-            <value>The ADO exception translator.</value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.BytecodeProvider">
-            <summary>
-            Sets custom byte code provider implementation to be used. This corresponds to setting
-            the <see cref="P:NHibernate.Cfg.Environment.BytecodeProvider"/> property before NHibernate session factory
-            configuration.
-            </summary>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.ObjectType">
-            <summary>
-            Return the type <see cref="T:NHibernate.ISessionFactory"/> or subclass.
-            </summary>
-            <value>The type created by this factory</value>
-        </member>
-        <member name="P:Spring.Data.NHibernate.LocalSessionFactoryObject.IsSingleton">
-            <summary>
-            Returns true
-            </summary>
-            <value>true</value>
         </member>
     </members>
 </doc>

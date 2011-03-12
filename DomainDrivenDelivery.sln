@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Reso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces.Tests", "Interfaces.Tests\Interfaces.Tests.csproj", "{DBBC6370-5D10-487D-9DC3-87DD83A5CB91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booking.Web", "Booking.Web\Booking.Web.csproj", "{8CCDBD32-CE75-45CD-964E-DE6638E5417E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,16 @@ Global
 		{DBBC6370-5D10-487D-9DC3-87DD83A5CB91}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DBBC6370-5D10-487D-9DC3-87DD83A5CB91}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DBBC6370-5D10-487D-9DC3-87DD83A5CB91}.Release|x86.ActiveCfg = Release|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8CCDBD32-CE75-45CD-964E-DE6638E5417E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

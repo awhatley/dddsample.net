@@ -192,6 +192,23 @@
             <seealso cref="P:Quartz.Trigger.JobName"/>
             <seealso cref="P:Quartz.Trigger.JobGroup"/>
         </member>
+        <member name="P:Spring.Scheduling.Quartz.CronTriggerObject.StartDelay">
+            <summary>
+            Set the start delay as <see cref="T:System.TimeSpan"/>.
+            </summary>
+            <remarks>
+            <para>
+            The start delay is added to the current system UTC time 
+            (when the object starts) to control the <see cref="P:Quartz.Trigger.StartTimeUtc"/>
+            of the trigger.
+            </para>
+            <para>
+            If the start delay is non-zero it will <strong>always</strong>
+            take precedence over start time.
+            </para>
+            </remarks>
+            <value>the start delay, as <see cref="T:System.TimeSpan"/> object.</value>
+        </member>
         <member name="T:Spring.Scheduling.Quartz.Constants">
             <summary>
             Helper class to map constant names to their values.
@@ -1306,6 +1323,11 @@
         <member name="M:Spring.Scheduling.Quartz.SchedulerFactoryObject.Stop">
             <summary>
             Stops this instance.
+            </summary>
+        </member>
+        <member name="M:Spring.Scheduling.Quartz.SchedulerFactoryObject.HandleApplicationEvent(System.Object,Spring.Context.ApplicationEventArgs)">
+            <summary>
+            Handles the application context's refresh event and starts the scheduler.
             </summary>
         </member>
         <member name="P:Spring.Scheduling.Quartz.SchedulerFactoryObject.ConfigTimeDbProvider">

@@ -102,6 +102,13 @@
             Register for message events. 
             </summary>
         </member>
+        <member name="P:Spring.Messaging.Nms.Connections.CachedMessageConsumer.ConsumerTransformer">
+            <summary>
+            A Delegate that is called each time a Message is dispatched to allow the client to do
+            any necessary transformations on the received message before it is delivered.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:Spring.Messaging.Nms.Connections.CachedMessageProducer">
             <summary>
             MessageProducer decorator that adapts calls to a shared MessageProducer
@@ -193,6 +200,12 @@
             <param name="body">The body.</param>
             <returns>A new bytes message with the given body.</returns>
         </member>
+        <member name="M:Spring.Messaging.Nms.Connections.CachedMessageProducer.CreateStreamMessage">
+            <summary>
+            Creates the stream message.
+            </summary>
+            <returns>A new stream message.</returns>
+        </member>
         <member name="M:Spring.Messaging.Nms.Connections.CachedMessageProducer.Close">
             <summary>
             Reset properties.
@@ -214,6 +227,14 @@
             Gets the target MessageProducer, the producer we are 'wrapping'
             </summary>
             <value>The target MessageProducer.</value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.CachedMessageProducer.ProducerTransformer">
+            <summary>
+            A delegate that is called each time a Message is sent from this Producer which allows
+            the application to perform any needed transformations on the Message before it is sent.
+            The Session instance sets the delegate on each Producer it creates.
+            </summary>
+            <value></value>
         </member>
         <member name="P:Spring.Messaging.Nms.Connections.CachedMessageProducer.DeliveryMode">
             <summary>
@@ -435,6 +456,12 @@
             <param name="body">The body.</param>
             <returns></returns>
         </member>
+        <member name="M:Spring.Messaging.Nms.Connections.CachedSession.CreateStreamMessage">
+            <summary>
+            Creates the stream message.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Spring.Messaging.Nms.Connections.CachedSession.Commit">
             <summary>
             Commits this instance.
@@ -450,6 +477,21 @@
             Call dispose on the target.
             </summary>
         </member>
+        <member name="M:Spring.Messaging.Nms.Connections.CachedSession.CreateBrowser(Apache.NMS.IQueue,System.String)">
+            <summary>
+            Creates the queue browser with a specified selector
+            </summary>
+            <param name="queue">The queue.</param>
+            <param name="selector">The selector.</param>
+            <returns>The Queue browser</returns>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Connections.CachedSession.CreateBrowser(Apache.NMS.IQueue)">
+            <summary>
+            Creates the queue browser.
+            </summary>
+            <param name="queue">The queue.</param>
+            <returns>The Queue browser</returns>
+        </member>
         <member name="M:Spring.Messaging.Nms.Connections.CachedSession.ToString">
             <summary>
             Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
@@ -463,6 +505,22 @@
             Gets the target, for testing purposes.
             </summary>
             <value>The target.</value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.CachedSession.ConsumerTransformer">
+            <summary>
+            A Delegate that is called each time a Message is dispatched to allow the client to do
+            any necessary transformations on the received message before it is delivered.
+            The Session instance sets the delegate on each Consumer it creates.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.CachedSession.ProducerTransformer">
+            <summary>
+            A delegate that is called each time a Message is sent from this Producer which allows
+            the application to perform any needed transformations on the Message before it is sent.
+            The Session instance sets the delegate on each Producer it creates.
+            </summary>
+            <value></value>
         </member>
         <member name="P:Spring.Messaging.Nms.Connections.CachedSession.RequestTimeout">
             <summary>
@@ -721,6 +779,37 @@
             <value>
             	<c>true</c> attempt to reconnect on exception during next access; otherwise, <c>false</c>.
             </value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.SingleConnectionFactory.BrokerUri">
+            <summary>
+            Get/or set the broker Uri.
+            </summary>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.SingleConnectionFactory.RedeliveryPolicy">
+            <summary>
+            Get/or set the redelivery policy that new IConnection objects are
+            assigned upon creation.
+            </summary>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.SingleConnectionFactory.ConsumerTransformer">
+            <summary>
+            A Delegate that is called each time a Message is dispatched to allow the client to do
+            any necessary transformations on the received message before it is delivered.  The
+            ConnectionFactory sets the provided delegate instance on each Connection instance that
+            is created from this factory, each connection in turn passes the delegate along to each
+            Session it creates which then passes that along to the Consumers it creates.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Connections.SingleConnectionFactory.ProducerTransformer">
+            <summary>
+            A delegate that is called each time a Message is sent from this Producer which allows
+            the application to perform any needed transformations on the Message before it is sent.
+            The ConnectionFactory sets the provided delegate instance on each Connection instance that
+            is created from this factory, each connection in turn passes the delegate along to each
+            Session it creates which then passes that along to the Producers it creates.
+            </summary>
+            <value></value>
         </member>
         <member name="P:Spring.Messaging.Nms.Connections.SingleConnectionFactory.ConnectionMonitor">
             <summary>
@@ -1341,6 +1430,11 @@
             <author>Jergen Hoeller</author>
             <author>Mark Pollack (.NET)</author>
         </member>
+        <member name="M:Spring.Messaging.Nms.Connections.SynchedLocalTransactionFailedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Connections.SynchedLocalTransactionFailedException"/> class.
+            </summary>
+        </member>
         <member name="M:Spring.Messaging.Nms.Connections.SynchedLocalTransactionFailedException.#ctor(System.String)">
             <summary>
             Creates a new instance of the SynchedLocalTransactionFailedException class. with the specified message.
@@ -1360,6 +1454,13 @@
             <param name="rootCause">
             The root exception that is being wrapped.
             </param>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Connections.SynchedLocalTransactionFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Connections.SynchedLocalTransactionFailedException"/> class.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Spring.Messaging.Nms.Core.IMessageCreator">
             <summary> Creates a NMS message given a Session</summary>
@@ -2837,6 +2938,11 @@
             <author>Juergen Hoeller</author>
             <author>Mark Pollack (.NET)</author>
         </member>
+        <member name="M:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException"/> class.
+            </summary>
+        </member>
         <member name="M:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException"/> class, with the specified message
@@ -2850,6 +2956,13 @@
             </summary>
             <param name="message">The message.</param>
             <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.Adapter.ListenerExecutionFailedException"/> class.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Spring.Messaging.Nms.Listener.Adapter.MessageListenerAdapter">
             <summary>
@@ -3147,22 +3260,21 @@
             </summary>
         </member>
         <member name="T:Spring.Messaging.Nms.Listener.AbstractListenerContainer">
-             <summary>
-             Common base class for all containers which need to implement listening
-             based on a Connection (either shared or freshly obtained for each attempt).
-             Inherits basic Connection and Session configuration handling from the
-             <see cref="T:Spring.Messaging.Nms.Support.NmsAccessor"/> base class.
-             </summary>
-             <para>
-             This class provides basic lifecycle management, in particular management
-             of a shared Connection. Subclasses are supposed to plug into this
-             lifecycle, implementing the <see cref="P:Spring.Messaging.Nms.Listener.AbstractListenerContainer.SharedConnectionEnabled"/> as well as
-            
-             </para>
-             <remarks>
-            
-             </remarks>
-             <author>Mark Pollack</author>
+            <summary>
+            Common base class for all containers which need to implement listening
+            based on a Connection (either shared or freshly obtained for each attempt).
+            Inherits basic Connection and Session configuration handling from the
+            <see cref="T:Spring.Messaging.Nms.Support.NmsAccessor"/> base class.
+            </summary>
+            <remarks> 
+            <para>
+            This class provides basic lifecycle management, in particular management
+            of a shared Connection. Subclasses are supposed to plug into this
+            lifecycle, implementing the <see cref="P:Spring.Messaging.Nms.Listener.AbstractListenerContainer.SharedConnectionEnabled"/> as well as
+            </para>
+            </remarks>
+            <author>Juergen Hoeller</author>
+            <author>Mark Pollack(.NET)</author>
         </member>
         <member name="F:Spring.Messaging.Nms.Listener.AbstractListenerContainer.sharedConnectionMonitor">
             <summary>
@@ -3390,11 +3502,31 @@
             to establish the shared Connection themselves on first access.
             </summary>
         </member>
+        <member name="M:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException"/> class.
+            </summary>
+        </member>
         <member name="M:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException"/> class.
             </summary>
             <param name="message">The message.</param>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException"/> class, with the specified message
+            and root cause exception
+            </summary>
+            <param name="message">The message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.SharedConnectionNotInitializedException"/> class.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Spring.Messaging.Nms.Listener.AbstractMessageListenerContainer">
             <summary>
@@ -3709,6 +3841,13 @@
             <param name="message">The message.</param>
             <param name="innerException">The inner exception.</param>
         </member>
+        <member name="M:Spring.Messaging.Nms.Listener.RecoveryTimeExceededException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Listener.RecoveryTimeExceededException"/> class.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
+        </member>
         <member name="T:Spring.Messaging.Nms.Listener.SimpleMessageListenerContainer">
             <summary>
             Message listener container that uses the plain NMS client API's
@@ -3909,6 +4048,11 @@
             </summary>
             <author>Mark Pollack</author>
         </member>
+        <member name="M:Spring.Messaging.Nms.Support.Converter.MessageConversionException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Support.Converter.MessageConversionException"/> class.
+            </summary>
+        </member>
         <member name="M:Spring.Messaging.Nms.Support.Converter.MessageConversionException.#ctor(System.String)">
             <summary>
             Creates a new instance of the IMessageConverterException class. with the specified message.
@@ -3928,6 +4072,13 @@
             <param name="rootCause">
             The root exception that is being wrapped.
             </param>
+        </member>
+        <member name="M:Spring.Messaging.Nms.Support.Converter.MessageConversionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Spring.Messaging.Nms.Support.Converter.MessageConversionException"/> class.
+            </summary>
+            <param name="info">The SerializationInfo that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Spring.Messaging.Nms.Support.Converter.SimpleMessageConverter">
              <summary> A simple message converter that can handle ITextMessages, IBytesMessages,
@@ -4168,6 +4319,21 @@
             Sets the type mapper.
             </summary>
             <value>The type mapper.</value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Support.Converter.XmlMessageConverter.EncoderShouldEmitUtf8Identifier">
+            <summary>
+            Gets or sets a value indicating whether encoder should emit UTF8 byte order mark.  Default is false.
+            </summary>
+            <value>
+            	<c>true</c> to specify that a Unicode byte order mark is provided; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Spring.Messaging.Nms.Support.Converter.XmlMessageConverter.ThrowOnInvalidBytes">
+            <summary>
+            Gets or sets a value indicating whether to throw an exception on invalid bytes.  Default is true. </summary>
+            <value>
+            	<c>true</c> to specify that an exception be thrown when an invalid encoding is detected; otherwise, <c>false</c>.
+            </value>
         </member>
         <member name="T:Spring.Messaging.Nms.Support.Destinations.DynamicDestinationResolver">
              <summary> Simple DestinationResolver implementation resolving destination names

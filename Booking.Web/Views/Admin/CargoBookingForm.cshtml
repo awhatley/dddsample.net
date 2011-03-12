@@ -1,0 +1,64 @@
+﻿@model IEnumerable<DomainDrivenDelivery.Booking.Api.LocationDTO>
+<html>
+<head>
+    <title>Book new cargo</title>
+</head>
+<body>
+    <div id="container">
+        <form action="BookCargo" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Origin</td>
+                        <td>                            
+                            <select name="originUnlocode">
+                                @foreach(var location in Model) {
+                                    <option value="@location.getUnLocode()">@location.getUnLocode() (@location.getName())</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Destination</td>
+                        <td>
+                            <select name="destinationUnlocode">
+                                @foreach(var location in Model) {
+                                    <option value="@location.getUnLocode()">@location.getUnLocode() (@location.getName())</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Arrival deadline:</td>
+                        <td>
+                            <input name="arrivalDeadline" type="text" size="10" id="arrivalDeadline" value="@Request["arrivalDeadline"]" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <div id="datepicker">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <input type="submit" value="Book" />
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $("#arrivalDeadline").datepicker();
+        });
+    </script>
+</body>
+</html>
