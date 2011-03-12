@@ -20,7 +20,7 @@ namespace DomainDrivenDelivery.Booking.Web.Controllers
         [HttpGet]
         public ActionResult CargoBookingForm()
         {
-            var dtoList = new List<LocationDTO>().AsEnumerable(); // _bookingServiceFacade.listShippingLocations();
+            var dtoList = _bookingServiceFacade.listShippingLocations();
             dtoList = dtoList.OrderBy(l => l.getUnLocode());
             
             return View(dtoList);

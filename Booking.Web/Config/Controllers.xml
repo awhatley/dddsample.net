@@ -5,6 +5,8 @@
   <wcf:channelFactory id="BookingService"
        channelType="DomainDrivenDelivery.Booking.Api.BookingServiceFacade, DomainDrivenDelivery.Booking.Api"
        endpointConfigurationName="BookingService" />
+
+  <object type="DomainDrivenDelivery.Booking.Web.Controllers.HomeController" singleton="false" />
   
   <object type="DomainDrivenDelivery.Booking.Web.Controllers.AdminController" singleton="false">
     <constructor-arg ref="BookingService"/>
