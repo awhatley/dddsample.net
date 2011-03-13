@@ -6,6 +6,7 @@ using DomainDrivenDelivery.Domain.Model.Travel;
 using NHibernate;
 
 using Spring.Stereotype;
+using Spring.Transaction.Interceptor;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
@@ -22,6 +23,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             this.sessionFactory = sessionFactory;
         }
 
+        [Transaction(ReadOnly = true)]
         public Cargo find(TrackingId tid)
         {
             return sessionFactory.GetCurrentSession().
@@ -30,6 +32,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
               UniqueResult<Cargo>();
         }
 
+        [Transaction(ReadOnly = true)]
         public IEnumerable<Cargo> findCargosOnVoyage(Voyage voyage)
         {
             return sessionFactory.GetCurrentSession().CreateQuery(
@@ -40,6 +43,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
               List<Cargo>();
         }
 
+        [Transaction]
         public void store(Cargo cargo)
         {
             sessionFactory.GetCurrentSession().SaveOrUpdate(cargo);
@@ -47,6 +51,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             sessionFactory.GetCurrentSession().CreateSQLQuery("delete from Leg where cargo_id = null").ExecuteUpdate();
         }
 
+        [Transaction(ReadOnly = true)]
         public IEnumerable<Cargo> findAll()
         {
             return sessionFactory.GetCurrentSession().CreateQuery("from Cargo").List<Cargo>();

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace DomainDrivenDelivery.Pathfinder.Api
 {
@@ -7,6 +8,7 @@ namespace DomainDrivenDelivery.Pathfinder.Api
     /// Part of the external graph traversal API exposed by the routing team
     /// and used by us (booking and tracking team).
     /// </summary>
+    [ServiceContract]
     public interface GraphTraversalService
     {
         /// <summary>
@@ -16,6 +18,7 @@ namespace DomainDrivenDelivery.Pathfinder.Api
         /// <param name="destinationUnLocode">destination UN Locode</param>
         /// <param name="limitations">restrictions on the path selection, as key-value according to some API specification</param>
         /// <returns>A list of transit paths</returns>
+        [OperationContract]
         IEnumerable<TransitPath> findShortestPath(string originUnLocode, 
                                                   string destinationUnLocode,
                                                   Hashtable limitations);

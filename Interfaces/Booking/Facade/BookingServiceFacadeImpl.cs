@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 
 using DomainDrivenDelivery.Application.Booking;
 using DomainDrivenDelivery.Booking.Api;
@@ -9,6 +10,7 @@ using DomainDrivenDelivery.Domain.Model.Locations;
 using DomainDrivenDelivery.Domain.Model.Travel;
 
 using Spring.Stereotype;
+using Spring.Transaction.Interceptor;
 
 namespace DomainDrivenDelivery.Interfaces.Booking.Facade
 {
@@ -18,6 +20,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
     /// analogous to the view rendering for web interfaces.
     /// </summary>
     [Service]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class BookingServiceFacadeImpl : BookingServiceFacade
     {
         private readonly BookingService bookingService;

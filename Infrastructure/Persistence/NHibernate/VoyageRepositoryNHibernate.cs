@@ -3,6 +3,7 @@ using DomainDrivenDelivery.Domain.Model.Travel;
 using NHibernate;
 
 using Spring.Stereotype;
+using Spring.Transaction.Interceptor;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
@@ -19,6 +20,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             this.sessionFactory = sessionFactory;
         }
 
+        [Transaction(ReadOnly = true)]
         public Voyage find(VoyageNumber voyageNumber)
         {
             return sessionFactory.GetCurrentSession().

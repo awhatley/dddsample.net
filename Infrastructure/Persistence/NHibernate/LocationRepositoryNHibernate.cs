@@ -5,6 +5,7 @@ using DomainDrivenDelivery.Domain.Model.Locations;
 using NHibernate;
 
 using Spring.Stereotype;
+using Spring.Transaction.Interceptor;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
@@ -18,6 +19,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             this.sessionFactory = sessionFactory;
         }
 
+        [Transaction(ReadOnly = true)]
         public Location find(UnLocode unLocode)
         {
             return sessionFactory.GetCurrentSession().
@@ -26,6 +28,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
               UniqueResult<Location>();
         }
 
+        [Transaction(ReadOnly = true)]
         public IEnumerable<Location> findAll()
         {
             return sessionFactory.GetCurrentSession().CreateQuery("from Location").List<Location>();

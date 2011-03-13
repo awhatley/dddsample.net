@@ -3,7 +3,7 @@
   <class name="DomainDrivenDelivery.Domain.Model.Freight.Cargo" table="Cargo">
 
     <id name="_primaryKey" access="field" column="id">
-      <generator class="NHibernate.Id.IdentityGenerator"/>
+      <generator class="native"/>
     </id>
 
     <component name="TrackingId" unique="true" update="false">

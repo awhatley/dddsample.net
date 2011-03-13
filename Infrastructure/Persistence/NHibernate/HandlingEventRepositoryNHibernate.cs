@@ -6,6 +6,7 @@ using DomainDrivenDelivery.Domain.Model.Handling;
 using NHibernate;
 
 using Spring.Stereotype;
+using Spring.Transaction.Interceptor;
 
 namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
 {
@@ -22,6 +23,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             this.sessionFactory = sessionFactory;
         }
 
+        [Transaction(ReadOnly = true)]
         public HandlingEvent find(EventSequenceNumber eventSequenceNumber)
         {
             return sessionFactory.GetCurrentSession().
@@ -30,11 +32,13 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
               UniqueResult<HandlingEvent>();
         }
 
+        [Transaction]
         public void store(HandlingEvent @event)
         {
             sessionFactory.GetCurrentSession().Save(@event);
         }
 
+        [Transaction(ReadOnly = true)]
         public HandlingHistory lookupHandlingHistoryOfCargo(Cargo cargo)
         {
             var handlingEvents = sessionFactory.GetCurrentSession().
@@ -53,6 +57,7 @@ namespace DomainDrivenDelivery.Infrastructure.Persistence.NHibernate
             }
         }
 
+        [Transaction(ReadOnly = true)]
         public HandlingEvent mostRecentHandling(Cargo cargo)
         {
             return sessionFactory.GetCurrentSession().

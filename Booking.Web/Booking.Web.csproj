@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Spring.Core, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL" />
     <Reference Include="Spring.Services">
       <HintPath>..\References\Spring.Services.dll</HintPath>
     </Reference>
@@ -128,9 +129,17 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj">
+      <Project>{3C1BF24E-0B86-46C5-8296-235A3DC2B9C2}</Project>
+      <Name>Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Booking.Api\Booking.Api.csproj">
       <Project>{802F539B-0A98-4444-8BB8-AE57FB374FB1}</Project>
       <Name>Booking.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Resources\Resources.csproj">
+      <Project>{34277CEF-9EE7-405B-A810-A54A6CA95231}</Project>
+      <Name>Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,7 @@
     <Reference Include="Spring.Core">
       <HintPath>..\References\Spring.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Spring.Data, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL" />
     <Reference Include="Spring.Scheduling.Quartz">
       <HintPath>..\References\Spring.Scheduling.Quartz.dll</HintPath>
     </Reference>

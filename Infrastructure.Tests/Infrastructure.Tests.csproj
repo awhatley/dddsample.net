@@ -54,9 +54,8 @@
     <Reference Include="Spring.Data">
       <HintPath>..\References\Spring.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Spring.Data.NHibernate21, Version=1.3.0.20349, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\Spring.Data.NHibernate21.dll</HintPath>
+    <Reference Include="Spring.Data.NHibernate30">
+      <HintPath>..\References\Spring.Data.NHibernate30.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Testing.NUnit">
       <HintPath>..\References\Spring.Testing.NUnit.dll</HintPath>
@@ -76,6 +75,7 @@
     <Compile Include="Persistence\NHibernate\DatabaseTrackingIdFactoryTest.cs" />
     <Compile Include="Persistence\NHibernate\HandlingEventRepositoryTest.cs" />
     <Compile Include="Persistence\NHibernate\LocationRepositoryTest.cs" />
+    <Compile Include="Persistence\NHibernate\PopulateDatabase.cs" />
     <Compile Include="Persistence\NHibernate\VoyageRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporting\ReportsUpdaterTest.cs" />

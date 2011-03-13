@@ -13,15 +13,34 @@
 
   <db:provider id="dbProvider" provider="${DomainDrivenDelivery.providerName}" connectionString="${DomainDrivenDelivery.connectionString}" />
 
-  <object id="sessionFactory" type="Spring.Data.NHibernate.LocalSessionFactoryObject, Spring.Data.NHibernate21">
+  <object id="sessionFactory" type="Spring.Data.NHibernate.LocalSessionFactoryObject, Spring.Data.NHibernate30">
     <property name="DbProvider" ref="dbProvider" />
-    <property name="ConfigFilenames" value="hibernate.cfg.xml" />
     <property name="EventListeners">
       <dictionary>
         <entry key="PostLoad" value-ref="cargoPostLoadEventListener"/>
       </dictionary>
     </property>
     <property name="ExposeTransactionAwareSessionFactory" value="true" />
+    <property name="HibernateProperties">
+      <dictionary>
+        <entry key="cache.provider_class"
+               value="NHibernate.Cache.NoCacheProvider"/>
+
+        <entry key="dialect"
+               value="NHibernate.Dialect.MsSql2005Dialect"/>
+
+        <entry key="format_sql"
+               value="true"/>
+
+        <entry key="hbm2ddl.auto"
+               value="validate" />
+      </dictionary>
+    </property>
+    <property name="MappingAssemblies">
+      <list>
+        <value>DomainDrivenDelivery.Resources</value>
+      </list>
+    </property>
   </object>
 
   <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.CargoRepositoryNHibernate, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
@@ -31,7 +50,7 @@
   <object type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.DatabaseTrackingIdFactory, DomainDrivenDelivery.Infrastructure" autowire="constructor" />
   <object id="cargoPostLoadEventListener" type="DomainDrivenDelivery.Infrastructure.Persistence.NHibernate.CargoPostLoadEventListener, DomainDrivenDelivery.Infrastructure"/>
 
-  <object id="transactionManager" type="Spring.Data.NHibernate.HibernateTransactionManager">
+  <object id="transactionManager" type="Spring.Data.NHibernate.HibernateTransactionManager, Spring.Data.Nhibernate30">
     <property name="DbProvider" ref="dbProvider" />
     <property name="SessionFactory" ref="sessionFactory"/>
   </object>
