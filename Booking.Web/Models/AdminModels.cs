@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web;
 
 using DomainDrivenDelivery.Booking.Api;
 
@@ -7,8 +8,8 @@ namespace DomainDrivenDelivery.Booking.Web.Models
 {
     public sealed class VoyageDelayedFormModel
     {
-        public Dictionary<string, IEnumerable<string>> Departures { get; set; }
-        public Dictionary<string, IEnumerable<string>> Arrivals { get; set; }
+        public HtmlString DeparturesJson { get; set; }
+        public HtmlString ArrivalsJson { get; set; }
         public IEnumerable<VoyageDTO> Voyages { get; set; }
     }
 

@@ -1,13 +1,17 @@
-﻿    <p>
+﻿@{
+    ViewBag.Title = "Home"; 
+}
+
+    <p>
         <img src=@Url.Content("~/images/web_logo.png") /></p>
     <p>
         Welcome to the <strong>DDDSample</strong> application.</p>
     <p>
         There are two web interfaces available:</p>
     <ul>
-        <li>Public <a href="public/track">cargo tracking</a></li>
-        <li>Administration of <a href="admin/list">booking and routing</a>.</li>
-        <li>Handling event registration <a href="ws/RegisterEvent?wsdl">web service</a></li>
+        <li>Public <a href="Public/Track">cargo tracking</a></li>
+        <li>Administration of <a href="Admin/List">booking and routing</a>.</li>
+        <li>Handling event registration <a href="Ws/RegisterEvent?wsdl">web service</a></li>
     </ul>
     <p>
         The Incident Logging application, that is used to register handling events, is a

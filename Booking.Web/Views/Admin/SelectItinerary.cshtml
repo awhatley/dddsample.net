@@ -1,0 +1,65 @@
+﻿@model DomainDrivenDelivery.Booking.Web.Models.SelectItineraryModel
+
+@{
+    ViewBag.Title = "Cargo Administration";
+}
+
+<div id="container">
+  <table>
+    <caption>Select route</caption>
+    <tr>
+      <td>
+          Cargo @Model.Cargo.getTrackingId() is going from @Model.Cargo.getOrigin() to @Model.Cargo.getFinalDestination()
+      </td>
+    </tr>
+  </table>
+
+  @if(Model.RouteCandidates.Count() == 0) {
+      <p>No routes found that satisfy the route specification.</p>
+      <p>Try setting an arrival deadline futher into the future (a few weeks at least).</p>
+  }
+  
+  @foreach(var candidate in Model.RouteCandidates.Select((value, index) => new { value, index })) {
+      <form action="AssignItinerary" method="post">
+        <input type="hidden" name="trackingId" value="@Model.Cargo.getTrackingId()"/>
+        <table>
+          <caption>Route candidate @(candidate.index + 1)</caption>
+          <thead>
+            <tr>
+              <td>Voyage</td>
+              <td>From</td>
+              <td></td>
+              <td>To</td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach(var leg in candidate.value.getLegs().Select((value, index) => new { value, index })) {
+              <input type="hidden" name="legs[@leg.index].voyageNumber" value="@leg.value.getVoyageNumber()"/>
+              <input type="hidden" name="legs[@leg.index].fromUnLocode" value="@leg.value.getFrom()"/>
+              <input type="hidden" name="legs[@leg.index].toUnLocode" value="@leg.value.getTo()"/>
+              <input type="hidden" name="legs[@leg.index].fromDate" value="@leg.value.getLoadTime().ToString("yyyy-MM-dd hh:mm")"/>
+              <input type="hidden" name="legs[@leg.index].toDate" value="@leg.value.getUnloadTime().ToString("yyyy-MM-dd hh:mm")"/>
+              <tr>
+                <td>@leg.value.getVoyageNumber()</td>
+                <td>@leg.value.getFrom()</td>
+                <td>@leg.value.getLoadTime().ToString("yyyy-MM-dd hh:mm")</td>
+                <td>@leg.value.getTo()</td>
+                <td>@leg.value.getUnloadTime().ToString("yyyy-MM-dd hh:mm")</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <p>
+                  <input type="submit" value="Assign cargo to this route"/>
+                </p>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </form>
+  }
+
+</div>

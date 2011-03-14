@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<DomainDrivenDelivery.Booking.Api.LocationDTO>
-<html>
-<head>
-    <title>Book new cargo</title>
-</head>
-<body>
+           
+@{
+    ViewBag.Title = "Book new cargo";
+}
+
     <div id="container">
         <form action="BookCargo" method="post">
             <table>
@@ -60,5 +60,3 @@
             $("#arrivalDeadline").datepicker();
         });
     </script>
-</body>
-</html>

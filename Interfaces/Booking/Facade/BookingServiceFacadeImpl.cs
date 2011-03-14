@@ -53,6 +53,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
             return trackingId.Value;
         }
 
+        [Transaction]
         public CargoRoutingDTO loadCargoForRouting(string trackingId)
         {
             var cargo = bookingService.loadCargoForRouting(new TrackingId(trackingId));
@@ -74,7 +75,7 @@ namespace DomainDrivenDelivery.Interfaces.Booking.Facade
             bookingService.changeDestination(new TrackingId(trackingId), new UnLocode(destinationUnLocode));
         }
 
-
+        [Transaction]
         public IEnumerable<CargoRoutingDTO> listAllCargos()
         {
             var cargoList = cargoRepository.findAll();

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<DomainDrivenDelivery.Booking.Api.CargoRoutingDTO>
+@{
+    ViewBag.Title = "List all cargos";
+}
+<table border="1" width="600">
+    <thead>
+        <tr>
+            <td>Tracking ID</td>
+            <td>Origin</td>
+            <td>Destination</td>
+            <td>Routed</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model) 
+        {
+            <tr>
+                <td>@Html.ActionLink(item.getTrackingId(), "Show", new { id = item.getTrackingId() })</td>
+                <td>@item.getOrigin()</td>
+                <td>@item.getFinalDestination()</td>
+                <td>@(item.isMisrouted() ? "Misrouted" : (item.isRouted() ? "Yes" : "No"))</td>
+            </tr>  
+        }
+    </tbody>
+</table>

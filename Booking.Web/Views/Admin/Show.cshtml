@@ -1,0 +1,62 @@
+﻿@model DomainDrivenDelivery.Booking.Api.CargoRoutingDTO
+
+@{
+    ViewBag.Title = "Cargo Administration";
+}
+
+<div id="container">
+  <table>
+    <caption>Details for cargo @Model.getTrackingId()</caption>
+    <tbody>
+      <tr>
+        <td>Origin</td>
+        <td>@Model.getOrigin()</td>
+      </tr>
+      <tr>
+        <td>Destination</td>
+        <td>@Model.getFinalDestination()</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>
+            @Html.ActionLink("Change destination", "PickNewDestination", new { trackingId = Model.getTrackingId() })
+          </td>
+      </tr>
+      <tr>
+        <td>Arrival deadline</td>
+        <td>@Model.getArrivalDeadline().ToString("yyyy-MM-dd hh:mm")</td>
+      </tr>
+    </tbody>
+  </table>
+  <p></p>
+  @if(Model.isRouted()) {
+      if(Model.isMisrouted()) {
+          <p><em>Cargo is misrouted - @Html.ActionLink("reroute this cargo", "SelectItinerary", new { trackingId = Model.getTrackingId() })</em></p>
+      }
+      <table border="1">
+        <caption>Itinerary</caption>
+        <thead>
+          <tr>
+            <td>Voyage number</td>
+            <td colspan="2">Load</td>
+            <td colspan="2">Unload</td>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach(var leg in Model.getLegs()) {
+            <tr>
+              <td>@leg.getVoyageNumber()</td>
+              <td>@leg.getFrom()</td>
+              <td>(@leg.getLoadTime().ToString("yyyy-MM-dd hh:mm"))</td>
+              <td>@leg.getTo()</td>
+              <td>(@leg.getUnloadTime().ToString("yyyy-MM-dd hh:mm"))</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+  } else {
+      <p>
+        <strong>Not routed</strong> - @Html.ActionLink("Route this cargo", "SelectItinerary", new { trackingId = Model.getTrackingId() })
+      </p>
+  }
+</div>

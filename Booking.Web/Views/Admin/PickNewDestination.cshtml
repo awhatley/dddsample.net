@@ -1,0 +1,40 @@
+﻿@model DomainDrivenDelivery.Booking.Web.Models.PickNewDestinationModel
+
+@{
+    ViewBag.Title = "Cargo Administration";
+}
+
+<div id="container">
+  <form action="ChangeDestination" method="post">
+  <input type="hidden" name="trackingId" value="@Model.Cargo.getTrackingId()"/>
+  <table>
+    <caption>Change destination for cargo @Model.Cargo.getTrackingId()</caption>
+    <tbody>
+      <tr>
+        <td>Current destination</td>
+        <td>
+            @Model.Cargo.getFinalDestination()
+        </td>
+      </tr>
+      <tr>
+        <td>New destination</td>
+        <td>
+          <select name="unlocode">
+          @foreach(var location in Model.Locations) {
+            <option value="@location.getUnLocode()">@location.getUnLocode()</option>
+          }
+          </select>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td> </td>
+        <td>
+          <input type="submit" value="Change destination"/>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  </form>
+</div>

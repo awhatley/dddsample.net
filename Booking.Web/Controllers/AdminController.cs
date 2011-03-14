@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 using DomainDrivenDelivery.Booking.Api;
 using DomainDrivenDelivery.Booking.Web.Models;
@@ -38,28 +40,32 @@ namespace DomainDrivenDelivery.Booking.Web.Controllers
             return RedirectToAction("Show", new { trackingId });
         }
 
+        [HttpGet]
         public ActionResult List()
         {
             var cargoList = _bookingServiceFacade.listAllCargos();
             return View(cargoList);
         }
 
-        public ActionResult Show(string trackingId)
+        [HttpGet]
+        public ActionResult Show(string id)
         {
-            var dto = _bookingServiceFacade.loadCargoForRouting(trackingId);
+            var dto = _bookingServiceFacade.loadCargoForRouting(id);
             return View(dto);
         }
 
-        public ActionResult SelectItinerary(string trackingId)
+        [HttpGet]
+        public ActionResult SelectItinerary(string id)
         {
             var model = new SelectItineraryModel {
-                Cargo = _bookingServiceFacade.loadCargoForRouting(trackingId),
-                RouteCandidates = _bookingServiceFacade.requestPossibleRoutesForCargo(trackingId),
+                Cargo = _bookingServiceFacade.loadCargoForRouting(id),
+                RouteCandidates = _bookingServiceFacade.requestPossibleRoutesForCargo(id),
             };
 
             return View(model);
         }
 
+        [HttpPost]
         public ActionResult AssignItinerary(RouteAssignmentCommand command)
         {
             var legs = command.legs
@@ -76,29 +82,32 @@ namespace DomainDrivenDelivery.Booking.Web.Controllers
             return RedirectToAction("Show", new { command.trackingId });
         }
 
-        public ActionResult PickNewDestination(string trackingId)
+        [HttpGet]
+        public ActionResult PickNewDestination(string id)
         {
             var model = new PickNewDestinationModel {
-                Cargo = _bookingServiceFacade.loadCargoForRouting(trackingId),
+                Cargo = _bookingServiceFacade.loadCargoForRouting(id),
                 Locations = _bookingServiceFacade.listShippingLocations(),
             };
 
             return View(model);
         }
 
+        [HttpPost]
         public ActionResult ChangeDestination(string trackingId, string unLocode)
         {
             _bookingServiceFacade.changeDestination(trackingId, unLocode);
             return RedirectToAction("Show", new { trackingId });
         }
 
-        public JsonResult VoyageDelayedForm()
+        [HttpGet]
+        public ActionResult VoyageDelayedForm()
         {
             var departures = new Dictionary<string, IEnumerable<string>>();
             var arrivals = new Dictionary<string, IEnumerable<string>>();
             var voyages = _bookingServiceFacade.listAllVoyages();
 
-            foreach(VoyageDTO voyage in voyages)
+            foreach(var voyage in voyages)
             {
                 var departureLocations = new List<string>();
                 var arrivalLocations = new List<string>();
@@ -113,15 +122,17 @@ namespace DomainDrivenDelivery.Booking.Web.Controllers
                 arrivals.Add(voyage.getVoyageNumber(), arrivalLocations);
             }
 
+            var serializer = new JavaScriptSerializer();
             var model = new VoyageDelayedFormModel {
-                Departures = departures,
-                Arrivals = arrivals,
+                DeparturesJson = new HtmlString(serializer.Serialize(departures)),
+                ArrivalsJson = new HtmlString(serializer.Serialize(arrivals)),
                 Voyages = voyages,
             };
 
-            return Json(model);
+            return View(model);
         }
 
+        [HttpPost]
         public ActionResult VoyageDelayed(VoyageDelayCommand command)
         {
             if(command.type == VoyageDelayCommand.DelayType.DEPT)

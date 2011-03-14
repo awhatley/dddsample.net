@@ -1,0 +1,57 @@
+﻿@model DomainDrivenDelivery.Booking.Web.Models.VoyageDelayedFormModel
+
+@{
+    ViewBag.Title = "Report delay";
+}
+
+<script type="text/javascript">
+var arrivals = @Model.ArrivalsJson;
+var departures = @Model.DeparturesJson;
+
+function fill_locations() {
+    var t = $("#type_select").val();
+    var v = $("#voyage_select").val();
+    var locs;
+    if (v && (t == "ARR")) {
+    locs = arrivals[v];
+    } else if (v && (t == "DEPT")) {
+    locs = departures[v];
+    } else {
+    locs = [];
+    }
+
+    var sel = $("#location_select");
+    sel.empty();
+    $.each(locs, function(i, val) {
+    var option = "<option value=\"" + val + "\">" + val + "</option>";
+    sel.append(option);
+    });
+}
+</script>
+
+<div id="container">
+  <form action="VoyageDelayed" method="post">
+    <p>
+      Voyage
+      <select name="voyageNumber" id="voyage_select" onchange="fill_locations()">
+        <option value="">-- Select --</option>
+        @foreach(var voyage in @Model.Voyages) {
+        <option value="@voyage.getVoyageNumber()">@voyage.getVoyageNumber()</option>
+        }
+      </select>
+      : 
+      <select name="type" id="type_select" onchange="fill_locations()">
+        <option value="ARR">arrival to</option>
+        <option value="DEPT">departure from</option>
+      </select>
+      <select name="unLocode" id="location_select">
+      </select>
+      is delayed by
+      <input name="hours" type="text" size="4" maxlength="4" />
+      hours
+    </p>
+    <p>
+      <input type="submit"/>
+    </p>
+  </form>
+</div>
