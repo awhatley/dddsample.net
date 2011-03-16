@@ -77,9 +77,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\Controllers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="Images\cross.png" />
     <Content Include="Images\dddsample.png" />
