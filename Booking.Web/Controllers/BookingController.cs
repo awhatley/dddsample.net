@@ -10,11 +10,11 @@ using DomainDrivenDelivery.Booking.Web.Models;
 
 namespace DomainDrivenDelivery.Booking.Web.Controllers
 {
-    public class AdminController : Controller
+    public class BookingController : Controller
     {
         private readonly BookingServiceFacade _bookingServiceFacade;
 
-        public AdminController(BookingServiceFacade bookingServiceFacade)
+        public BookingController(BookingServiceFacade bookingServiceFacade)
         {
             _bookingServiceFacade = bookingServiceFacade;
         }
