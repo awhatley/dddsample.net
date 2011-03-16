@@ -1,0 +1,59 @@
+﻿@model DomainDrivenDelivery.Booking.Web.Models.CargoTrackingViewModel
+
+@{
+    Layout = "~/Views/Shared/Layout.cshtml";     
+    ViewBag.Title = "Tracking cargo";
+}
+
+<div id="container">
+  <div id="search">
+  <form action="Track" method="post">
+    <table>
+      <tr>
+        <td>
+          Enter your tracking id:
+        </td>
+        <td>
+          <input type="text" name="id" id="idInput" />
+          @Html.ValidationMessage("trackingId", new { @class = "error" })
+        </td>
+        <td>
+          <input type="submit" value="Track!" />
+        </td>
+      </tr>
+    </table>
+  </form>  
+  </div>
+
+  @if(Model == null) {
+    <p><em>Hint: try tracking "ABC123" or "JKL567".</em></p>
+  }
+
+  else {
+    <div id="result">
+      <h2>Cargo @Model.TrackingId is now: @Model.StatusText</h2>
+      <p>Estimated time of arrival in @Model.Destination: @Model.Eta</p>
+      <p>@Model.NextExpectedActivity</p>
+      @if(Model.IsMisdirected) {
+        <p class="notify"><img src="@Url.Content("~/Images/error.png")" alt="" />Cargo is misdirected</p>
+      }
+      @if(Model.Events.Count() > 0) {
+        <h3>Handling History</h3>
+          <ul style="list-style-type: none;">
+            @foreach(var leg in @Model.Events) {
+              <li>
+                  <p><img style="vertical-align: top;" src="@Url.Content("~/Images/" + (leg.IsExpected ? "tick" : "cross") + ".png")" alt="" />
+                  &nbsp;@leg.Description
+                  </p>
+              </li>
+            }
+          </ul>
+      }
+    </div>
+  }
+</div>
+<script type="text/javascript" charset="UTF-8">
+    try {
+        document.getElementById('idInput').focus()
+    } catch (e) { }
+</script>

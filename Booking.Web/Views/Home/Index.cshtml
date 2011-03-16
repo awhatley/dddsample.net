@@ -1,4 +1,5 @@
 ﻿@{
+    Layout = "~/Views/Shared/Layout.cshtml";     
     ViewBag.Title = "Home"; 
 }
 
@@ -9,9 +10,8 @@
     <p>
         There are two web interfaces available:</p>
     <ul>
-        <li>Public <a href="Public/Track">cargo tracking</a></li>
-        <li>Administration of <a href="Admin/List">booking and routing</a>.</li>
-        <li>Handling event registration <a href="Ws/RegisterEvent?wsdl">web service</a></li>
+        <li>Public @Html.ActionLink("cargo tracking", "Track", "Tracking")</li>
+        <li>Administration of @Html.ActionLink("booking and routing", "List", "Booking").</li>
     </ul>
     <p>
         The Incident Logging application, that is used to register handling events, is a
