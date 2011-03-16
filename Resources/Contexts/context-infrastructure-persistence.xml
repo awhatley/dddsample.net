@@ -33,7 +33,7 @@
                value="true"/>
 
         <entry key="hbm2ddl.auto"
-               value="validate" />
+               value="update" />
       </dictionary>
     </property>
     <property name="MappingAssemblies">

@@ -86,7 +86,7 @@ namespace DomainDrivenDelivery.Domain.Model.Freight
         /// </summary>
         /// <param name="handlingActivity">Event to test.</param>
         /// <returns><code>true</code> if the event is expected</returns>
-        internal bool IsExpectedActivity(HandlingActivity handlingActivity)
+        public bool IsExpectedActivity(HandlingActivity handlingActivity)
         {
             return MatchLeg(handlingActivity).Leg != null;
         }

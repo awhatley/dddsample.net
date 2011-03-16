@@ -12,5 +12,10 @@
 
     <property name="Name" column="name" not-null="true"/>
 
+    <component name="CustomsZone" unique="false" update="false">
+      <property name="Code" column="customszone_code" not-null="true" />
+      <property name="Name" column="customszone_name" not-null="true" />
+    </component>
+
   </class>
 </hibernate-mapping>

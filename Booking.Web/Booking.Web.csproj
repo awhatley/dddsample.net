@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Spring.Core, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL" />
+    <Reference Include="Spring.Data, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL" />
     <Reference Include="Spring.Services">
       <HintPath>..\References\Spring.Services.dll</HintPath>
     </Reference>
@@ -135,6 +136,14 @@
     <ProjectReference Include="..\Booking.Api\Booking.Api.csproj">
       <Project>{802F539B-0A98-4444-8BB8-AE57FB374FB1}</Project>
       <Name>Booking.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{15FDCE50-E58A-4788-979C-62B6B233294A}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{956A6997-2FEC-4D68-A9EA-E2A846F21767}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.csproj">
       <Project>{34277CEF-9EE7-405B-A810-A54A6CA95231}</Project>
